@@ -13,3 +13,12 @@ def Login (request):
 
 def Perfil (request):
     return render(request, 'core/html/Perfil.html')
+
+def CambiarContra (request):
+    return render(request, 'core/html/CambiarContra.html')
+
+def Solicitudes (request):
+    return render(request, 'core/html/Solicitudes.html')
+
+def PanelAdmin (request):
+    return render(request, 'core/html/PanelAdmin.html')
