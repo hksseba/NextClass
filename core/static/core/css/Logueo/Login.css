@@ -1,0 +1,62 @@
+body {
+    font-family: 'Hammersmith One';
+    margin: 0;
+    padding: 0;
+  }
+  
+  .login-container {
+    color: #333;
+    width: 100%;
+    max-width: 400px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 150px;
+    margin-bottom: 150px;
+  }
+  
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #D7DBDD  ;
+  }
+  
+  .login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #F08080;;
+    border: none;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    border-radius: 20px;
+  }
+  
+  .login-container button:hover {
+    background-color: #e6784d;
+  }
+  
+  .login-container a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .login-container p {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #333;
+    text-decoration: none;
+  }

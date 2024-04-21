@@ -1,8 +1,9 @@
 
 from django.urls import path
-from .views import PaginaPrincipal
+from .views import PaginaPrincipal, Login
 
 urlpatterns = [
     
-   path('', PaginaPrincipal, name="paginaprincipal"),
+   path('', PaginaPrincipal, name="Paginaprincipal"),
+   path('Login', Login, name= "Login")
 ]

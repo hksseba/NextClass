@@ -1,0 +1,23 @@
+/* styles.css */
+body{
+    font-family: 'Hammersmith One'
+}
+footer {
+    background-color: #F08080; /* Color de fondo del footer */
+    color: #ffffff; /* Color del texto del footer */
+  }
+  
+  footer a {
+    color: #ffffff; /* Cambia el color de los enlaces del footer */
+    text-decoration: none; /* Elimina la línea subrayada de los enlaces */
+    transition: color 0.3s; /* Agrega una transición suave al color del texto de los enlaces */
+   
+  }
+  
+  footer a:hover {
+    color: #555; /* Cambia el color del texto de los enlaces al pasar el ratón por encima */
+  }
+
+ 
+  
+  
