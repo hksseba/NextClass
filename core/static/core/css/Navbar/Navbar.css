@@ -1,0 +1,62 @@
+.search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-left: 20px;
+    
+}
+
+.search-bar input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+.search-bar button {
+    background-color: #F08080;
+
+    padding: 10px;
+    border-radius: 0 20px 20px 0;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+}
+
+.search-bar button:hover {
+    background-color: #D87070;
+}
+
+.search-bar button:focus {
+    outline: none;
+}
+
+.search-bar input[type="text"]::placeholder {
+    color: #999;
+}
+
+.search-bar i {
+    font-size: 16px;
+}
+
+.btn-primary {
+    background-color: #ffffff; /* Color de fondo */
+    color: #F08080; /* Color del texto */
+    border: none; /* Quitamos el borde */
+    padding: 10px 20px; /* Espacio interno */
+    border-radius: 30px; /* Borde redondeado */
+    font-size: 16px; /* Tamaño del texto */
+    font-weight: bold; /* Peso del texto */
+    cursor: pointer; /* Cambiamos el cursor al pasar sobre el botón */
+    transition: background-color 0.3s ease; /* Efecto de transición */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.btn-primary:hover {
+    background-color: #ec2f2f; /* Cambio de color al pasar el ratón */
+}
