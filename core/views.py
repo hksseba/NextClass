@@ -10,3 +10,6 @@ def PaginaPrincipal(request):
 
 def Login (request):
     return render(request, 'core/Logueo/Login.html')
+
+def Perfil (request):
+    return render(request, 'core/html/Perfil.html')
