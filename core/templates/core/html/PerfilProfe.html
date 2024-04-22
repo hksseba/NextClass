@@ -1,0 +1,50 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block links %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock links %}
+
+{% block contenido %}
+<div class="w3-container" style="background-color: #FFFFFF; text-align: center; padding: 20px;">
+    <h2>Perfil del Profesor</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ profesor.imagen_url }}" alt="Imagen del profesor" class="img-fluid rounded-circle" style="max-width: 200px;">
+        </div>
+        <div class="col-md-8">
+            <h3>{{ profesor.nombre }}</h3>
+            <p>{{ profesor.descripcion }}</p>
+            <p><strong>Materias que enseña:</strong> {{ profesor.materias }}</p>
+            <p><strong>Experiencia:</strong> {{ profesor.experiencia }} años</p>
+            <p><strong>Precio por hora:</strong> ${{ profesor.precio_hora }}</p>
+            <p><strong>Correo:</strong> ${{ profesor.email }}</p>
+            <button type="button" class="btn btn-primary">Reservar Clase</button>
+        </div>
+    </div>
+</div>
+
+<div class="w3-container" style="background-color: #F8F8F8; text-align: center; padding: 20px;">
+    <h3>Calificaciones y Comentarios</h3>
+    <div class="row">
+        {% if profesor.reseñas.count > 0 %}
+            {% for reseña in profesor.reseñas.all %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>{{ reseña.alumno.nombre }} - {{ reseña.calificacion }} / 5</h5>
+                    <p>{{ reseña.comentario }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay reseñas disponibles para este profesor.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock contenido %}
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>

@@ -22,3 +22,6 @@ def Solicitudes (request):
 
 def PanelAdmin (request):
     return render(request, 'core/html/PanelAdmin.html')
+
+def PerfilProfe (request):
+    return render(request, 'core/html/PerfilProfe.html')
