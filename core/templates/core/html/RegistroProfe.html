@@ -1,0 +1,53 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Registro de Profesor</h2>
+
+    <!-- Mensajes de éxito o error -->
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label para="email" class="form-label">Correo Electrónico *</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label para="nombre" class="form-label">Nombre *</label>
+            <input type="text" class="form-control" name="nombre" required>
+        </div>
+        <div class="mb-3">
+            <label para="apellido" class="form-label">Apellido *</label>
+            <input type="text" class="form-control" name="apellido" required>
+        </div>
+        <div class="mb-3">
+            <label para="telefono" class="form-label">Teléfono</label>
+            <input tipo="text" class="form-control" name="telefono">
+        </div>
+        <div class="mb-3">
+            <label para="run" class="form-label">RUN *</label>
+            <input tipo="text" class="form-control" name="run" placeholder="12345678-9" required>
+        </div>
+        <div class="mb-3">
+            <label para="especializacion" class="form-label">Especialización *</label>
+            <input tipo="text" class="form-control" name="especializacion" required>
+        </div>
+        <div class="mb-3">
+            <label para="tarifa" class="form-label">Tarifa *</label>
+            <input tipo="number" class="form-control" name="tarifa" required>
+        </div>
+        <div class="mb-3">
+            <label para="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </form>
+</div>
+{% endblock %}

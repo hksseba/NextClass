@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from core.models import Usuario, Estudiante
+from core.models import Usuario, Estudiante, Profesor
 import re
 # Create your views here.
 
@@ -29,6 +29,59 @@ def PanelAdmin (request):
 
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
+
+def RegistroProfe(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        telefono = request.POST.get('telefono')
+        especializacion = request.POST.get('especializacion')
+        tarifa = request.POST.get('tarifa')
+        descripcion = request.POST.get('descripcion')
+        run = request.POST.get('run')
+
+        # Validaciones
+        if not email or not nombre or not apellido or not especializacion or not tarifa:
+            messages.error(request, "Los campos obligatorios deben ser completados.")
+            return render(request, 'core/html/RegistroProfe.html')
+
+        # Validar formato del email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messages.error(request, "Formato de correo electrónico no válido.")
+            return render(request, 'core/html/RegistroProfe.html')
+            
+        # Validar formato del run
+        if not re.match(r"^[0-9]+-[0-9kK]{1}$", run):
+            messages.error(request, "El run debe tener el formato '12345678-9'.")
+            return render(request, 'core/html/RegistroEstudiante.html')
+
+        try:
+            usuario = Usuario(
+                email=email,
+                nombre=nombre,
+                apellido=apellido,
+                telefono=telefono,
+                run=run,
+                tipo_de_usuario="Profesor",
+            )
+            usuario.save()
+
+            profesor = Profesor(
+                usuario=usuario,
+                especializacion=especializacion,
+                tarifa=tarifa,
+                descripcion=descripcion,
+            )
+            profesor.save()
+
+            messages.success(request, "Registro completado con éxito.")
+            return redirect('inicio')
+
+        except Exception as e:
+            messages.error(request, f"Error al registrar: {e}")
+
+    return render(request, 'core/html/RegistroProfe.html')
 
 def RegistroEstudiante(request):
     if request.method == 'POST':
