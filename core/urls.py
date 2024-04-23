@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import PaginaPrincipal, Login, Perfil, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe
+from .views import PaginaPrincipal, Login, Perfil, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante
 
 urlpatterns = [
     
@@ -11,4 +11,5 @@ urlpatterns = [
    path('Solicitudes', Solicitudes, name= "Solicitudes"),
    path('PanelAdmin', PanelAdmin, name= "PanelAdmin"),
    path('PerfilProfe', PerfilProfe, name= "PerfilProfe"),
+   path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
 ]
