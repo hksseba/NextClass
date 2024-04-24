@@ -60,3 +60,13 @@ body {
     color: #333;
     text-decoration: none;
   }
+
+  .form-control-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #D7DBDD;
+}
