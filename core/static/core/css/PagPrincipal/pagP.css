@@ -1,0 +1,15 @@
+.img1 {
+    transition: transform 0.3s; /* Transición suave */
+    cursor: pointer; /* Cambio de cursor al pasar sobre la imagen */
+    width: 70%; 
+    align-content: center;
+}
+
+.img1:hover {
+    transform: scale(1.1); /* Agrandamiento al pasar el cursor sobre la imagen */
+}
+
+
+.fondo {
+    background-image: url(../../../static/core/img/FONDOPRUEBA.jpg);
+}

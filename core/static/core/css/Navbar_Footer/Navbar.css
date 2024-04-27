@@ -63,3 +63,11 @@ body{
 .btn-primary:hover {
     background-color: #ec2f2f; /* Cambio de color al pasar el ratón */
 }
+
+
+#navbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Asegura que la barra de navegación esté por encima de otros elementos */
+}
