@@ -4,12 +4,14 @@ from django.db import models
 # Tabla Usuario
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
+    foto = models.CharField(max_length=255)
     run = models.CharField(max_length=10)
-    email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=15, blank=True)
-    foto = models.CharField(max_length=255)
+    edad = models.CharField(max_length=3)
+    email = models.EmailField(unique=True)
+    contra = models.CharField(max_length=255)
+    telefono = models.CharField(max_length=15, blank=True)    
     carnet = models.CharField(max_length=255)
     tipo_de_usuario = models.CharField(max_length=20)
 
@@ -30,17 +32,16 @@ class Admin(models.Model):
 class Profesor(models.Model):
     id_profesor = models.AutoField(primary_key=True)
     antecedentes = models.CharField(max_length=255)
+    tarifa = models.IntegerField()
     especializacion = models.CharField(max_length=255)
     descripcion = models.TextField()
     estado_de_aprobacion = models.CharField(max_length=50)
-    tarifa = models.IntegerField()
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
 # Tabla Materia
 class Materia(models.Model):
     id_materia = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
-    descripcion = models.TextField(blank=True, null=True)
     creado_por = models.ForeignKey(Admin, on_delete=models.CASCADE)
 
 # Tabla Sesion
