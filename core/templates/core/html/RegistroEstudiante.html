@@ -2,49 +2,80 @@
 {% load static %}
 {% block links %}
 <link rel="stylesheet" href="{% static 'core/css/Logueo/Login.css'%}">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 {% endblock links %}
 
 {% block contenido %}
-<div class="container mt-4">
+<!-- Mensajes de éxito o error -->
 
-    <!-- Mensajes de éxito o error -->
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
+<form method="POST" action="{% url 'FormularioEstudiante' %}" enctype="multipart/form-data" id="formregistro">
+    <!-- Agrega un ID al formulario -->
+    {% csrf_token %}
+    <div class="login-container" style="border-radius: 30px;">
+        <h2>Registro de Alumno</h2>
 
-    <form method="POST"> 
-        <div class="login-container" style="border-radius: 30px;">
-            <h2>Registro de Alumno</h2>
+        <!-- Contenedor para mostrar todos los errores -->
+        <label for="nombre" class="form-label">Nombre </label>
+        <div style="color: red;" class="error-msg" id="error-nombre"></div>
+        <input type="text" class="form-control" id="nombre" name="nombre">
+        
+        <!-- Div para mostrar errores del nombre -->
+
+        <label for="profile_picture">Foto de perfil:</label><br>
+        <div style="color: red;" class="error-msg" id="error-fotoAlumno"></div>
+        <input type="file" id="fotoAlumno" name="fotoAlumno">
+        
+        
+        <label for="apellido" class="form-label">Apellido </label>
+        <div style="color: red;" class="error-msg" id="error-apellido"></div>
+        <input type="text" class="form-control" id="apellido" name="apellido">
+        
+
+
+        
+        <label for="correo" class="form-label">Correo Electronico </label>
+        <div  style="color: red;" class="error-msg" id="error-email"></div>
+        <input type="text" id="email" name="email">
+    
+ 
+
+        <label for="contrasena" class="form-label">Contraseña </label>
+        <div style="color: red;" class="error-msg" id="error-contrasena"></div>
+        <input type="password" id="contrasena" name="contrasena">
+ 
+
+        <label for="telefono" class="form-label">Teléfono</label>
+        <div style="color: red;"  class="error-msg" id="error-telefono"></div>
+        <input type="text" class="form-control" id="telefono" maxlength="9" name="telefono">
+        
+     
+
+        <label for="nivel_educativo" class="form-label">Nivel Educativo </label>
+        <div style="color: red;"  class="error-msg" id="error-NvlEducativo"></div>
+        <select id="NvlEducativo" style="margin-bottom: 10px; width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                box-sizing: border-box;
+                border-radius: 20px;
+                background-color: #D7DBDD;" class="form-control" name="NvlEducativo">
+            <option value="">Selecciona una opción</option>
+            <option value="1">Basica</option>
 
             
-            <label for="profile_picture">Foto de perfil:</label><br>
-            <input type="file" id="profile_picture" name="foto_alumno">
+        </select> 
+        
 
-            <label para="nombre" class="form-label">Nombre </label>
-            <input type="text" class="form-control" name="nombre" required>
+        <button type="submit">Entrar</button>
+        <!-- Cambiado a type="submit" -->
+        <p class="warnings" id="warnings"></p>
+    </div>
+</form>
 
-            <label para="apellido" class="form-label">Apellido </label>
-            <input type="text" class="form-control" name="apellido" required>
+{% endblock contenido %}
 
-            <label para="correo" class="form-label">Correo Electronico </label>
-            <input type="email"  name="email">
+{% block js %}
 
-            <label para="contrasena" class="form-label">Contraseña </label>
-            <input type="password"  name="">
+<script src="{% static 'core/js/RegistroAlumnoss.js' %}"></script>
 
-            <label para="telefono" class="form-label">Teléfono</label>
-            <input tipo="text" class="form-control" name="telefono">
-
-
-            <button>Entrar</button>
-
-          </div>
-        </form>
-
-
-</div>
-{% endblock %}
+{% endblock js %}
