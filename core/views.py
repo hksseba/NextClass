@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -12,11 +14,8 @@ from django.shortcuts import render
 def PaginaPrincipal(request):
     return render(request, 'core/html/PaginaPrincipal.html')
 
-def Login (request):
+def Login(request):
     return render(request, 'core/Logueo/Login.html')
-
-def Perfil (request):
-    return render(request, 'core/html/Perfil.html')
 
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
@@ -85,7 +84,7 @@ def RegistroProfe(request):
             profesor.save()
 
             messages.success(request, "Registro completado con éxito.")
-            return redirect('inicio')
+            return redirect('Login')
 
         except Exception as e:
             messages.error(request, f"Error al registrar: {e}")
@@ -144,3 +143,7 @@ def RegistroEstudiante(request):
 
     # Mostrar la página para el método GET
     return render(request, 'core/html/RegistroEstudiante.html')
+
+@login_required
+def Perfil (request):
+    return render(request, 'core/html/Perfil.html')

@@ -2,10 +2,9 @@
 from django.urls import path
 from .views import PaginaPrincipal, Login, Perfil, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe
 
-urlpatterns = [
-    
+urlpatterns = [    
    path('', PaginaPrincipal, name="Paginaprincipal"),
-   path('Login', Login, name= "Login"),
+   path('Login/', Login, name= "Login"),
    path('Perfil', Perfil, name= "Perfil"),
    path('CambiarContra', CambiarContra, name= "CambiarContra"),
    path('Solicitudes', Solicitudes, name= "Solicitudes"),
