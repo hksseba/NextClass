@@ -13,3 +13,13 @@
 .fondo {
     background-image: url(../../../static/core/img/FONDOPRUEBA.jpg);
 }
+
+.img2 {
+    width: 70%; 
+    align-content: center;
+}
+
+
+.imgusuario{
+    width: 10%;
+}
