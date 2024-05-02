@@ -16,11 +16,12 @@
         </div>
     {% endif %}
 
-    <form method="POST">
+    <form method="POST" action="{% url 'Logueo' %}" >
+        {% csrf_token %}
         <div class="login-container" style="border-radius: 30px;">
             <h2>Iniciar sesión</h2>
-            <input type="email" name="email" placeholder="Correo electrónico" required>  <!-- Campo de correo -->
-            <input type="password" name="contra" placeholder="Contraseña" required>  <!-- Campo de contraseña -->
+            <input type="email" name="email1" placeholder="Correo electrónico" id="email" >  <!-- Campo de correo -->
+            <input type="password" name="contra1" placeholder="Contraseña" id="contra1">  <!-- Campo de contraseña -->
             <button type="submit">Entrar</button>
             
             <p>¿No tienes cuenta?</p>
@@ -30,4 +31,4 @@
     </form>
 
 </div>
-{% endblock %}
+{% endblock contenido %}

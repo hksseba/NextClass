@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.contrib.auth.models import User
+
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from core.models import Usuario, Estudiante, Profesor, Materia
 import re
@@ -16,6 +18,33 @@ def PaginaPrincipal(request):
 
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
+
+
+def Logueo(request):
+    if request.method == 'POST':
+        correo = request.POST.get('email1')
+        contra = request.POST.get('contra1')
+
+        # Buscar al usuario en el modelo personalizado
+        try:
+            usuario1 = Usuario.objects.get(email=correo)
+        except Usuario.DoesNotExist:
+            messages.error(request, 'No se encontró el usuario')
+            return redirect('Login')
+
+        # Autenticar al usuario utilizando authenticate
+        user = authenticate(request, username=usuario1.email, password= usuario1.contra)
+        if user is not None:
+            login(request, user)
+            if usuario1.tipo_de_usuario == "Admin":
+                return redirect('PanelAdmin')
+            else:
+                return redirect('Perfil')
+        else:
+            messages.error(request, 'La contraseña es incorrecta')
+            return redirect('Login')
+
+
 
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
@@ -95,6 +124,7 @@ def RegistroEstudiante(request):
     
     return render(request, 'core/html/RegistroEstudiante.html')
 
+
 def FormularioEstudiante(request):
     if request.method == 'POST':
         vFoto = request.FILES.get('fotoAlumno')
@@ -105,30 +135,43 @@ def FormularioEstudiante(request):
         vClave = request.POST.get('contrasena')
         vNvlEducativo = request.POST.get('NvlEducativo')
 
-       
-        # Crear el usuario y el estudiante
-    
-        usuario = Usuario(
-                email=vCorreo,
-                nombre=vNombre,
-                apellido=vApellido,
-                telefono=vTelefono,
-                contra=vClave,
-                foto=vFoto,
-                tipo_de_usuario="Estudiante",
-            )
-        usuario.save()
+        # Verificar si el correo electrónico ya está en uso
+        if Usuario.objects.filter(email=vCorreo).exists():
+            messages.warning(request, 'El correo ya está en uso')
+            return redirect('RegistroEstudiante')
 
-        estudiante = Estudiante(
-                usuario=usuario,
-                nivel_educativo=vNvlEducativo,
-            )
-        estudiante.save()
+        # Crear el usuario personalizado
+        usuario = Usuario.objects.create(
+            email=vCorreo,
+            nombre=vNombre,
+            apellido=vApellido,
+            telefono=vTelefono,
+            contra=vClave,
+            foto=vFoto,
+            tipo_de_usuario="Estudiante"
+        )
+
+        # Crear el usuario de Django asociado
+        user = User.objects.create_user(
+            username=vCorreo,
+            email=vCorreo,
+            password=vClave,
+            first_name=vNombre,
+            last_name=vApellido
+        )
+
+        # Crear el estudiante asociado al usuario personalizado
+        estudiante = Estudiante.objects.create(
+            usuario=usuario,
+            nivel_educativo=vNvlEducativo
+        )
 
         messages.success(request, "Registro completado con éxito.")
-    return redirect('Login')  # Redirigir después de registrar con éxito
+        return redirect('Login')  # Redirigir después de registrar con éxito
+
 
 
 @login_required
 def Perfil (request):
-    return render(request, 'core/html/Perfil.html')
+    usuario = Usuario.objects.get(email = request.user.username)
+    return render(request, 'core/html/Perfil.html', {'usuario': usuario})

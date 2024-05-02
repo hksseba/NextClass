@@ -1,5 +1,5 @@
 body{
-    font-family: 'Hammersmith One'
+    font-family: 'Hammersmith One' !important;
 }
 .search-bar {
     display: flex;
@@ -47,21 +47,22 @@ body{
     font-size: 16px;
 }
 
-.btn-primary {
-    background-color: #ffffff; /* Color de fondo */
-    color: #F08080; /* Color del texto */
-    border: none; /* Quitamos el borde */
-    padding: 10px 20px; /* Espacio interno */
-    border-radius: 30px; /* Borde redondeado */
-    font-size: 16px; /* Tamaño del texto */
-    font-weight: bold; /* Peso del texto */
-    cursor: pointer; /* Cambiamos el cursor al pasar sobre el botón */
-    transition: background-color 0.3s ease; /* Efecto de transición */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+.btn-primary  {
+    background-color: #ffffff !important;
+    color: #F08080!important;
+    border: none!important;
+    padding: 10px 20px!important;
+    border-radius: 30px!important;
+    font-size: 16px!important;
+    font-weight: bold!important;
+    cursor: pointer!important;
+    transition: background-color 0.3s ease!important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)!important;
 }
 
 .btn-primary:hover {
-    background-color: #ec2f2f; /* Cambio de color al pasar el ratón */
+    background-color: #ec2f2f!important;
+    color: #ffffff !important;
 }
 
 

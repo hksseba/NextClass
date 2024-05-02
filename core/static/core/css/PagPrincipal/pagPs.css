@@ -13,3 +13,9 @@
 .fondo {
     background-image: url(../../../static/core/img/FONDOPRUEBA.jpg);
 }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Hammersmith One';
+    font-weight: 400;
+    margin: 10px 0;
+}

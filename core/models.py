@@ -4,7 +4,7 @@ from django.db import models
 # Tabla Usuario
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
-    foto = models.CharField(max_length=255)
+    foto = models.ImageField(upload_to='media', null=True, blank=True)
     run = models.CharField(max_length=10)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
