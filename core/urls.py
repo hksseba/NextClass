@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from .views import PaginaPrincipal, Login, Perfil, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , FormularioEstudiante, Logueo
+from .views import PaginaPrincipal, Login, Perfil, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , FormularioEstudiante, VistaProfe
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="Paginaprincipal"),
@@ -14,5 +15,7 @@ urlpatterns = [
    path('PerfilProfe', PerfilProfe, name= "PerfilProfe"),
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
-   path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
+   path('RegistroProfe/', RegistroProfe, name='RegistroProfe')
+   path('VistaProfe/', VistaProfe, name='VistaProfe'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   

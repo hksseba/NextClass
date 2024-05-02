@@ -58,6 +58,9 @@ def PanelAdmin (request):
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 
+def VistaProfe (request):
+    return render(request, 'core/html/VistaProfe.html')
+
 def RegistroProfe(request):
     if request.method == 'POST':
         email = request.POST.get('email')
