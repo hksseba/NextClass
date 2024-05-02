@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from django.contrib import messages
@@ -44,7 +44,9 @@ def Logueo(request):
             messages.error(request, 'La contraseña es incorrecta')
             return redirect('Login')
 
-
+def Deslogueo(request):
+    logout(request)
+    return redirect('PaginaPrincipal')
 
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
@@ -178,3 +180,4 @@ def FormularioEstudiante(request):
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
     return render(request, 'core/html/Perfil.html', {'usuario': usuario})
+

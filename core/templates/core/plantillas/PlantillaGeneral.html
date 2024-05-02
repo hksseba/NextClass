@@ -15,9 +15,9 @@
 <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #F08080;" id="navbar"> 
         <div class="container-fluid">
-            <a class="navbar-brand me-2" href="#" style="margin-right: 10px;">
+            <a class="navbar-brand me-2" href="{% url 'PaginaPrincipal' %}" style="margin-right: 10px;">
                 <img src="{% static 'core/img/Logo.jfif' %}" alt="Logo" width="90" height="90" class="d-inline-block align-text-center" style="border-radius: 50%; margin-right: 20px;">
-                <img src="{% static 'core/img/NextClass.png'%}" alt="Nombre empresa">
+                <img src="{% static 'core/img/NextClass.png'%}"  alt="Nombre empresa">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -31,16 +31,25 @@
                                 <button class="btn btn-light rounded-pill px-4 py-2 shadow-sm" >Buscar</button>
                             </div>                  
                         </div>
+                        {% if request.user.is_authenticated %}
+                        <div class="col-md-auto ms-auto"> <!-- Moveremos los botones a la derecha -->
+                          <div class="d-grid gap-2">
+                              <a href="{% url 'Perfil' %}"><button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">Perfil</button></a>                      
+                          </div>
+                      </div>
+                      <div class="col-md-auto"> <!-- Moveremos los botones a la derecha -->
+                        <div class="d-grid gap-2">    
+                          <a href="{% url 'Deslogueo' %}"><button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">Cerrar Sesion</button></a>
+                        </div>
+                    </div>
+                        {% else %}
                         <div class="col-md-auto ms-auto"> <!-- Moveremos los botones a la derecha -->
                             <div class="d-grid gap-2">
-                                <a href="{% url 'RegistroEstudiante' %}"><button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">Alumno</button></a>                      
+                                <a href="{% url 'Login' %}"><button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">Iniciar Sesion</button></a>                      
                             </div>
                         </div>
-                        <div class="col-md-auto"> <!-- Moveremos los botones a la derecha -->
-                            <div class="d-grid gap-2">    
-                              <a href="{% url 'RegistroProfe' %}"><button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">Docente</button></a>
-                            </div>
-                        </div>
+                      
+                        {% endif %}
                     </div>
                 </div>
             </div>
