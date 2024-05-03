@@ -20,6 +20,9 @@ def Login(request):
     return render(request, 'core/Logueo/Login.html')
 
 
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 def Logueo(request):
     if request.method == 'POST':
         correo = request.POST.get('email1')
@@ -32,17 +35,23 @@ def Logueo(request):
             messages.error(request, 'No se encontró el usuario')
             return redirect('Login')
 
-        # Autenticar al usuario utilizando authenticate
-        user = authenticate(request, username=usuario1.email, password= usuario1.contra)
-        if user is not None:
-            login(request, user)
-            if usuario1.tipo_de_usuario == "Admin":
-                return redirect('PanelAdmin')
+        # Validar la contraseña ingresada con la contraseña almacenada
+        if contra == usuario1.contra:
+            # Autenticar al usuario utilizando authenticate
+            user = authenticate(request, username=usuario1.email, password=usuario1.contra)
+            if user is not None:
+                login(request, user)
+                if usuario1.tipo_de_usuario == "Admin":
+                    return redirect('PanelAdmin')
+                else:
+                    return redirect('Perfil')
             else:
-                return redirect('Perfil')
+                messages.error(request, 'La contraseña es incorrecta')
+                return redirect('Login')
         else:
             messages.error(request, 'La contraseña es incorrecta')
             return redirect('Login')
+
 
 def Deslogueo(request):
     logout(request)
