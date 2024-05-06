@@ -1,0 +1,57 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Registrar Administrador</h2>
+
+    <!-- Mensajes de éxito o error -->
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'RegistroAdmin' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label para="nombre" class="form-label">Nombre *</label>
+            <input type="text" class="form-control" name="nombre" required>
+        </div>
+
+        <div class="mb-3">
+            <label para="apellido" class="form-label">Apellido *</label>
+            <input type="text" class="form-control" name="apellido" required>
+        </div>
+
+        <div class="mb-3">
+            <label para="email" class="form-label">Correo Electrónico *</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label para="telefono" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" name="telefono">
+        </div>
+
+        <div class="mb-3">
+            <label para="contra" class="form-label">Contraseña *</label>
+            <input type="password" class="form-control" name="contra" required>
+        </div>
+
+        <div class="mb-3">
+            <label para="run" class="form-label">RUN *</label>
+            <input tipo="text" class="form-control" name="run" placeholder="12345678-9" required>
+        </div>
+
+        <div class="mb-3">
+            <label para="foto" class="form-label">Foto de Perfil</label>
+            <input type="file" class="form-control" name="foto">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar Administrador</button>
+    </form>
+</div>
+{% endblock contenido %}

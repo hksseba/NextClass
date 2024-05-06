@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
-from core.models import Usuario, Estudiante, Profesor, Materia
+from core.models import Usuario, Estudiante, Admin, Profesor, Materia
 import re
 # Create your views here.
 
@@ -146,7 +146,6 @@ def RegistroEstudiante(request):
     
     return render(request, 'core/html/RegistroEstudiante.html')
 
-
 def FormularioEstudiante(request):
     if request.method == 'POST':
         vFoto = request.FILES.get('fotoAlumno')
@@ -191,8 +190,66 @@ def FormularioEstudiante(request):
         messages.success(request, "Registro completado con éxito.")
         return redirect('Login')  # Redirigir después de registrar con éxito
 
+def RegistroAdmin(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        email = request.POST.get('email')
+        contra = request.POST.get('contra')
+        telefono = request.POST.get('telefono', '')
+        foto = request.FILES.get('foto', None)  # Si hay una imagen, se procesa
+        run = request.POST.get('run')
 
+        # Validaciones
+        if not nombre or not apellido or not email or not contra or not run:
+            messages.error(request, "Todos los campos obligatorios deben ser completados.")
+            return render(request, 'core/html/RegistroAdmin.html')
 
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messages.error(request, "Correo electrónico no es válido.")
+            return render(request, 'core/html/RegistroAdmin.html')
+
+        if Usuario.objects.filter(email=email).exists():
+            messages.error(request, "Ya existe un usuario con este correo.")
+            return render(request, 'core/html/RegistroAdmin.html')
+
+        try:
+            # Crear usuario personalizado
+            usuario = Usuario(
+                email=email,
+                nombre=nombre,
+                apellido=apellido,
+                contra=contra,
+                tipo_de_usuario='Admin',
+                telefono=telefono,
+                foto=foto,
+                run=run
+            )
+            usuario.save()
+
+            # Crear usuario Django para autenticación
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=contra,
+                first_name=nombre,
+                last_name=apellido
+            )
+
+            # Crear el perfil de Admin
+            admin = Admin(
+                usuario=usuario,
+                nombre=nombre,
+            )
+            admin.save()
+
+            messages.success(request, "Administrador creado con éxito.")
+            return redirect('PanelAdmin')  # Redirigir al panel del administrador
+
+        except Exception as e:
+            messages.error(request, f"Error al crear el administrador: {e}")
+
+    return render(request, 'core/html/RegistroAdmin.html')
 @login_required
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)

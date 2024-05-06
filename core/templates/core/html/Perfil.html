@@ -26,14 +26,24 @@
         </div>
     </div>
 
+    {% if usuario.tipo_de_usuario == "Admin" %}
+    <div class="mt-4">
+        <h3>Gestión de Usuarios</h3>
+        <ul>
+            <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li>
+            <li><a href="{% url 'Solicitudes' %}">Solicitudes de Profesores</a></li>
+        </ul>
+    </div>
+    {% elif usuario.tipo_de_usuario == "Profesor" %}
     <div class="mt-4">
         <h3>Gestión de Clases</h3>
         <ul>
-            <li><a>Mis Clases</a></li>
-            <li><a>Clases Disponibles</a></li>
-            <li><a>Agendar Nueva Clase</a></li>
+            <li><a href="#">Mis Clases</a></li>
+            <li><a href="#">Clases Disponibles</a></li>
+            <li><a href="#">Agendar Nueva Clase</a></li>
         </ul>
     </div>
+    {% endif %}
 
     <div class="mt-4">
         <h3>Configuración</h3>
