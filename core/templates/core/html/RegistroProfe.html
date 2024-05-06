@@ -18,41 +18,41 @@
         </div>
     {% endif %}
 
-    <form method="POST">
+    <form method="POST" action="{% url 'RegistroProfe' %}" enctype="multipart/form-data" id="registroP">
         {% csrf_token %}
         
             <div class="login-container" style="border-radius: 30px;">
             <h2>Registro de Profesor</h2>
 
                 <label for="profile_picture">Foto de perfil:</label><br>
-                <input type="file" id="profile_picture" name="foto_profe"><br> 
+                <input type="file" id="foto_profe" name="foto_profe"><br> 
     
                 <label para="run" class="form-label">RUN </label>
-                <input tipo="text" class="form-control" name="run" placeholder="12345678-9" required>
+                <input tipo="text" class="form-control" name="run" id="run_profe" placeholder="12345678-9" required>
     
                 <label para="nombre" class="form-label">Nombre </label>
-                <input type="text" class="form-control" name="nombre" required>
+                <input type="text" class="form-control" name="nombre" id="nombre" required>
     
                 <label para="apellido" class="form-label">Apellido </label>
-                <input type="text" class="form-control" name="apellido" required>
+                <input type="text" class="form-control" name="apellido" id="apellido" required>
 
                 <label para="edad" class="form-label">Edad </label>
-                <input type="text" class="form-control" name="edad" required>
+                <input type="text" class="form-control" name="edad" id="edad" required>
     
                 <label para="correo" class="form-label">Correo Electronico </label>
-                <input type="email"  name="email">
+                <input type="email"  name="email" id="email">
     
                 <label para="contrasena" class="form-label">Contraseña </label>
-                <input type="password" name="contra">
+                <input type="password" name="contra" id="contra">
     
                 <label para="telefono" class="form-label">Teléfono</label>
-                <input tipo="text" class="form-control" name="telefono">
+                <input tipo="text" class="form-control" name="telefono" id="telefono">
     
                 <label for="profile_picture">Papel de antecedentes</label><br>
-                <input type="file" id="profile_picture" name="antecedentes">
+                <input type="file" id="antecedentes" name="antecedentes">
 
                 <label for="profile_picture">Tarifa por hora</label><br>
-                <input type="text" name="tarifa">
+                <input type="text" name="tarifa" id="tarifa">
 
                 <label para="especializacion" class="form-label">Especialización</label>
                 <select class="form-control" name="especializacion" required>  <!-- Campo select para las materias -->
@@ -69,4 +69,10 @@
               </div>
     </form>
 </div>
-{% endblock %}
+{% endblock contenido %}
+
+{% block js %}
+
+<script src="{% static 'core/js/RegistroProfe.js' %}"></script>
+
+{% endblock js %}

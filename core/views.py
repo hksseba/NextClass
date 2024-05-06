@@ -126,6 +126,14 @@ def RegistroProfe(request):
             )
             profesor.save()
 
+            user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=contra,
+            first_name=nombre,
+            last_name=apellido
+            )
+
             messages.success(request, "Registro completado con éxito.")
             return redirect('Login')
 
