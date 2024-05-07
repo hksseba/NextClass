@@ -17,7 +17,12 @@ import re
 from django.shortcuts import render
 
 def PaginaPrincipal(request):
-    return render(request, 'core/html/PaginaPrincipal.html')
+    profesores = Profesor.objects.select_related('usuario').all()
+    contexto = {
+        "profesores": profesores,
+        "user": request.user
+    }
+    return render(request, 'core/html/PaginaPrincipal.html', contexto)
 
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
