@@ -9,53 +9,58 @@
 {% block contenido %}
 <div class="container mt-4">
     <h2>Panel del Administrador</h2>
-    
+
+    <!-- Sección de Gestión de Usuarios -->
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Gestión de Usuarios</div>
                 <div class="card-body">
                     <ul>
-                        <li><a>Ver Todos los Usuarios</a></li>
-                        <li><a>Solicitudes de Profesores</a></li>
+                        <li><a href="{% url 'ListaUsuarios' %}">Ver Todos los Usuarios</a></li> <!-- Enlace para ver todos los usuarios -->
+                        <li><a href="{% url 'Solicitudes' %}">Solicitudes de Profesores</a></li> <!-- Enlace para ver solicitudes de profesores -->
+                        <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li> <!-- Enlace para crear un nuevo administrador -->
                     </ul>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Sección de Gestión de Clases -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Gestión de Clases</div>
                 <div class="card-body">
                     <ul>
-                        <li><a>Ver Todas las Clases</a></li>
-                        <li><a>Crear Nueva Clase</a></li>
+                        <li><a href="{% url 'ListaClases' %}">Ver Todas las Clases</a></li> <!-- Enlace para ver todas las clases -->
+                        <li><a>Crear Nueva Clase</a></li> <!-- Enlace para crear una nueva clase -->
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Sección de Estadísticas Generales -->
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Estadísticas Generales</div>
                 <div class="card-body">
-                    <p>Total de Usuarios: {{ total_usuarios }}</p>
-                    <p>Total de Profesores: {{ total_profesores }}</p>
-                    <p>Total de Clases: {{ total_clases }}</p>
-                    <p>Total de Solicitudes Pendientes: {{ total_solicitudes }}</p>
+                    <p>Total de Usuarios: {{ total_usuarios }}</p> <!-- Mostrar el total de usuarios -->
+                    <p>Total de Profesores: {{ total_profesores }}</p> <!-- Mostrar el total de profesores -->
+                    <p>Total de Clases: {{ total_clases }}</p> <!-- Mostrar el total de clases -->
+                    <p>Total de Solicitudes Pendientes: {{ total_solicitudes }}</p> <!-- Mostrar el total de solicitudes pendientes -->
                 </div>
             </div>
         </div>
-        
+
+        <!-- Sección de Configuración -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Configuración</div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="{% url 'CambiarContra' %}" >Cambiar Contraseña</a></li>
-                        <li><a>Cerrar Sesión</a></li>
+                        <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li> <!-- Enlace para cambiar la contraseña -->
+                        <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li> <!-- Enlace para cerrar sesión -->
                     </ul>
                 </div>
             </div>

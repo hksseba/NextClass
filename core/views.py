@@ -60,11 +60,54 @@ def Deslogueo(request):
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
 
-def Solicitudes (request):
-    return render(request, 'core/html/Solicitudes.html')
+def Solicitudes(request):
+    solicitudes = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
+    return render(request, 'core/html/Solicitudes.html', {'solicitudes': solicitudes})
 
-def PanelAdmin (request):
-    return render(request, 'core/html/PanelAdmin.html')
+# Vista para aceptar una solicitud
+def AceptarSolicitud(request, id_solicitud):
+    try:
+        profesor = Profesor.objects.get(id_profesor=id_solicitud)
+        profesor.estado_de_aprobacion = "Aprobado"  # Cambiar el estado a Aprobado
+        profesor.save()  # Guardar los cambios
+        messages.success(request, "Solicitud aceptada con éxito.")
+    except Profesor.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    return redirect('Solicitudes')  # Redirigir a la página de solicitudes
+
+# Vista para rechazar una solicitud
+def RechazarSolicitud(request, id_solicitud):
+    try:
+        profesor = Profesor.objects.get(id_profesor=id_solicitud)
+        
+        # Al rechazar, eliminamos el profesor
+        usuario = profesor.usuario  # Obtiene el usuario asociado
+        profesor.delete()  # Elimina el registro del profesor
+
+        # Ahora, eliminamos el usuario asociado
+        usuario.delete()  # Elimina el registro del usuario
+        
+        messages.success(request, "Solicitud rechazada y usuario eliminado con éxito.")
+    except Profesor.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")  # En caso de error al eliminar el usuario
+
+    return redirect('Solicitudes')  # Redirigir a la página de solicitudes
+
+def PanelAdmin(request):
+
+    total_usuarios = Usuario.objects.count()
+    total_profesores = Profesor.objects.count()
+    total_solicitudes = Profesor.objects.filter(estado_de_aprobacion='Pendiente').count()
+
+    context = {
+        'total_usuarios': total_usuarios,
+        'total_profesores': total_profesores,
+        'total_solicitudes': total_solicitudes,
+    }
+
+    return render(request, 'core/html/PanelAdmin.html', context)
 
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
@@ -255,3 +298,16 @@ def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
     return render(request, 'core/html/Perfil.html', {'usuario': usuario})
 
+def ListaUsuarios(request):
+    if not request.user.is_superuser:
+        return redirect('PaginaPrincipal')
+
+    usuarios = Usuario.objects.all()
+    return render(request, 'core/html/ListaUsuarios.html', {'usuarios': usuarios})
+
+def ListaClases(request):
+    if not request.user.is_superuser:
+        return redirect('PaginaPrincipal')
+
+    clases = Sesion.objects.all()
+    return render(request, 'core/html/ListaClases.html', {'clases': clases})
