@@ -1,0 +1,43 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% block links %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock links %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Lista de Clases</h2>
+    {% if clases %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Profesor</th>
+                    <th>Materia</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for clase in clases %}
+                <tr>
+                    <td>{{ clase.profesor.usuario.nombre }} {{ clase.profesor.usuario.apellido }}</td>
+                    <td>{{ clase.materia.nombre }}</td>
+                    <td>{{ clase.fechadeinicio }}</td>
+                    <td>{{ clase.horadeinicio }} - {{ clase.horadetermino }}</td>
+                    <td>
+                        <a href="{% url 'VerClase' clase.id_sesion %}" class="btn btn-info">Ver</a>
+                        <form method="POST" action="{% url 'EliminarClase' clase.id_sesion %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay clases registradas.</p>
+    {% endif %}
+</div>
+{% endblock contenido %}

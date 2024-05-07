@@ -1,12 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
-from core.models import Usuario, Estudiante, Admin, Profesor, Materia
+from core.models import Usuario, Estudiante, Admin, Profesor, Materia, Sesion
 import re
 # Create your views here.
 
@@ -18,10 +21,6 @@ def PaginaPrincipal(request):
 
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
-
-
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
 
 def Logueo(request):
     if request.method == 'POST':
@@ -293,21 +292,57 @@ def RegistroAdmin(request):
             messages.error(request, f"Error al crear el administrador: {e}")
 
     return render(request, 'core/html/RegistroAdmin.html')
+
 @login_required
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
     return render(request, 'core/html/Perfil.html', {'usuario': usuario})
 
 def ListaUsuarios(request):
-    if not request.user.is_superuser:
-        return redirect('PaginaPrincipal')
-
     usuarios = Usuario.objects.all()
     return render(request, 'core/html/ListaUsuarios.html', {'usuarios': usuarios})
 
 def ListaClases(request):
-    if not request.user.is_superuser:
-        return redirect('PaginaPrincipal')
-
     clases = Sesion.objects.all()
     return render(request, 'core/html/ListaClases.html', {'clases': clases})
+
+def EliminarUsuario(request, usuario_id):
+    try:
+        # Buscar el usuario por ID
+        usuario = Usuario.objects.get(id_usuario=usuario_id)
+
+        # Eliminar el usuario
+        usuario.delete()
+
+        # Mensaje de éxito
+        messages.success(request, f"Usuario {usuario.nombre} {usuario.apellido} eliminado con éxito.")
+
+    except Usuario.DoesNotExist:
+        # Manejar caso donde el usuario no exista
+        messages.error(request, "Usuario no encontrado.")
+
+    except Exception as e:
+        # Manejar otros errores inesperados
+        messages.error(request, f"Error al eliminar usuario: {e}")
+
+    # Redirigir a la lista de usuarios
+    return redirect('ListaUsuarios')
+
+def EliminarClase(request, clase_id):
+    try:
+        # Obtén la clase y elimínala
+        clase = Sesion.objects.get(id_sesion=clase_id)
+        clase.delete()
+        messages.success(request, f"Clase eliminada con éxito.")
+    except Sesion.DoesNotExist:
+        messages.error(request, "Clase no encontrada.")
+    except Exception as e:
+        messages.error(request, f"Error al eliminar clase: {e}")
+
+    # Redirigir a una página después de la eliminación, como la lista de clases
+    return redirect('ListaClases')
+
+def VerClase(request, clase_id):
+    # Obtén la clase correspondiente al ID o devuelve un 404 si no existe
+    clase = get_object_or_404(Sesion, id_sesion=clase_id)
+    return render(request, 'core/html/VerClase.html', {'clase': clase})
