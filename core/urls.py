@@ -16,6 +16,7 @@ urlpatterns = [
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
    path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
+
    path('VistaProfe/', VistaProfe, name='VistaProfe'),
    path('RegistroAdmin/', RegistroAdmin, name='RegistroAdmin'),
    path('ListaUsuarios/', ListaUsuarios, name='ListaUsuarios'),

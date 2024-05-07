@@ -1,6 +1,44 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 
 {% block contenido %}
+{% if usuario.tipo_de_usuario == "Profesor" %}
+<div class="container mt-4">
+    <h2>Mi Perfil</h2>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ usuario.imagen_url }}" alt="Imagen de perfil" class="img-fluid rounded-circle" style="max-width: 200px;">
+        </div>
+        <div class="col-md-8">
+            <h3>{{ usuario.nombre }}</h3>
+            <p><strong>Email:</strong> {{ usuario.email }}</p>
+            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+            <p><strong>Edad:</strong> {{ usuario.edad }}</p>
+            <p><strong>RUT:</strong> {{ usuario.run }}</p>
+            <p><strong>Género:</strong> {{ usuario.genero }}</p>
+            <p><strong>Descripción:</strong> {{ usuario.descripcion }}</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Gestión de Clases</h3>
+        <ul>
+            <li><a>Mis Clases</a></li>
+            <li><a>Clases Disponibles</a></li>
+            <li><a>Agendar Nueva Clase</a></li>
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <h3>Configuración</h3>
+        <ul>
+            <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li>
+            <li><a>Cerrar Sesión</a></li>
+        </ul>
+    </div>
+</div>
+{% else %}
+
 <div class="container mt-4">
     <h2>Mi Perfil</h2>
     <div class="row">

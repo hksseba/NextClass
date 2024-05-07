@@ -134,58 +134,46 @@ def RegistroProfe(request):
         antecedentes = request.POST.get('antecedentes')
         contra = request.POST.get('contra')
 
-        # Validaciones
-        if not email or not nombre or not apellido or not especializacion or not tarifa:
-            messages.error(request, "Los campos obligatorios deben ser completados.")
-            return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
+        # Verificar si el correo electrónico ya está en uso
+        if Usuario.objects.filter(email=email).exists():
+            messages.warning(request, 'El correo ya está en uso')
+            return redirect('RegistroEstudiante')
 
-        # Validar formato del email
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            messages.error(request, "Formato de correo electrónico no válido.")
-            return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
-            
-        # Validar formato del run
-        if not re.match(r"^[0-9]+-[0-9kK]{1}$", run):
-            messages.error(request, "El run debe tener el formato '12345678-9'.")
-            return render(request, 'core/html/RegistroEstudiante.html', context={"materias": Materia.objects.all()})
+        # Crear el usuario personalizado
+        usuario = Usuario.objects.create(
+            email=email,
+            nombre=nombre,
+            run=run,
+            edad=edad,
+            apellido=apellido,
+            telefono=telefono,
+            contra=contra,
+            foto=foto,
+            tipo_de_usuario="Profesor"
+        )
 
-        try:
-            usuario = Usuario(
-                email=email,
-                nombre=nombre,
-                apellido=apellido,
-                telefono=telefono,
-                edad=edad,
-                run=run,
-                tipo_de_usuario="Profesor",
-                foto=foto,
-                contra=contra,
-            )
-            usuario.save()
-
-            profesor = Profesor(
-                usuario=usuario,
-                especializacion=especializacion,
-                tarifa=tarifa,
-                antecedentes=antecedentes,
-                estado_de_aprobacion="Pendiente",
-                descripcion=descripcion,
-            )
-            profesor.save()
-
-            user = User.objects.create_user(
+        # Crear el usuario de Django asociado
+        user = User.objects.create_user(
             username=email,
             email=email,
             password=contra,
             first_name=nombre,
             last_name=apellido
-            )
+        )
 
-            messages.success(request, "Registro completado con éxito.")
-            return redirect('Login')
+        # Crear el estudiante asociado al usuario personalizado
+        profesor = Profesor.objects.create(
+            usuario=usuario,
+            antecedentes=antecedentes,
+            tarifa=tarifa,
+            especializacion=especializacion,
+            descripcion=descripcion,
+             estado_de_aprobacion="Pendiente"
+        )
 
-        except Exception as e:
-            messages.error(request, f"Error al registrar: {e}")
+        messages.success(request, "Registro completado con éxito.")
+        return redirect('Login')  # Redirigir después de registrar con éxito
+
 
     return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
 

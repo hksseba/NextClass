@@ -3,20 +3,12 @@
 
 {% block links %}
 <link rel="stylesheet" href="{% static 'core/css/Logueo/Login.css'%}">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 {% endblock links %}
 
 {% block contenido %}
 <div class="container mt-4">
 
-
-    <!-- Mensajes de éxito o error -->
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     <form method="POST" action="{% url 'RegistroProfe' %}" enctype="multipart/form-data" id="registroP">
         {% csrf_token %}
@@ -24,48 +16,69 @@
             <div class="login-container" style="border-radius: 30px;">
             <h2>Registro de Profesor</h2>
 
-                <label for="profile_picture">Foto de perfil:</label><br>
+                <label for="foto_profe">Foto de perfil:</label><br>
+                <div style="color: red;" class="error-msg" id="error-foto_profe"></div>
                 <input type="file" id="foto_profe" name="foto_profe"><br> 
     
-                <label para="run" class="form-label">RUN </label>
-                <input tipo="text" class="form-control" name="run" id="run_profe" placeholder="12345678-9" required>
+                <label for="run" class="form-label">RUN </label>
+                <div style="color: red;" class="error-msg" id="error-run_profe"></div>
+                <input tipo="text" class="form-control" name="run" id="run_profe" placeholder="12345678-9">
     
-                <label para="nombre" class="form-label">Nombre </label>
-                <input type="text" class="form-control" name="nombre" id="nombre" required>
+                <label for="nombre" class="form-label">Nombre </label>
+                <div style="color: red;" class="error-msg" id="error-nombre"></div>
+                <input type="text" class="form-control" name="nombre" id="nombre">
+               
     
-                <label para="apellido" class="form-label">Apellido </label>
-                <input type="text" class="form-control" name="apellido" id="apellido" required>
+                <label for="apellido" class="form-label">Apellido </label>
+                <div style="color: red;" class="error-msg" id="error-apellido"></div>
+                <input type="text" class="form-control" name="apellido" id="apellido">
+                
 
-                <label para="edad" class="form-label">Edad </label>
-                <input type="text" class="form-control" name="edad" id="edad" required>
+                <label for="edad" class="form-label">Edad </label>
+                <div style="color: red;" class="error-msg" id="error-edad"></div>
+                <input type="text" class="form-control" name="edad" id="edad">
+                
     
-                <label para="correo" class="form-label">Correo Electronico </label>
+                <label for="correo" class="form-label">Correo Electronico </label>
+                <div style="color: red;" class="error-msg" id="error-email"></div>
                 <input type="email"  name="email" id="email">
+                
     
-                <label para="contrasena" class="form-label">Contraseña </label>
+                <label for="contrasena" class="form-label">Contraseña </label>
+                <div style="color: red;" class="error-msg" id="error-contra"></div>
                 <input type="password" name="contra" id="contra">
+                
     
-                <label para="telefono" class="form-label">Teléfono</label>
+                <label for="telefono" class="form-label">Teléfono</label>
+                <div style="color: red;" class="error-msg" id="error-telefono"></div>
                 <input tipo="text" class="form-control" name="telefono" id="telefono">
+                
     
                 <label for="profile_picture">Papel de antecedentes</label><br>
+                <div style="color: red;" class="error-msg" id="error-antecedentes"></div>
                 <input type="file" id="antecedentes" name="antecedentes">
+                
 
                 <label for="profile_picture">Tarifa por hora</label><br>
+                <div style="color: red;" class="error-msg" id="error-tarifa"></div>
                 <input type="text" name="tarifa" id="tarifa">
+                
 
-                <label para="especializacion" class="form-label">Especialización</label>
-                <select class="form-control" name="especializacion" required>  <!-- Campo select para las materias -->
+                <label for="especializacion" class="form-label">Especialización</label>
+                <select class="form-control" name="especializacion">  <!-- Campo select for las materias -->
                     <option value="">Seleccione una materia</option>
                     {% for materia in materias %}
                         <option value="{{ materia.nombre }}">{{ materia.nombre }}</option>
                     {% endfor %}
                 </select>
 
-                <label para="descripcion" class="form-label">Descripción</label>
+                <label for="descripcion" class="form-label">Descripción</label>
+                <div style="color: red;" class="error-msg" id="error-descripcion"></div>
                 <textarea class="form-control" class="form-control" name="descripcion"></textarea>
+                
     
-                <button>Entrar</button>
+                <button type="submit">Entrar</button>
+                <p class="warnings" id="warnings"></p>
               </div>
     </form>
 </div>
@@ -73,6 +86,6 @@
 
 {% block js %}
 
-<script src="{% static 'core/js/RegistroProfe.js' %}"></script>
+<script src="{% static 'core/js/RegistroProfesor.js' %}"></script>
 
 {% endblock js %}
