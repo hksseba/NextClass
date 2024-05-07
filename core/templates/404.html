@@ -1,0 +1,13 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container mt-4 text-center">
+    <h1>¡Ups! Página no encontrada</h1>
+    <p>La página que estás buscando no está disponible.</p>
+    <img src="{% static 'core/img/error_404.png' %}" alt="Error 404" style="max-width: 300px;">
+
+    <br>
+    <a href="{% url 'PaginaPrincipal' %}" class="btn btn-primary">Volver a la página principal</a>
+</div>
+{% endblock contenido %}
