@@ -1,7 +1,30 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 
 {% block contenido %}
-<div class="container mt-4">
+<div class="container mt-4" style="margin-bottom: 244px;">
+    {% if usuario.tipo_de_usuario == "Estudiante" %}
+    <h2>Mi Perfil</h2>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ usuario.foto.url }}" alt="Imagen de perfil" class="img-fluid rounded-circle" style="max-width: 200px;">
+        </div>
+        <div class="col-md-8">
+            <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
+            <p><strong>Email:</strong> {{ usuario.email }}</p>
+            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Gestión de Clases</h3>
+        <ul>
+            <li><a href="#">Mis Clases</a></li>
+            <li><a href="#">Clases Disponibles</a></li>
+            <li><a href="#">Agendar Nueva Clase</a></li>
+        </ul>
+    </div>
+    {% elif usuario.tipo_de_usuario == "Profesor" %}
     <h2>Mi Perfil</h2>
     <div class="row">
         <div class="col-md-4 text-center">
@@ -16,33 +39,25 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
         </div>
     </div>
-
-    {% if usuario.tipo_de_usuario == "Profesor" %}
     <div class="mt-4">
-        <h3>Gestión de Clases</h3>
+        <h3>Gestión de Usuarios</h3>
         <ul>
-            <li><a href="#">Mis Clases</a></li>
             <li><a href="#">Clases Disponibles</a></li>
             <li><a href="#">Agendar Nueva Clase</a></li>
+            <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
         </ul>
     </div>
     {% elif usuario.tipo_de_usuario == "Admin" %}
     <div class="mt-4">
-        <h3>Gestión de Usuarios</h3>
+        <h3>Configuración</h3>
         <ul>
             <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li>
             <li><a href="{% url 'ListaUsuarios' %}">Lista de Usuarios</a></li>
-        </ul>
-    </div>
-    {% endif %}
-
-    <div class="mt-4">
-        <h3>Configuración</h3>
-        <ul>
             <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li>
             <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
         </ul>
     </div>
+    {% endif %}
 </div>
 
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
@@ -79,6 +94,7 @@
                         <label para="descripcion" class="form-label">Descripción</label>
                         <textarea class="form-control" name="descripcion">{{ usuario.descripcion }}</textarea>
                     </div>
+                    <!-- Agrega aquí los otros campos del formulario -->
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </form>
             </div>

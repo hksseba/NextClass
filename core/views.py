@@ -18,15 +18,22 @@ from django.shortcuts import render
 
 def PaginaPrincipal(request):
     profesores = Profesor.objects.select_related('usuario').all()
+    materias = Materia.objects.all()
+    print( materias)
     contexto = {
         "profesores": profesores,
-        "user": request.user
+        "user": request.user,
+        "materias":materias
     }
     return render(request, 'core/html/PaginaPrincipal.html', contexto)
 
 
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
+
+from django.contrib import messages
+
+from django.contrib import messages
 
 def Logueo(request):
     if request.method == 'POST':
@@ -46,16 +53,31 @@ def Logueo(request):
             user = authenticate(request, username=usuario1.email, password=usuario1.contra)
             if user is not None:
                 login(request, user)
+                
+                # Verificar el tipo de usuario
                 if usuario1.tipo_de_usuario == "Admin":
                     return redirect('PanelAdmin')
-                else:
-                    return redirect('Perfil')
+                elif usuario1.tipo_de_usuario == "Estudiante":
+                    return redirect('PerfilEstudiante')
+                elif usuario1.tipo_de_usuario == "Profesor":
+                    # Verificar el estado de aprobación del profesor
+                    try:
+                        profesor = Profesor.objects.get(usuario=usuario1)
+                        if profesor.estado_de_aprobacion == 'Pendiente':
+                            messages.error(request, 'Tu cuenta está pendiente de aprobación. Por favor, espera la aprobación para iniciar sesión.')
+                            return redirect('Login')
+                        else:
+                            return redirect('Perfil')
+                    except Profesor.DoesNotExist:
+                        messages.error(request, 'Tu cuenta de profesor no está configurada correctamente.')
+                        return redirect('Login')
             else:
                 messages.error(request, 'La contraseña es incorrecta')
                 return redirect('Login')
         else:
             messages.error(request, 'La contraseña es incorrecta')
             return redirect('Login')
+
 
 
 def Deslogueo(request):
@@ -118,10 +140,10 @@ def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 
 
-def VistaProfe (request, id):
-    profe = Profesor.objects.select_related('usuario').get(id_profesor=id)
+def VistaProfe (request, id_profesor):
+    profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     contexto = {
-        "p": profe
+        "profe": profe
     }
     return render(request, 'core/html/VistaProfe.html', contexto)
 
@@ -136,8 +158,8 @@ def RegistroProfe(request):
         tarifa = request.POST.get('tarifa')
         descripcion = request.POST.get('descripcion')
         run = request.POST.get('run')
-        foto = request.POST.get('foto_profe')
-        antecedentes = request.POST.get('antecedentes')
+        foto = request.FILES.get('foto_profe')
+        antecedentes = request.FILES.get('antecedentes')
         contra = request.POST.get('contra')
 
         # Verificar si el correo electrónico ya está en uso
@@ -210,7 +232,7 @@ def FormularioEstudiante(request):
             telefono=vTelefono,
             contra=vClave,
             foto=vFoto,
-            tipo_de_usuario="Estudiante"
+            tipo_de_usuario="Admin"
         )
 
         # Crear el usuario de Django asociado

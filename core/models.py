@@ -12,7 +12,7 @@ class Usuario(models.Model):
     email = models.EmailField(unique=True)
     contra = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15, blank=True)    
-    carnet = models.CharField(max_length=255)
+    carnet = models.ImageField(upload_to='media', null=False)
     tipo_de_usuario = models.CharField(max_length=20)
 
 # Tabla Estudiante
@@ -31,12 +31,19 @@ class Admin(models.Model):
 # Tabla Profesor
 class Profesor(models.Model):
     id_profesor = models.AutoField(primary_key=True)
-    antecedentes = models.CharField(max_length=255)
+    antecedentes = models.FileField(upload_to='archivos_pdf', null=False)
     tarifa = models.IntegerField()
     especializacion = models.CharField(max_length=255)
     descripcion = models.TextField()
     estado_de_aprobacion = models.CharField(max_length=50)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+class Clase(models.Model):
+    id_clase = models.AutoField(primary_key=True)
+    nombre_clase = models.CharField(max_length=255)
+    descripcion_clase = models.CharField(max_length=255)
+    profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
+
 
 # Tabla Materia
 class Materia(models.Model):

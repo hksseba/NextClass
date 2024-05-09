@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" type="text/css"  href="{% static 'core/css/pagPrincipal/pagPs.css'%}">
     <link href='https://fonts.googleapis.com/css?family=Hammersmith One' rel='stylesheet'>
+    
    {% endblock links%}
 
 
@@ -20,22 +21,27 @@
             <p>Seleccione una materia</p>
         </div>
         
-        <div class="row no-gutters" style="margin-right: 0; margin-left: 0;">    
+        <div class="row no-gutters" style="margin-right: 0; margin-left: 0;">
+            
             <div class="dropdown">
-                <button type="button" class="btn btn-light dropdown-toggle btn-lg border border-secondary"
+               
+                <button type="button" id="btnMateria" class="btn btn-light dropdown-toggle btn-lg border border-secondary"
                     data-bs-toggle="dropdown" style="background-color: white; width: 200px;">
-                    Matemáticas
+                    
                 </button>
-    
+                
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Link 1</a></li>
-                    <li><a class="dropdown-item" href="#">Link 2</a></li>
-                    <li><a class="dropdown-item" href="#">Link 3</a></li>
+                    {% for m in materias %} 
+                    <li><a class="dropdown-item"  value="{{m.id_materia}}">{{m.nombre}}</a></li>
+                    {% endfor %}
                 </ul>
+                
                 <button type="button" class="btn btn-primary btn-lg border border-secondary" style="width: 200px; background-color: #FFAFAF;">
                     Buscar 
                 </button>
+               
             </div>
+            
         </div>
     </div>
     <br><br>
@@ -44,50 +50,18 @@
         <h1 style="margin: 0 auto; display: inline-block;">Nuestros profesores disponibles para ti</h1>
         <br><br><br> 
         <div class="row ">
-            {% for profesor in profesores|slice:":3" %}
+            {% for profesor in profesores %}
             <div class="col-md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ profesor.usuario.foto.url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
             </div>
-            <div class="col md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
-                <p>{{profesor.usuario.nombre}}</p>
-                <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
-            </div>
-            <div class="col md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
-                <p>{{profesor.usuario.nombre}}</p>
-                <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
-            </div>
+            
             {% endfor %}
         </div>
          <br><br>
-        <div class="row ">
-            {% for profesor in profesores|slice:"3:" %}
-            <div class="col-md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
-                <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
-                <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
-            </div>
-            <div class="col md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
-                <p>{{profesor.usuario.nombre}}</p>
-                <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
-            </div>
-            <div class="col md-4">
-                <a href="{% url 'VistaProfe' profesor.id_profesor%}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
-                <p>{{profesor.usuario.nombre}}</p>
-                <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
-            </div>
-            {% endfor %}
-        </div>
+        
         <button type="button" class="btn btn-primary btn-lg border border-secondary rounded-pill" style="background-color: #FFAFAF; color: black;">
             Vér mas profesores
         </button>
@@ -117,8 +91,4 @@
     {% endblock contenido %}
     
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
-    
+   

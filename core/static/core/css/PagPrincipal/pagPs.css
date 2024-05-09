@@ -1,7 +1,8 @@
 .img1 {
     transition: transform 0.3s; /* Transición suave */
     cursor: pointer; /* Cambio de cursor al pasar sobre la imagen */
-    width: 70%; 
+    width: 50%; 
+    height: 50%;
     align-content: center;
 }
 

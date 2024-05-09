@@ -35,7 +35,7 @@ $(document).ready(function() {
             return expectedDV == dv;
         }
 
-        // Resto del código de validación...
+       
 
         var rut = $('#run_profe').val().trim();
         if (!validarRut(rut)) {
@@ -56,6 +56,11 @@ $(document).ready(function() {
          const antecedentes = $("#antecedentes").val();
          if (antecedentes === "") {
              mostrarError("antecedentes", "Debe ingresar antecedentes.");
+         }
+
+         const carnet = $("#carnet").val();
+         if (carnet === "") {
+             mostrarError("carnet", "Debe ingresar su carnet de identidad.");
          }
 
         const nombre = $("#nombre").val().trim();

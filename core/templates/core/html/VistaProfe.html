@@ -26,9 +26,7 @@
 
                 <div class="card" style="width: 100%; background-color:#F8E5CB">
                     <div class="card-body">
-                      <p class="card-text">Some text.. Lorem ipsum dolor sit amet, 
-                        consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>                   
+                      <p class="card-text">{{profe.descripcion}}
                     </div>
                 </div>
                 <br><br>
@@ -95,11 +93,11 @@
                         <br><br><br><br><br>
                         <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                             <br>
-                            <img src="../../../static/core/img/profeXD.jpg" style="max-width: 50%; border-radius: 25px;">
+                            <img src="{{profe.usuario.foto.url}}" style="max-width: 50%; border-radius: 25px;">
                             <div class="card-body" style="text-align: center;">
-                                <h5 class="card-title"><b>Yunseul</b></h5>
+                                <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
                                 <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                               
                                 
                                 <a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080;" >Agenda una clase</a>
                             </div>
