@@ -1,44 +1,6 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 
 {% block contenido %}
-{% if usuario.tipo_de_usuario == "Profesor" %}
-<div class="container mt-4">
-    <h2>Mi Perfil</h2>
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="{{ usuario.imagen_url }}" alt="Imagen de perfil" class="img-fluid rounded-circle" style="max-width: 200px;">
-        </div>
-        <div class="col-md-8">
-            <h3>{{ usuario.nombre }}</h3>
-            <p><strong>Email:</strong> {{ usuario.email }}</p>
-            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
-            <p><strong>Edad:</strong> {{ usuario.edad }}</p>
-            <p><strong>RUT:</strong> {{ usuario.run }}</p>
-            <p><strong>Género:</strong> {{ usuario.genero }}</p>
-            <p><strong>Descripción:</strong> {{ usuario.descripcion }}</p>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
-        </div>
-    </div>
-
-    <div class="mt-4">
-        <h3>Gestión de Clases</h3>
-        <ul>
-            <li><a>Mis Clases</a></li>
-            <li><a>Clases Disponibles</a></li>
-            <li><a>Agendar Nueva Clase</a></li>
-        </ul>
-    </div>
-
-    <div class="mt-4">
-        <h3>Configuración</h3>
-        <ul>
-            <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li>
-            <li><a>Cerrar Sesión</a></li>
-        </ul>
-    </div>
-</div>
-{% else %}
-
 <div class="container mt-4">
     <h2>Mi Perfil</h2>
     <div class="row">
@@ -55,21 +17,21 @@
         </div>
     </div>
 
-    {% if usuario.tipo_de_usuario == "Admin" %}
-    <div class="mt-4">
-        <h3>Gestión de Usuarios</h3>
-        <ul>
-            <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li>
-            <li><a href="{% url 'PanelAdmin' %}">Panel Admin</a></li>
-        </ul>
-    </div>
-    {% elif usuario.tipo_de_usuario == "Profesor" %}
+    {% if usuario.tipo_de_usuario == "Profesor" %}
     <div class="mt-4">
         <h3>Gestión de Clases</h3>
         <ul>
             <li><a href="#">Mis Clases</a></li>
             <li><a href="#">Clases Disponibles</a></li>
             <li><a href="#">Agendar Nueva Clase</a></li>
+        </ul>
+    </div>
+    {% elif usuario.tipo_de_usuario == "Admin" %}
+    <div class="mt-4">
+        <h3>Gestión de Usuarios</h3>
+        <ul>
+            <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li>
+            <li><a href="{% url 'ListaUsuarios' %}">Lista de Usuarios</a></li>
         </ul>
     </div>
     {% endif %}
@@ -83,13 +45,12 @@
     </div>
 </div>
 
-<!-- Editar perfil -->
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form method="post" enctype="multipart/form-data">
@@ -100,32 +61,23 @@
                     </div>
                     <div class="mb-3">
                         <label para="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" value="{{ usuario.email }}" required>
+                        <input tipo="email" class="form-control" name="email" value="{{ usuario.email }}">
                     </div>
                     <div class="mb-3">
                         <label para="telefono" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" name="telefono" value="{{ usuario.telefono }}">
+                        <input tipo="text" class="form-control" name="telefono" value="{{ usuario.telefono }}">
                     </div>
                     <div class="mb-3">
                         <label para="edad" class="form-label">Edad</label>
-                        <input
-                    type="number" class="form-control" name="edad" value="{{ usuario.edad }}">
+                        <input tipo="number" class="form-control" name="edad" value="{{ usuario.edad }}">
                     </div>
                     <div class="mb-3">
                         <label para="rut" class="form-label">RUT</label>
-                        <input tipo="text" class="form-control" name="rut" value="{{ usuario.rut }}">
-                    </div>
-                    <div class="mb-3">
-                        <label para="genero" class="form-label">Género</label>
-                        <input type="text" class="form-control" name="genero" value="{{ usuario.genero }}">
+                        <input tipo="text" class="form-control" name="rut" value="{{ usuario.run }}">
                     </div>
                     <div class="mb-3">
                         <label para="descripcion" class="form-label">Descripción</label>
                         <textarea class="form-control" name="descripcion">{{ usuario.descripcion }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label para="imagen" class="form-label">Subir Nueva Imagen de Perfil</label>
-                        <input tipo="file" class="form-control" name="imagen">
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </form>
