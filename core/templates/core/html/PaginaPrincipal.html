@@ -46,19 +46,19 @@
         <div class="row ">
             {% for profesor in profesores|slice:":3" %}
             <div class="col-md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
             </div>
             <div class="col md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}}</p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
             </div>
             <div class="col md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}}</p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
@@ -69,19 +69,19 @@
         <div class="row ">
             {% for profesor in profesores|slice:"3:" %}
             <div class="col-md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
             </div>
             <div class="col md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}}</p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>
             </div>
             <div class="col md-4">
-                <a href="{% url 'VistaProfe' %}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
+                <a href="{% url 'VistaProfe' profesor.id_profesor%}"><img src="{{ usuario.imagen_url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}}</p>
                 <p>{{profesor.descripcion}}</p>
                 <p>$ {{profesor.tarifa}} / H</p>

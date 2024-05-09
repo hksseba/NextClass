@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     formulario.on('submit', function(e) {
         // Prevenir el envío del formulario por defecto
-        e.preventDefault();
+      
 
         let hayErrores = false; // Variable para controlar si hay errores o no
 
@@ -13,7 +13,35 @@ $(document).ready(function() {
             hayErrores = true;
         }
 
+        function validarCorreo(correo) {
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(correo);
+        }
+        
+
+        function validarRut(rut) {
+            if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rut)) return false;
+            var parts = rut.split('-');
+            var body = parts[0];
+            var dv = parts[1].toUpperCase();
+            var rutDigits = body.split('').reverse().join('');
+            var sum = 0;
+            for (var i = 0; i < rutDigits.length; i++) {
+                sum += parseInt(rutDigits[i]) * (i % 6 + 2);
+            }
+            var mod = sum % 11;
+            var expectedDV = mod === 0 ? 0 : 11 - mod;
+            if (expectedDV === 10) expectedDV = 'K';
+            return expectedDV == dv;
+        }
+
         // Resto del código de validación...
+
+        var rut = $('#run_profe').val().trim();
+        if (!validarRut(rut)) {
+            mostrarError("run_profe", "Debe ingresar un RUN valido.");
+        
+        } 
 
         const run = $("#run_profe").val().trim();
         if (run === "") {
@@ -25,10 +53,10 @@ $(document).ready(function() {
             mostrarError("foto_profe", "Debe ingresar una foto.");
         }
 
-        // const antecedentes = $("#antecedentes").val();
-        // if (antecedentes === "") {
-        //     mostrarError("antecedentes", "Debe ingresar antecedentes.");
-        // }
+         const antecedentes = $("#antecedentes").val();
+         if (antecedentes === "") {
+             mostrarError("antecedentes", "Debe ingresar antecedentes.");
+         }
 
         const nombre = $("#nombre").val().trim();
         if (nombre === "") {
@@ -49,6 +77,11 @@ $(document).ready(function() {
         if (email === "") {
             mostrarError("email", "Debe ingresar su correo electrónico.");
         }
+
+        const correo = $("#email").val().trim();
+      if (!validarCorreo(correo)) {
+          mostrarError("email", "El correo electrónico no es válido.");
+      }
 
         const contra = $("#contra").val();
         if (contra === "") {
@@ -77,7 +110,7 @@ $(document).ready(function() {
 
         // Si hay errores, detener el proceso y mostrar todos los errores
         if (hayErrores) {
-            return; // Detiene la ejecución del formulario
+            e.preventDefault()
         } else {
             // Si no hay errores, enviar el formulario
             formulario.unbind('submit').submit();

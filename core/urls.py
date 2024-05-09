@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, Logueo
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo
+
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -16,8 +16,7 @@ urlpatterns = [
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
    path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
-
-   path('VistaProfe/', VistaProfe, name='VistaProfe'),
+   path('VistaProfe/<int:id_profesor>/', VistaProfe, name='VistaProfe'),
    path('RegistroAdmin/', RegistroAdmin, name='RegistroAdmin'),
    path('ListaUsuarios/', ListaUsuarios, name='ListaUsuarios'),
    path('ListaClases/', ListaClases, name='ListaClases'),

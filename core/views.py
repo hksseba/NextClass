@@ -24,6 +24,7 @@ def PaginaPrincipal(request):
     }
     return render(request, 'core/html/PaginaPrincipal.html', contexto)
 
+
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
 
@@ -116,8 +117,13 @@ def PanelAdmin(request):
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 
-def VistaProfe (request):
-    return render(request, 'core/html/VistaProfe.html')
+
+def VistaProfe (request, id):
+    profe = Profesor.objects.select_related('usuario').get(id_profesor=id)
+    contexto = {
+        "p": profe
+    }
+    return render(request, 'core/html/VistaProfe.html', contexto)
 
 def RegistroProfe(request):
     if request.method == 'POST':
@@ -137,7 +143,7 @@ def RegistroProfe(request):
         # Verificar si el correo electrónico ya está en uso
         if Usuario.objects.filter(email=email).exists():
             messages.warning(request, 'El correo ya está en uso')
-            return redirect('RegistroEstudiante')
+            return redirect('RegistroProfe')
 
         # Crear el usuario personalizado
         usuario = Usuario.objects.create(
