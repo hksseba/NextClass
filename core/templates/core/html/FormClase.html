@@ -1,0 +1,51 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'core/css/Logueo/Login.css'%}">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+{% endblock links %}
+
+{% block contenido %}
+<!-- Mensajes de éxito o error -->
+
+<form method="POST" action="{% url 'FormClase' %}" enctype="multipart/form-data" id="formclase">
+    <!-- Agrega un ID al formulario -->
+    {% csrf_token %}
+    <div class="login-container" style="border-radius: 30px;">
+        <h2>Registro de Clase</h2>
+
+        <!-- Contenedor para mostrar todos los errores -->
+        <label for="nombre" class="form-label">Titulo de la clase </label>
+        <div style="color: red;" class="error-msg" id="error-titulo"></div>
+        <input type="text" class="form-control" id="titulo" name="titulo">
+        
+        <!-- Div para mostrar errores del nombre -->
+
+        <label for="apellido" class="form-label">Descripción de la clase </label>
+        <div style="color: red;" class="error-msg" id="error-descripcion"></div>
+        <input type="text" class="form-control" id="" name="descripcion">
+        
+        <label for="precio" class="form-label">Valor de la clase </label>
+        <div style="color: red;" class="error-msg" id="error-precio"></div>
+        <input type="text" class="form-control" id="precio" name="precio">
+
+        <label for="especializacion" class="form-label">Idioma</label>
+                <select class="form-control" name="idioma">  <!-- Campo select for las materias -->
+                    <option value="Espanol">Espanol</option>
+                    <option value="Ingles">Ingles</option>  
+                </select>
+       
+
+        <button type="submit">Registrar Clase</button>
+        <!-- Cambiado a type="submit" -->
+        <p class="warnings" id="warnings"></p>
+    </div>
+</form>
+
+{% endblock contenido %}
+
+{% block js %}
+
+<script src="{% static 'core/js/RegistroAlumnoss.js' %}"></script>
+
+{% endblock js %}

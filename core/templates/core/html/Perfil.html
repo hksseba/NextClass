@@ -34,7 +34,7 @@
             <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
             <p><strong>Email:</strong> {{ usuario.email }}</p>
             <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
-            <p><strong>RUN:</strong> {{ usuario.run }}</p>
+            <p><strong>RUN:</strong> {{ profe.run }}</p>
             <p><strong>Edad:</strong> {{ usuario.edad }}</p>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
         </div>
@@ -42,8 +42,8 @@
     <div class="mt-4">
         <h3>Gestión de Usuarios</h3>
         <ul>
-            <li><a href="#">Clases Disponibles</a></li>
-            <li><a href="#">Agendar Nueva Clase</a></li>
+            <li><a href="{% url 'ClasesProfe' %}">Mis clases </a></li>
+            <li><a href="{% url 'CrearClase' %}">Crear Nueva Clase</a></li>
             <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
         </ul>
     </div>

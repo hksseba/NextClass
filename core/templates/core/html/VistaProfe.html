@@ -18,8 +18,7 @@
 
             <div class="col-md-6" style="align-content: center; ">
                 <br><br><br><br><br>
-                <h1><b>Clases de inglés online. Clases dirigidas a niños, adolescentes y/o adultos. Reserva ahora
-                Modalidad de la clase</b></h1>
+                <h1><b>{{clase.nombre_clase}}</b></h1>
                 <br>
                 <h2><b>Clase Online</b></h2>
                 <h4>Acerca de mi</h4>
@@ -33,8 +32,7 @@
                 <h4>Acerca de la Clase</h4>
                 <div class="card" style="width: 100%; background-color:#d8f8e1">
                     <div class="card-body">
-                      <p class="card-text">Some text.. Lorem ipsum dolor sit amet, 
-                        consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                      <p class="card-text">{{clase.descripcion_clase}}
                       </p>                   
                     </div>
                 </div>
@@ -97,6 +95,7 @@
                             <div class="card-body" style="text-align: center;">
                                 <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
                                 <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
+                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
                                
                                 
                                 <a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080;" >Agenda una clase</a>

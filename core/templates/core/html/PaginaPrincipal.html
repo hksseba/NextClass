@@ -55,7 +55,9 @@
                 <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ profesor.usuario.foto.url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
                 <p>{{profesor.descripcion}}</p>
-                <p>$ {{profesor.tarifa}} / H</p>
+                {% for clase in profesor.clase_set.all %}
+                <li>$ {{ clase.tarifa_clase }} / H </li>
+            {% endfor %}
             </div>
             
             {% endfor %}

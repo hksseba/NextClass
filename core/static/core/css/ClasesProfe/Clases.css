@@ -1,0 +1,36 @@
+/* CSS para el diseño y efecto hover */
+.clase-card {
+    transition: transform 0.3s ease;
+}
+
+.clase-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.clase-card .card-img-top {
+    height: 200px; /* Ajusta la altura según tus necesidades */
+    object-fit: cover;
+}
+
+.clase-card .card-title {
+    font-size: 1.25rem;
+}
+
+.clase-card .card-text {
+    height: 100px; /* Ajusta la altura según tus necesidades */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.clase-card .card-footer {
+    background-color: #f8f9fa;
+}
+
+.arreglorow{
+    margin-top: 193px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 194px;
+    
+}

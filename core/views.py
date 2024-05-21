@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
-from core.models import Usuario, Estudiante, Admin, Profesor, Materia, Sesion
+from core.models import Usuario, Estudiante, Admin, Profesor, Materia, Sesion , Clase
 import re
 # Create your views here.
 
@@ -18,6 +18,7 @@ from django.shortcuts import render
 
 def PaginaPrincipal(request):
     profesores = Profesor.objects.select_related('usuario').all()
+    clase = Clase.objects.select_related('pro')
     materias = Materia.objects.all()
     print( materias)
     contexto = {
@@ -142,8 +143,10 @@ def PerfilProfe (request):
 
 def VistaProfe (request, id_profesor):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
+    clase = Clase.objects.get(profesor = profe)
     contexto = {
-        "profe": profe
+        "profe": profe,
+        "clase": clase
     }
     return render(request, 'core/html/VistaProfe.html', contexto)
 
@@ -155,10 +158,10 @@ def RegistroProfe(request):
         edad = request.POST.get('edad')
         telefono = request.POST.get('telefono')
         especializacion = request.POST.get('especializacion')
-        tarifa = request.POST.get('tarifa')
         descripcion = request.POST.get('descripcion')
         run = request.POST.get('run')
         foto = request.FILES.get('foto_profe')
+        carnet = request.FILES.get('carnet')
         antecedentes = request.FILES.get('antecedentes')
         contra = request.POST.get('contra')
 
@@ -171,12 +174,12 @@ def RegistroProfe(request):
         usuario = Usuario.objects.create(
             email=email,
             nombre=nombre,
-            run=run,
             edad=edad,
             apellido=apellido,
             telefono=telefono,
             contra=contra,
             foto=foto,
+            
             tipo_de_usuario="Profesor"
         )
 
@@ -193,7 +196,8 @@ def RegistroProfe(request):
         profesor = Profesor.objects.create(
             usuario=usuario,
             antecedentes=antecedentes,
-            tarifa=tarifa,
+            run=run,
+            carnet=carnet,
             especializacion=especializacion,
             descripcion=descripcion,
              estado_de_aprobacion="Pendiente"
@@ -317,7 +321,12 @@ def RegistroAdmin(request):
 @login_required
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
-    return render(request, 'core/html/Perfil.html', {'usuario': usuario})
+    profe = Profesor.objects.get(usuario = usuario)
+    contexto = {
+        'usuario' : usuario,
+        'profe' : profe
+    }
+    return render(request, 'core/html/Perfil.html', contexto)
 
 def ListaUsuarios(request):
     usuarios = Usuario.objects.all()
@@ -367,3 +376,38 @@ def VerClase(request, clase_id):
     # Obtén la clase correspondiente al ID o devuelve un 404 si no existe
     clase = get_object_or_404(Sesion, id_sesion=clase_id)
     return render(request, 'core/html/VerClase.html', {'clase': clase})
+
+def FormClase(request):
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+        usuario = request.user
+        usuario1 = Usuario.objects.get(email = usuario)
+        idusuario = Profesor.objects.get(usuario = usuario1)
+        try:
+            # Crear usuario personalizado
+            clase = Clase(
+                nombre_clase=titulo,
+                tarifa_clase = precio,
+                descripcion_clase=descripcion,
+                profesor = idusuario                
+            )
+            clase.save()
+            return redirect('Perfil')
+            
+        except Exception as e:
+            messages.error(request, f"Error al crear la clase: {e}")
+            return redirect('CrearClase')
+
+def CrearClase(request):
+    clases = Clase.objects.all()
+    return render(request, 'core/html/FormClase.html', {'clases': clases })            
+
+def ClasesProfe(request):
+    usuario = request.user
+    usuario1 = Usuario.objects.get(email = usuario)
+    profe = Profesor.objects.get(usuario = usuario1)
+    clases = Clase.objects.get(profesor = profe)
+
+    return render (request, 'core/html/VerClases.html', {'clases' : clases} )
