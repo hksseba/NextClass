@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -59,8 +60,8 @@ def Logueo(request):
                 if usuario1.tipo_de_usuario == "Admin":
                     return redirect('PanelAdmin')
                 elif usuario1.tipo_de_usuario == "Estudiante":
-                    return redirect('PerfilEstudiante')
-                elif usuario1.tipo_de_usuario == "Profesor":
+                    return redirect('Perfil')
+                elif usuario1.tipo_de_usuario == "Profesor": 
                     # Verificar el estado de aprobación del profesor
                     try:
                         profesor = Profesor.objects.get(usuario=usuario1)
@@ -87,6 +88,15 @@ def Deslogueo(request):
 
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
+
+def Agendar (request, id_profesor):
+    profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
+    clase = Clase.objects.get(profesor = profe)
+    contexto = {
+        "profe": profe,
+        "clase": clase
+    }
+    return render(request, 'core/html/Agendar.html', contexto)
 
 def Solicitudes(request):
     solicitudes = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
@@ -321,12 +331,19 @@ def RegistroAdmin(request):
 @login_required
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
-    profe = Profesor.objects.get(usuario = usuario)
-    contexto = {
-        'usuario' : usuario,
-        'profe' : profe
-    }
-    return render(request, 'core/html/Perfil.html', contexto)
+    
+    return render(request, 'core/html/Perfil.html', {'usuario': usuario})
+
+    # Verificar si el usuario es un profesor
+    if usuario.tipo_de_usuario == 'Profesor':
+        try:
+            profe = Profesor.objects.get(usuario=usuario)
+        except Profesor.DoesNotExist:
+            profe = None
+    else:
+        profe = None
+        
+    return render(request, 'core/html/Perfil.html', {'usuario': usuario, 'profe': profe})
 
 def ListaUsuarios(request):
     usuarios = Usuario.objects.all()

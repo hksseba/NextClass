@@ -1,0 +1,4 @@
+.btn.active {
+    background-color: white;
+    color: black; /* Puedes ajustar el color del texto si es necesario */
+}

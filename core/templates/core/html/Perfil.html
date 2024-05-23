@@ -5,47 +5,86 @@
     {% if usuario.tipo_de_usuario == "Estudiante" %}
     <h2>Mi Perfil</h2>
     <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="{{ usuario.foto.url }}" alt="Imagen de perfil" class="img-fluid rounded-circle" style="max-width: 200px;">
+
+        <div class="col-md-6">
+            <div id="sticky-card" class="card" style="display: flex; flex-direction: column;  border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <br>
+                <img src="{{usuario.foto.url}}" style="width: 400px; height: 250px; margin: auto;">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
+                    <div style="text-align: left;">
+                        <p style="color: gray;">Datos personales</p>
+                        <p>Correo: {{ usuario.email }}</p>
+                        <p>Teléfono: {{ usuario.telefono }}</p>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
-        <div class="col-md-8">
-            <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
-            <p><strong>Email:</strong> {{ usuario.email }}</p>
-            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
+
+        <div class="col-md-6 text-center">
+            <h3>Gestión </h3>
+            <br>
+            <ul class="list-unstyled">
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Mis clases</a></li>
+                <br>
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Agendar nueva clase</a></li>
+                <br>
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Modificar mi perfil</a></li>
+                <br>
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
+            </ul>
         </div>
     </div>
 
-    <div class="mt-4">
-        <h3>Gestión de Clases</h3>
-        <ul>
-            <li><a href="#">Mis Clases</a></li>
-            <li><a href="#">Clases Disponibles</a></li>
-            <li><a href="#">Agendar Nueva Clase</a></li>
-        </ul>
-    </div>
+
     {% elif usuario.tipo_de_usuario == "Profesor" %}
     <h2>Mi Perfil</h2>
     <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="{{ usuario.foto.url }}" alt="Imagen de perfil" class="img-fluid rounded-circle" style="max-width: 200px;">
+
+        <div class="col-md-6">
+            <div id="sticky-card" class="card" style="display: flex; flex-direction: column;  border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <br>
+                <img src="{{usuario.foto.url}}" style="width: 400px; height: 250px; margin: auto;">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
+                    <div style="text-align: left;">
+                        <p style="color: gray;">Datos personales</p>
+                        <p>Correo: {{ usuario.email }}</p>
+                        <p>Teléfono: {{ usuario.telefono }}</p>
+                        <p>Rut: {{ usuario.run }}</p>
+                        <p>Edad: {{ usuario.edad }}</p>
+                    </div>
+                    <div style="text-align: left;">
+                    <h5>Sobre mi</h5>
+                    </div>
+                    <div class="card" style="width: 100%; background-color:#F8E5CB">
+                        <div class="card-body">
+                            {% if profe %}
+                                <p class="card-text">{{ profe.descripcion }}</p>
+                            {% else %}
+                                <p class="card-text">No hay descripción disponible.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
-        <div class="col-md-8">
-            <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
-            <p><strong>Email:</strong> {{ usuario.email }}</p>
-            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
-            <p><strong>RUN:</strong> {{ profe.run }}</p>
-            <p><strong>Edad:</strong> {{ usuario.edad }}</p>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar Perfil</button>
+
+        <div class="col-md-6 text-center">
+            <h3>Gestión </h3>
+            <br>
+            <ul class="list-unstyled">
+                <li><a href="{% url 'ClasesProfe' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Mis clases</a></li>
+                <br>
+                <li><a href="{% url 'CrearClase' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Crear Clase</a></li>
+                <br>
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Modificar mi perfil</a></li>
+                <br>
+                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
+            </ul>
         </div>
-    </div>
-    <div class="mt-4">
-        <h3>Gestión de Usuarios</h3>
-        <ul>
-            <li><a href="{% url 'ClasesProfe' %}">Mis clases </a></li>
-            <li><a href="{% url 'CrearClase' %}">Crear Nueva Clase</a></li>
-            <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
-        </ul>
     </div>
     {% elif usuario.tipo_de_usuario == "Admin" %}
     <div class="mt-4">
