@@ -87,7 +87,7 @@
             
             <div class="col-md-6">
                 <div id="sticky-container" style="display: flex; justify-content: center;">
-                    <div style="max-width: 350px; ">
+                    <div style="max-width: 400px; ">
                         <br><br><br><br><br>
                         <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                             <br>
@@ -95,14 +95,14 @@
                             <div class="card-body" style="text-align: center;">
                                 <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
                                 <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
-                               
-                                
-                                <a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080;" >Agenda una clase</a>
+                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>                                                             
                             </div>
                             <br>
+                            <div>
+                                <a href="{% url 'Agendar' profe.id_profesor %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
+                            </div>
                             
-                            <a href="{% url 'Agendar' profe.id_profesor %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080;">Agenda una clase</a>
+        
 
                         </div>
                     </div>

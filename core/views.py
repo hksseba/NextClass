@@ -25,7 +25,8 @@ def PaginaPrincipal(request):
     contexto = {
         "profesores": profesores,
         "user": request.user,
-        "materias":materias
+        "materias":materias,
+        "clase": clase
     }
     return render(request, 'core/html/PaginaPrincipal.html', contexto)
 
@@ -91,10 +92,12 @@ def CambiarContra (request):
 
 def Agendar (request, id_profesor):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
+    usuario = Usuario.objects.get(email = request.user.username)
     clase = Clase.objects.get(profesor = profe)
     contexto = {
         "profe": profe,
-        "clase": clase
+        "clase": clase,
+        "usuario": usuario
     }
     return render(request, 'core/html/Agendar.html', contexto)
 

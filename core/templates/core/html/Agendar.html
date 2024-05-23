@@ -34,12 +34,12 @@
         <div class="col-md-6 ">
             <br><br><br>
             <h3>Planifica tu clase </h3>
-            <p>Tu primera clase con</p>
+            <p>Tu primera clase con {{profe.usuario.nombre}}</p>
             <br><BR>
             <h4><b>Tu mensaje</b></h4>
             <form method="POST" action="" enctype="multipart/form-data" id="Agendar">
                 <label for="descripcion" class="form-label"></label>
-                <textarea class="form-control" class="form-control" name="descripcion" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">Hola Norma, Mi nombre es Emerson y estoy buscando profesor Inglés. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo?  Qué tengas un lindo día, Hasta pronto, Emerson</textarea>
+                <textarea class="form-control" class="form-control" name="descripcion" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">Hola {{profe.usuario.nombre}}, Mi nombre es {{usuario.nombre}} y estoy buscando profesor de {{clase.nombre_clase}}. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo?  Qué tengas un lindo día, Hasta pronto, {{usuario.nombre}}</textarea>
                 <br>
                 <h3> Fecha de la clase</h3>
                 <div class="btn-group" role="group" aria-label="Basic example">

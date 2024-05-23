@@ -51,11 +51,13 @@
         <br><br><br> 
         <div class="row ">
             {% for profesor in profesores %}
+             {% for clase in profesor.clase_set.all %}
             <div class="col-md-4">
                 <a href="{% url 'VistaProfe' profesor.id_profesor %}"><img src="{{ profesor.usuario.foto.url }}" class="img1"></a> <br><br>
                 <p>{{profesor.usuario.nombre}} &nbsp;{{profesor.usuario.apellido}} </p>
-                <p>{{profesor.descripcion}}</p>
-                {% for clase in profesor.clase_set.all %}
+                <p><b>{{clase.nombre_clase}}</b> - {{profesor.descripcion}}</p>
+                
+                
                 <li>$ {{ clase.tarifa_clase }} / H </li>
             {% endfor %}
             </div>
