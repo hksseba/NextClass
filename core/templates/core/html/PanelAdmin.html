@@ -17,9 +17,9 @@
                 <div class="card-header">Gestión de Usuarios</div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="{% url 'ListaUsuarios' %}">Ver Todos los Usuarios</a></li> <!-- Enlace para ver todos los usuarios -->
-                        <li><a href="{% url 'Solicitudes' %}">Solicitudes de Profesores</a></li> <!-- Enlace para ver solicitudes de profesores -->
-                        <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li> <!-- Enlace para crear un nuevo administrador -->
+                        <li><a href="{% url 'ListaUsuarios' %}">Ver Todos los Usuarios</a></li>
+                        <li><a href="{% url 'Solicitudes' %}">Solicitudes de Profesores</a></li>
+                        <li><a href="{% url 'RegistroAdmin' %}">Crear Administrador</a></li>
                     </ul>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div class="card-header">Gestión de Clases</div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="{% url 'ListaClases' %}">Ver Todas las Clases</a></li> <!-- Enlace para ver todas las clases -->
+                        <li><a href="{% url 'ListaClases' %}">Ver Todas las Clases</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,37 +39,119 @@
     </div>
 
     <!-- Sección de Estadísticas Generales -->
-    <div class="row mt-4" style="margin-bottom: 126px;"> 
+    <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Estadísticas Generales</div>
                 <div class="card-body">
-                    <p>Total de Usuarios: {{ total_usuarios }}</p> <!-- Mostrar el total de usuarios -->
-                    <p>Total de Profesores: {{ total_profesores }}</p> <!-- Mostrar el total de profesores -->
-                    <p>Total de Clases: {{ total_clases }}</p> <!-- Mostrar el total de clases -->
-                    <p>Total de Solicitudes Pendientes: {{ total_solicitudes }}</p> <!-- Mostrar el total de solicitudes pendientes -->
+                    <p>Total de Usuarios: {{ total_usuarios }}</p>
+                    <p>Total de Profesores: {{ total_profesores }}</p>
+                    <p>Total de Clases: {{ total_clases }}</p>
+                    <p>Total de Solicitudes Pendientes: {{ total_solicitudes }}</p>
                 </div>
             </div>
         </div>
 
-        <!-- Sección de Configuración -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Configuración</div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li> <!-- Enlace para cambiar la contraseña -->
-                        <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li> <!-- Enlace para cerrar sesión -->
+                        <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li>
+                        <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Distribución de Usuarios por Rol -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Distribución de Usuarios por Rol</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for rol in usuarios_por_rol %}
+                            <li class="list-group-item">{{ rol.tipo_de_usuario }}: {{ rol.count }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Clases por Categoría -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Clases por Categoría</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for categoria in clases_por_categoria %}
+                            <li class="list-group-item">{{ categoria.descripcion_clase }}: {{ categoria.count }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Clases por Profesor -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Clases por Profesor</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for profesor in clases_por_profesor %}
+                            <li class="list-group-item">{{ profesor.profesor__usuario__nombre }}: {{ profesor.count }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Ocupación Promedio -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Ocupación Promedio de Clases</div>
+                <div class="card-body">
+                    <p>{{ ocupacion_promedio.avg_ocupacion }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Evaluación Promedio -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Evaluación Promedio de Clases</div>
+                <div class="card-body">
+                    <p>{{ evaluacion_promedio.avg_evaluacion }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Preferencias por Edad -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Preferencias de Estudiantes por Edad</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for pref in preferencias_edad %}
+                            <li class="list-group-item">
+                                Edad del Estudiante: {{ pref.estudiante__usuario__edad }},
+                                Edad Promedio del Profesor: {{ pref.avg_prof_edad }},
+                                Género del Profesor: {{ pref.count_prof_genero }},
+                                Número de Clases: {{ pref.count_clases }}
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock contenido %}
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>

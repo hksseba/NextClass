@@ -10,7 +10,8 @@ from django.contrib import messages
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
-from core.models import Usuario, Estudiante, Admin, Profesor, Materia, Sesion , Clase
+from django.db.models import Count, Avg
+from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion
 import re
 # Create your views here.
 
@@ -137,18 +138,51 @@ def RechazarSolicitud(request, id_solicitud):
     return redirect('Solicitudes')  # Redirigir a la página de solicitudes
 
 def PanelAdmin(request):
-
+    # Total de usuarios
     total_usuarios = Usuario.objects.count()
     total_profesores = Profesor.objects.count()
     total_solicitudes = Profesor.objects.filter(estado_de_aprobacion='Pendiente').count()
+
+    # Distribución de usuarios por rol
+    usuarios_por_rol = Usuario.objects.values('tipo_de_usuario').annotate(count=Count('tipo_de_usuario'))
+
+    # Número total de clases
+    total_clases = Clase.objects.count()
+
+    # Clases por categoría/tema
+    clases_por_categoria = Clase.objects.values('descripcion_clase').annotate(count=Count('descripcion_clase'))
+
+    # Número de clases por profesor
+    clases_por_profesor = Clase.objects.values('profesor__usuario__nombre').annotate(count=Count('id_clase'))
+
+    # Tasa de ocupación de las clases
+    ocupacion_promedio = Sesion.objects.aggregate(avg_ocupacion=Avg('id_sesion'))
+
+    # Evaluaciones promedio de las clases
+    evaluacion_promedio = Evaluacion.objects.aggregate(avg_evaluacion=Avg('valoracion'))
+
+    # Preferencias de los estudiantes por rangos de edad
+    preferencias_edad = Sesion.objects.values('estudiante__usuario__edad').annotate(
+        avg_prof_edad=Avg('profesor__usuario__edad'),
+        count_prof_genero=Count('profesor__usuario__tipo_de_usuario'),
+        count_clases=Count('id_sesion')
+    ).order_by('estudiante__usuario__edad')
 
     context = {
         'total_usuarios': total_usuarios,
         'total_profesores': total_profesores,
         'total_solicitudes': total_solicitudes,
+        'usuarios_por_rol': usuarios_por_rol,
+        'total_clases': total_clases,
+        'clases_por_categoria': clases_por_categoria,
+        'clases_por_profesor': clases_por_profesor,
+        'ocupacion_promedio': ocupacion_promedio,
+        'evaluacion_promedio': evaluacion_promedio,
+        'preferencias_edad': preferencias_edad,
     }
 
     return render(request, 'core/html/PanelAdmin.html', context)
+
 
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
@@ -249,7 +283,7 @@ def FormularioEstudiante(request):
             telefono=vTelefono,
             contra=vClave,
             foto=vFoto,
-            tipo_de_usuario="Admin"
+            tipo_de_usuario="Estudiante"
         )
 
         # Crear el usuario de Django asociado
@@ -300,7 +334,7 @@ def RegistroAdmin(request):
                 nombre=nombre,
                 apellido=apellido,
                 contra=contra,
-                tipo_de_usuario='Admin',
+                tipo_de_usuario='Estudiante',
                 telefono=telefono,
                 foto=foto,
                 run=run
