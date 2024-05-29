@@ -55,13 +55,13 @@ class Materia(models.Model):
 # Tabla Sesion
 class Sesion(models.Model):
     id_sesion = models.AutoField(primary_key=True)
-    fechadeinicio = models.DateField()
-    fechadetermino = models.DateField()
-    horadeinicio = models.TimeField()
-    horadetermino = models.TimeField()
-    enlacedesesion = models.URLField()
+    fechaclase = models.DateField()
+    contacto = models.CharField(max_length=15, blank=True)
+    mensaje = models.TextField(default="")
+    estado_clase = models.CharField(max_length=50, default="Pendiente")
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+ 
 
 # Tabla Evaluacion
 class Evaluacion(models.Model):

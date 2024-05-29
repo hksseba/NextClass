@@ -4,7 +4,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, reset_password
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -17,7 +17,7 @@ urlpatterns = [
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
    path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
-   path('VistaProfe/<int:id_profesor>/', VistaProfe, name='VistaProfe'),
+   path('VistaProfe/<int:id_profesor>/<int:id_clase>/',VistaProfe, name='VistaProfe'),
    path('RegistroAdmin/', RegistroAdmin, name='RegistroAdmin'),
    path('ListaUsuarios/', ListaUsuarios, name='ListaUsuarios'),
    path('ListaClases/', ListaClases, name='ListaClases'),
@@ -30,9 +30,11 @@ urlpatterns = [
    path('CrearClase/', CrearClase, name='CrearClase'),
    path('FormClase/', FormClase, name='FormClase'),
    path('VerClases/', ClasesProfe, name='ClasesProfe'),
-   path('Agendar/<int:id_profesor>/', Agendar, name='Agendar'),
    path('CambiarContra/', CambiarContra, name='CambiarContra'),
    path('reset_password/<email>/', views.reset_password, name='reset_password'),
+   path('Agendar/<int:id_profesor>/<int:id_clase>/', Agendar, name='Agendar'),
+   path('FormularioAgendar/', FormularioAgendar, name='FormularioAgendar'),
+
 
 
 

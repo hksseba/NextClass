@@ -15,8 +15,7 @@
     {%block contenido%}
     <div class="container" style=" overflow: hidden; ">
         <div class="row">
-
-            <div class="col-md-6" style="align-content: center; ">
+            <div class="col-md-6" style="align-content: center; ">    
                 <br><br><br><br><br>
                 <h1><b>{{clase.nombre_clase}}</b></h1>
                 <br>
@@ -29,12 +28,11 @@
                     </div>
                 </div>
                 <br><br>
-                <h4>Acerca de la Clase</h4>
+                <h4>Acerca de la Clase</h4>         
                 <div class="card" style="width: 100%; background-color:#d8f8e1">
                     <div class="card-body">
-                      <p class="card-text">{{clase.descripcion_clase}}
-                      </p>                   
-                    </div>
+                      <p class="card-text">{{clase.descripcion_clase}}</p>                  
+                    </div>              
                 </div>
                 <br>
                 <h4><b>Comentarios</b></h4>
@@ -95,11 +93,12 @@
                             <div class="card-body" style="text-align: center;">
                                 <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
                                 <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>                                                             
+                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>      
+                                                                                       
                             </div>
                             <br>
                             <div>
-                                <a href="{% url 'Agendar' profe.id_profesor %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
+                                <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
                             </div>
                             
         

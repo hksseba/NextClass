@@ -9,8 +9,11 @@
 <div class="container mt-4" style="margin-bottom: 244px;">
     
     <div class="row">
-
         <div class="col-md-6">
+            <form method="POST" action="{% url 'FormularioAgendar' %}" enctype="multipart/form-data" id="Agendar">
+                {% csrf_token %}
+    
+                <input type="hidden" name="id_profesor" value="{{ profe.id_profesor }}">
             <div id="sticky-container" style="display: flex; justify-content: center;">
                 <div style="max-width: 350px; ">
                     <br><br><br><br><br>
@@ -33,13 +36,13 @@
 
         <div class="col-md-6 ">
             <br><br><br>
-            <h3>Planifica tu clase </h3>
+            <h3>Planifica tu clase de {{clase.nombre_clase}} </h3>
             <p>Tu primera clase con {{profe.usuario.nombre}}</p>
             <br><BR>
             <h4><b>Tu mensaje</b></h4>
-            <form method="POST" action="" enctype="multipart/form-data" id="Agendar">
-                <label for="descripcion" class="form-label"></label>
-                <textarea class="form-control" class="form-control" name="descripcion" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">Hola {{profe.usuario.nombre}}, Mi nombre es {{usuario.nombre}} y estoy buscando profesor de {{clase.nombre_clase}}. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo?  Qué tengas un lindo día, Hasta pronto, {{usuario.nombre}}</textarea>
+
+                <label for="mensaje" class="form-label" ></label>
+                <textarea class="form-control" class="form-control" name="mensaje" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">Hola {{profe.usuario.nombre}}, Mi nombre es {{usuario.nombre}} y estoy buscando profesor de {{clase.nombre_clase}}. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo?  Qué tengas un lindo día, Hasta pronto, {{usuario.nombre}}</textarea>
                 <br>
                 <h3> Fecha de la clase</h3>
                 <div class="btn-group" role="group" aria-label="Basic example">
@@ -47,10 +50,10 @@
                     <button id="btn2" type="button" class="btn btn-secondary" style="height: 60px; width: 200px;">Propón una fecha</button>
 
                 </div>
-                <input type="text" id="datepicker" style="height: 40px; width: 200px; margin-right: 30px; text-align: center;" placeholder="DD/MM/AA">
+                <input type="text" id="datepicker" name="datepicker" style="height: 40px; width: 200px; margin-right: 30px; text-align: center;" placeholder="DD/MM/AA">
                 <br><br><br>
                 <h3>Tus datos de contacto</h3>
-                <label for="telefono" class="form-label">Número de telefóno</label>
+                <label for="telefono" class="form-label" id="telefono" name="telefono">Número de telefóno</label>
                 <input tipo="text" class="form-control" name="telefono" id="telefono"  style="height: 60px; width: 350px">
                 <br><br>
                 <div class="text-center">

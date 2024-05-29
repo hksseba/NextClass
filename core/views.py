@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import get_template
+from datetime import datetime
 
 from django.contrib.auth import authenticate, login
 
@@ -104,6 +105,10 @@ def Agendar (request, id_profesor):
         "usuario": usuario
     }
     return render(request, 'core/html/Agendar.html', contexto)
+    
+def CambiarContra (request):
+    return render(request, 'core/html/CambiarContra.html')
+
 
 def Solicitudes(request):
     solicitudes = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
@@ -191,9 +196,10 @@ def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 
 
-def VistaProfe (request, id_profesor):
+def VistaProfe (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
-    clase = Clase.objects.get(profesor = profe)
+    clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+
     contexto = {
         "profe": profe,
         "clase": clase
@@ -523,3 +529,54 @@ def ClasesProfe(request):
     clases = Clase.objects.get(profesor = profe)
 
     return render (request, 'core/html/VerClases.html', {'clases' : clases} )
+
+def Agendar (request, id_profesor, id_clase):
+    profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
+    usuario = Usuario.objects.get(email = request.user.username)
+    clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+    contexto = {
+        "profe": profe,
+        "clase": clase,
+        "usuario": usuario
+    }
+    return render(request, 'core/html/Agendar.html', contexto)
+
+def FormularioAgendar(request):
+    if request.method == 'POST':
+        mensaje = request.POST.get('mensaje')
+        fecha_str = request.POST.get('datepicker')
+        telefono = request.POST.get('telefono')
+        id_profesor = request.POST.get('id_profesor')
+        usuario_actual = request.user
+        usuario = get_object_or_404(Usuario, email=usuario_actual.email)
+        estudiante = get_object_or_404(Estudiante, usuario=usuario)
+        id_estudiante = estudiante.id_estudiante
+
+        fecha = datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
+
+                
+        nueva_sesion = Sesion.objects.create(
+            mensaje=mensaje,
+            fechaclase=fecha,
+            contacto=telefono,
+            profesor_id=id_profesor,
+            estudiante_id=id_estudiante
+        )
+        print("ID del estudiante:", id_estudiante)
+        
+    
+    return render(request, 'core/html/Agendar.html')
+
+    # def SolicitudesClase(request):
+    #     solicitudes = Profesor.objects.filter(estado_clase="Pendiente")  # Solo las solicitudes pendientes
+    # return render(request, 'core/html/VerClases.html', {'solicitudes': solicitudes})
+
+    # def AceptarClase(request, id_solicitud):
+    # try:
+    #     profesor = Profesor.objects.get(id_profesor=id_solicitud)
+    #     profesor.estado_de_aprobacion = "Aprobado"  # Cambiar el estado a Aprobado
+    #     profesor.save()  # Guardar los cambios
+    #     messages.success(request, "Solicitud aceptada con éxito.")
+    # except Profesor.DoesNotExist:
+    #     messages.error(request, "Solicitud no encontrada.")
+    # return redirect('Solicitudes')  # Redirigir a la página de solicitudes
