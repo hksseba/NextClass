@@ -10,28 +10,14 @@
 <div class="container mt-4">
     <h2>Cambiar Contraseña</h2>
     <p>Utiliza el formulario a continuación para cambiar tu contraseña. Asegúrate de elegir una contraseña segura y fácil de recordar.</p>
-
-    <form method="post">
+    <form method="POST" action="{% url 'CambiarContra' %}">
         {% csrf_token %}
-        
         <div class="mb-3">
-            <label for="contraseña_actual" class="form-label">Contraseña Actual</label>
-            <input type="password" class="form-control" name="contraseña_actual" required>
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" name="email" required>
         </div>
-
-        <div class="mb-3">
-            <label for="nueva_contraseña" class="form-label">Nueva Contraseña</label>
-            <input type="password" class="form-control" name="nueva_contraseña" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="confirmar_contraseña" class="form-label">Confirmar Nueva Contraseña</label>
-            <input type="password" class="form-control" name="confirmar_contraseña" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
     </form>
-    
     <br>
     <a href="{% url 'Perfil' %}">Regresar al Perfil</a>
 </div>

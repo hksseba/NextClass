@@ -3,13 +3,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.template.loader import get_template
 
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.tokens import default_token_generator
+
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count, Avg
 from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion
 import re
@@ -82,14 +90,9 @@ def Logueo(request):
             messages.error(request, 'La contraseña es incorrecta')
             return redirect('Login')
 
-
-
 def Deslogueo(request):
     logout(request)
     return redirect('PaginaPrincipal')
-
-def CambiarContra (request):
-    return render(request, 'core/html/CambiarContra.html')
 
 def Agendar (request, id_profesor):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
@@ -283,7 +286,7 @@ def FormularioEstudiante(request):
             telefono=vTelefono,
             contra=vClave,
             foto=vFoto,
-            tipo_de_usuario="Estudiante"
+            tipo_de_usuario="Admin"
         )
 
         # Crear el usuario de Django asociado
@@ -312,10 +315,9 @@ def RegistroAdmin(request):
         contra = request.POST.get('contra')
         telefono = request.POST.get('telefono', '')
         foto = request.FILES.get('foto', None)  # Si hay una imagen, se procesa
-        run = request.POST.get('run')
 
         # Validaciones
-        if not nombre or not apellido or not email or not contra or not run:
+        if not nombre or not apellido or not email or not contra:
             messages.error(request, "Todos los campos obligatorios deben ser completados.")
             return render(request, 'core/html/RegistroAdmin.html')
 
@@ -334,10 +336,9 @@ def RegistroAdmin(request):
                 nombre=nombre,
                 apellido=apellido,
                 contra=contra,
-                tipo_de_usuario='Estudiante',
+                tipo_de_usuario='Admin',
                 telefono=telefono,
                 foto=foto,
-                run=run
             )
             usuario.save()
 
@@ -364,6 +365,63 @@ def RegistroAdmin(request):
             messages.error(request, f"Error al crear el administrador: {e}")
 
     return render(request, 'core/html/RegistroAdmin.html')
+
+def CambiarContra(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            send_email(email, request)
+            return HttpResponse("Solicitud de cambio de contraseña enviada.")  # Respuesta después de procesar el POST
+        except User.DoesNotExist:
+            messages.error(request, 'El correo electrónico no está registrado.')
+    
+    return render(request, 'core/html/CambiarContra.html')
+
+def send_email(email, request):
+    user = User.objects.get(email=email)
+    context = {
+        'email': email,
+        'request': request,
+    }
+
+    template = get_template('core/html/correo.html')
+    content = template.render(context)
+
+    mail = EmailMultiAlternatives(
+        'Cambio de Contraseña',
+        'Código de Restablecimiento',
+        settings.EMAIL_HOST_USER,
+        [email]
+    )
+
+    mail.attach_alternative(content, 'text/html')
+    mail.send()
+
+def reset_password(request, email):
+    if request.method == 'POST':
+        new_password = request.POST.get('password')
+        
+        try:
+            user = User.objects.get(email=email)
+            usuario = get_object_or_404(Usuario, email=email)
+            
+            # Actualizar la contraseña en el modelo User de Django
+            user.set_password(new_password)
+            user.save()
+
+            # Actualizar la contraseña en el modelo Usuario personalizado
+            usuario.contra = new_password
+            usuario.save()
+
+            # Mantener al usuario autenticado después de cambiar la contraseña
+            update_session_auth_hash(request, user)
+            
+            messages.success(request, 'Tu contraseña ha sido cambiada exitosamente.')
+            return redirect('Login')  # Redirigir al perfil del usuario
+        except User.DoesNotExist:
+            messages.error(request, 'El correo electrónico no está registrado.')
+    return render(request, 'core/html/reset_password.html', {'email': email})
 
 @login_required
 def Perfil (request):

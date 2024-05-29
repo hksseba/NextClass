@@ -1,0 +1,10 @@
+<html>
+<head></head>
+<body>
+    <h1>Hola {{ email }}</h1>
+    <p>Para cambiar tu contraseña, haz clic en el siguiente enlace:</p>
+    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'reset_password' email %}">
+        Cambiar Contraseña
+    </a>
+</body>
+</html>

@@ -1,15 +1,16 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
+from django.contrib.auth import views as auth_views
+from . import views
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, reset_password
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
    path('Login/', Login, name= "Login"),
    path('Logueo', Logueo, name= "Logueo"),
    path('Perfil', Perfil, name= "Perfil"),
-   path('CambiarContra', CambiarContra, name= "CambiarContra"),
    path('Solicitudes', Solicitudes, name= "Solicitudes"),
    path('PanelAdmin', PanelAdmin, name= "PanelAdmin"),
    path('PerfilProfe', PerfilProfe, name= "PerfilProfe"),
@@ -29,8 +30,9 @@ urlpatterns = [
    path('CrearClase/', CrearClase, name='CrearClase'),
    path('FormClase/', FormClase, name='FormClase'),
    path('VerClases/', ClasesProfe, name='ClasesProfe'),
-   path('Agendar/<int:id_profesor>/', Agendar, name='Agendar')
-
+   path('Agendar/<int:id_profesor>/', Agendar, name='Agendar'),
+   path('CambiarContra/', CambiarContra, name='CambiarContra'),
+   path('reset_password/<email>/', views.reset_password, name='reset_password'),
 
 
 
