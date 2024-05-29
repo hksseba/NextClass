@@ -1,128 +1,156 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 {% load static %}
-    {% block links%}
+{% block links %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="{% static 'core/css/pagPrincipal/pagP.css'%}">
+    <link rel="stylesheet" href="{% static 'core/css/VistaProfe/Calificar.css'%}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../../static/core/js/navbar.js"></script>
     <script src="../../../static/core/js/VistaProfe.js"></script>
-   {% endblock links%}
+    <script>
+        $(document).ready(function() {
+            // Mostrar modal de calificación al hacer clic en el botón "Calificar"
+            $("#calificar-btn").click(function() {
+                $("#modal-calificacion").show();
+            });
 
+            // Ocultar modal de calificación al hacer clic en la "x" o fuera del modal
+            $(".close, #modal-calificacion").click(function(event) {
+                if (event.target === this) {
+                    $(this).hide();
+                }
+            });
+            $(".star").on("mouseenter", function() {
+        var index = $(this).index();
+        $(this).parent().find(".star:lt(" + (index + 1) + ")").addClass("hover");
+    });
 
+    $(".star").on("mouseleave", function() {
+        $(this).parent().find(".star").removeClass("hover");
+    });
 
-    {%block contenido%}
-    <div class="container" style=" overflow: hidden; ">
-        <div class="row">
-            <div class="col-md-6" style="align-content: center; ">    
-                <br><br><br><br><br>
-                <h1><b>{{clase.nombre_clase}}</b></h1>
-                <br>
-                <h2><b>Clase Online</b></h2>
-                <h4>Acerca de mi</h4>
+    $(".star").on("click", function() {
+        var value = $(this).data("value");
+        $(this).parent().data("rating", value);
+        $(this).parent().find(".star").removeClass("filled");
+        $(this).parent().find(".star:lt(" + value + ")").addClass("filled");
+    });
+    $(".close").on("click", function() {
+        $("#modal-calificacion").hide();
+    });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".star").on("click", function() {
+                var value = $(this).data("value");
+                $("#calificacion").val(value); // Actualiza el valor del campo de entrada oculto
+                $(this).parent().find(".star").removeClass("filled");
+                $(this).parent().find(".star:lt(" + value + ")").addClass("filled");
+            });
+        });
+    </script>
+{% endblock links %}
 
-                <div class="card" style="width: 100%; background-color:#F8E5CB">
-                    <div class="card-body">
-                      <p class="card-text">{{profe.descripcion}}
-                    </div>
+{% block contenido %}
+<div class="container" style="overflow: hidden;">
+    <div class="row">
+        <div class="col-md-6" style="align-content: center;">
+            <br><br><br><br><br>
+            <h1><b>{{clase.nombre_clase}}</b></h1>
+            <br>
+            <h2><b>Clase Online</b></h2>
+            <h4>Acerca de mi</h4>
+            <div class="card" style="width: 100%; background-color:#F8E5CB">
+                <div class="card-body">
+                    <p class="card-text">{{profe.descripcion}}</p>
                 </div>
-                <br><br>
-                <h4>Acerca de la Clase</h4>         
-                <div class="card" style="width: 100%; background-color:#d8f8e1">
-                    <div class="card-body">
-                      <p class="card-text">{{clase.descripcion_clase}}</p>                  
-                    </div>              
-                </div>
-                <br>
-                <h4><b>Comentarios</b></h4>
-
-                <div class="card" style="width: 100%; border-radius: 20px;">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <img src="../../../static/core/img/usuario.png" style="max-width: 50px; padding-top: 10px; padding-left: 10px; display: inline-block;">
-                        </div>
-                        <div class="col-md-11 align-self-center">
-                            <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;"><b>Yunseul</b></p>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">CLASE CULIA VALE PENE.</p>
-                    </div>
-                </div>
-                <br>
-
-                <div class="card" style="width: 100%; border-radius: 20px;">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <img src="../../../static/core/img/usuario.png" style="max-width: 50px; padding-top: 10px; padding-left: 10px; display: inline-block;">
-                        </div>
-                        <div class="col-md-11 align-self-center">
-                            <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;"><b>898</b></p>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                </div>
-                <br>
-
-                <div class="card" style="width: 100%; border-radius: 20px;">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <img src="../../../static/core/img/usuario.png" style="max-width: 50px; padding-top: 10px; padding-left: 10px; display: inline-block;">
-                        </div>
-                        <div class="col-md-11 align-self-center">
-                            <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;"><b>Under Pressure</b></p>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                </div>
-                <br>                          
             </div>
+            <br><br>
+            <h4>Acerca de la Clase</h4>
+            <div class="card" style="width: 100%; background-color:#d8f8e1">
+                <div class="card-body">
+                    <p class="card-text">{{clase.descripcion_clase}}</p>
+                </div>
+            </div>
+            <br>
+            <h4><b>Comentarios</b></h4>
+            <div class="card" style="width: 100%; border-radius: 20px;">
+                <div class="row">
+                    <div class="col-md-1">
+                        <img src="../../../static/core/img/usuario.png"
+                            style="max-width: 50px; padding-top: 10px; padding-left: 10px; display: inline-block;">
+                    </div>
+                    <div class="col-md-11 align-self-center">
+                        <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;">
+                            <b>{{ evaluacion.estudiante.nombre }}</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Calificación: {{ evaluacion.valoracion }}</p>
+                    <p class="card-text">Comentario: {{ evaluacion.descripcion }}</p>
+                </div>
+            </div>
+            <br>
             
-            <div class="col-md-6">
-                <div id="sticky-container" style="display: flex; justify-content: center;">
-                    <div style="max-width: 400px; ">
-                        <br><br><br><br><br>
-                        <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <br>
+        </div>
+        <div class="col-md-6">
+            <div id="sticky-container" style="display: flex; justify-content: center;">
+                <div style="max-width: 400px;">
+                    <br><br><br><br><br>
+                    <div id="sticky-card" class="card"
+                        style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <br>
+                        <img src="{{profe.usuario.foto.url}}"
+                            style="max-width: 50%; border-radius: 25px;">
+                        <div class="card-body" style="text-align: center;">
+                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
+                            <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
+                            <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
+                        </div>
+                        <br>
+                        <div>
+                            <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}"
+                                class="btn btn-primary"
+                                style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda
+                                una clase</a>
                             <br>
-                            <img src="{{profe.usuario.foto.url}}" style="max-width: 50%; border-radius: 25px;">
-                            <div class="card-body" style="text-align: center;">
-                                <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
-                                <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                                <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>      
-                                                                                       
-                            </div>
-                            <br>
-                            <div>
-                                <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
-                            </div>
-                            
-        
-
+                            <a href="#" class="btn btn-primary" id="calificar-btn"
+                                style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</a>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-    <br><br>
+</div>
+<br><br>
+<!-- Modal de calificación -->
+<form id="Calificar" method="POST" action="{% url 'Calificar' %}">
+<div id="modal-calificacion" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Calificar Profesor</h2>
+        <div class="rating-stars">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+        </div>
+        <input type="hidden" name="calificacion" id="calificacion" value="">
+        <textarea id="comment" placeholder="Escribe tu comentario..."></textarea>
+        <button id="submit-rating">Enviar Calificación</button>
+    </div>
+</div>
+</form>
 
 
-    <br><br><br>
-    {% endblock contenido %}
-    
 
-<!-- JavaScript -->
-<script src="../../../static/core/js/navbar.js"></script>
-
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-    
+<br><br><br>
+{% endblock contenido %}

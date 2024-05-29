@@ -292,7 +292,7 @@ def FormularioEstudiante(request):
             telefono=vTelefono,
             contra=vClave,
             foto=vFoto,
-            tipo_de_usuario="Admin"
+            tipo_de_usuario="Estudiante"
         )
 
         # Crear el usuario de Django asociado
@@ -435,16 +435,6 @@ def Perfil (request):
     
     return render(request, 'core/html/Perfil.html', {'usuario': usuario})
 
-    # Verificar si el usuario es un profesor
-    if usuario.tipo_de_usuario == 'Profesor':
-        try:
-            profe = Profesor.objects.get(usuario=usuario)
-        except Profesor.DoesNotExist:
-            profe = None
-    else:
-        profe = None
-        
-    return render(request, 'core/html/Perfil.html', {'usuario': usuario, 'profe': profe})
 
 def ListaUsuarios(request):
     usuarios = Usuario.objects.all()
@@ -566,6 +556,40 @@ def FormularioAgendar(request):
         
     
     return render(request, 'core/html/Agendar.html')
+
+def Calificar(request):
+    if request.method == 'POST':
+        calificacion = request.POST.get('calificacion')
+        comentario = request.POST.get('comentario')
+        usuario = get_object_or_404(Usuario, email=usuario_actual.email)
+
+        # Guarda la calificación en la base de datos (aquí debes ajustar el código según tu modelo de Django)
+        calificar = Evaluacion.objects.create(
+            recomendacion=comentario,
+            valoracion=calificacion,
+            profesor_id=id_profesor,
+            estudiante_id=id_estudiante
+        )
+        nueva_evaluacion = Evaluacion(valoracion=calificacion)
+        nueva_evaluacion.save()
+        return HttpResponse('Calificación guardada exitosamente')
+    else:
+        return HttpResponse('Método no permitido')
+    comentario = request.POST.get('comentario')
+    calificacion = request.POST.get('')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # def SolicitudesClase(request):
     #     solicitudes = Profesor.objects.filter(estado_clase="Pendiente")  # Solo las solicitudes pendientes
