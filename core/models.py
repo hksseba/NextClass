@@ -5,6 +5,7 @@ from django.db import models
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     foto = models.ImageField(upload_to='media', null=True, blank=True)
+    sexo = models.CharField(max_length=10)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
     edad = models.CharField(max_length=3)
@@ -70,3 +71,4 @@ class Evaluacion(models.Model):
     valoracion = models.IntegerField()
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    clase = models.ForeignKey(Clase, on_delete=models.CASCADE)

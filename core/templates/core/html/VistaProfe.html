@@ -78,6 +78,7 @@
             </div>
             <br>
             <h4><b>Comentarios</b></h4>
+            {% for evaluacion in evaluaciones %}
             <div class="card" style="width: 100%; border-radius: 20px;">
                 <div class="row">
                     <div class="col-md-1">
@@ -86,17 +87,38 @@
                     </div>
                     <div class="col-md-11 align-self-center">
                         <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;">
-                            <b>{{ evaluacion.estudiante.nombre }}</b>
+                            <b>{{ evaluacion.estudiante.usuario.nombre }} {{ evaluacion.estudiante.usuario.apellido }}</b>
                         </p>
                     </div>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">Calificación: {{ evaluacion.valoracion }}</p>
-                    <p class="card-text">Comentario: {{ evaluacion.descripcion }}</p>
+                    <p class="card-text">Calificación: {% if evaluacion.valoracion  == 1 %} <span class="star" data-value="1">&#9733;</span>
+                        {% elif evaluacion.valoracion  == 2  %}
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        {% elif evaluacion.valoracion  == 3  %}
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        {% elif evaluacion.valoracion  == 4  %}
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        {% elif evaluacion.valoracion  == 5  %}
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="1">&#9733;</span>
+
+
+                        {% endif %}
+                    <p class="card-text">Comentario: {{ evaluacion.recomendacion }}</p>
                 </div>
             </div>
             <br>
-            
+            {% endfor %}
             <br>
         </div>
         <div class="col-md-6">
@@ -131,7 +153,8 @@
 </div>
 <br><br>
 <!-- Modal de calificación -->
-<form id="Calificar" method="POST" >
+<form id="Calificar" method="POST" action="{% url 'Calificar' profe.id_profesor clase.id_clase %}">
+    {% csrf_token %}
 <div id="modal-calificacion" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -144,7 +167,7 @@
             <span class="star" data-value="5">&#9733;</span>
         </div>
         <input type="hidden" name="calificacion" id="calificacion" value="">
-        <textarea id="comment" placeholder="Escribe tu comentario..."></textarea>
+        <textarea id="comentario" name="comentario" placeholder="Escribe tu comentario..."></textarea>
         <button id="submit-rating">Enviar Calificación</button>
     </div>
 </div>

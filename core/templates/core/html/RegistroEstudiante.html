@@ -14,6 +14,27 @@
     <div class="login-container" style="border-radius: 30px;">
         <h2>Registro de Alumno</h2>
 
+        <label for="profile_picture">Foto de perfil:</label><br>
+        <div style="color: red;" class="error-msg" id="error-fotoAlumno"></div>
+        <input type="file" id="fotoAlumno" name="fotoAlumno">
+        
+
+        <label for="Sexo" class="form-label">Sexo</label>
+        <div style="color: red;"  class="error-msg" id="error-Sexo"></div>
+        <select id="sexo" style="margin-bottom: 10px; width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                box-sizing: border-box;
+                border-radius: 20px;
+                background-color: #D7DBDD;" class="form-control" name="sexo">
+            <option value="">Selecciona una opción</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+
+        </select> 
+
         <!-- Contenedor para mostrar todos los errores -->
         <label for="nombre" class="form-label">Nombre </label>
         <div style="color: red;" class="error-msg" id="error-nombre"></div>
@@ -21,10 +42,6 @@
         
         <!-- Div para mostrar errores del nombre -->
 
-        <label for="profile_picture">Foto de perfil:</label><br>
-        <div style="color: red;" class="error-msg" id="error-fotoAlumno"></div>
-        <input type="file" id="fotoAlumno" name="fotoAlumno">
-        
         
         <label for="apellido" class="form-label">Apellido </label>
         <div style="color: red;" class="error-msg" id="error-apellido"></div>
@@ -60,7 +77,9 @@
                 border-radius: 20px;
                 background-color: #D7DBDD;" class="form-control" name="NvlEducativo">
             <option value="">Selecciona una opción</option>
-            <option value="1">Basica</option>
+            <option value="Basica">Basica</option>
+            <option value="Media">Media</option>
+           
 
             
         </select> 
