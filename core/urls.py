@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, Calificar, solicitar_cambio_contra
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, Calificar, solicitar_cambio_contra, DetalleSolicitud
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -24,6 +24,7 @@ urlpatterns = [
    path('ListaClases/', ListaClases, name='ListaClases'),
    path('AceptarSolicitud/<int:id_solicitud>/', AceptarSolicitud, name='AceptarSolicitud'),
    path('RechazarSolicitud/<int:id_solicitud>/', RechazarSolicitud, name='RechazarSolicitud'),
+   path('solicitudes/detalle/<int:id_solicitud>/', DetalleSolicitud, name='DetalleSolicitud'),
    path('EliminarUsuario/<int:usuario_id>/', EliminarUsuario, name='EliminarUsuario'),
    path('EliminarClase/<int:clase_id>/', EliminarClase, name='EliminarClase'),
    path('VerClase/<int:clase_id>/', VerClase, name='VerClase'),

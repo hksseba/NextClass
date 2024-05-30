@@ -10,6 +10,10 @@
         <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'reset_password' email %}">Restablecer Contraseña</a>
     {% elif tipo == 'registro' %}
         <p>Gracias por registrarte como profesor en nuestra plataforma. Tu cuenta está actualmente pendiente de aprobación. Te notificaremos una vez que tu cuenta haya sido aprobada.</p>
+    {% elif tipo == 'aprobado' %}
+        <p>¡Felicidades! Tu cuenta ha sido aprobada y ya puedes iniciar sesión.</p>
+    {% elif tipo == 'rechazado' %}
+        <p>Lamentamos informarte que tu solicitud ha sido rechazada. Si tienes alguna pregunta, por favor contacta con nosotros.</p>
     {% else %}
         <p>Este es un correo de notificación.</p>
     {% endif %}

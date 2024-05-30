@@ -1,0 +1,28 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Detalle del Profesor</h2>
+    <p>Nombre: {{ profesor.usuario.nombre }} {{ profesor.usuario.apellido }}</p>
+    <p>Email: {{ profesor.usuario.email }}</p>
+    <p>Teléfono: {{ profesor.usuario.telefono }}</p>
+    <p>Edad: {{ profesor.usuario.edad }}</p>
+    <p>Especialización: {{ profesor.especializacion }}</p>
+    <p>Descripción: {{ profesor.descripcion }}</p>
+    <p>RUN: {{ profesor.run }}</p>
+    <p><a href="{{ profesor.antecedentes.url }}" target="_blank">Ver Antecedentes</a></p>
+    <p><a href="{{ profesor.carnet.url }}" target="_blank">Ver Carnet</a></p>
+    
+    <form action="{% url 'AceptarSolicitud' profesor.id_profesor %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Aceptar</button>
+    </form>
+    <form action="{% url 'RechazarSolicitud' profesor.id_profesor %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Rechazar</button>
+    </form>
+
+    <br>
+    <a href="{% url 'Solicitudes' %}" class="btn btn-primary mt-3">Volver a las solicitudes</a>
+</div>
+{% endblock contenido %}

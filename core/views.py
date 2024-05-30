@@ -62,34 +62,37 @@ def Logueo(request):
 
         # Validar la contraseña ingresada con la contraseña almacenada
         if contra == usuario1.contra:
+            # Verificar el tipo de usuario
+            if usuario1.tipo_de_usuario == "Profesor":
+                try:
+                    profesor = Profesor.objects.get(usuario=usuario1)
+                    if profesor.estado_de_aprobacion == 'Pendiente':
+                        messages.error(request, 'Tu cuenta está pendiente de aprobación. Por favor, espera la aprobación para iniciar sesión.')
+                        return redirect('Login')
+                except Profesor.DoesNotExist:
+                    messages.error(request, 'Tu cuenta de profesor no está configurada correctamente.')
+                    return redirect('Login')
+
             # Autenticar al usuario utilizando authenticate
             user = authenticate(request, username=usuario1.email, password=usuario1.contra)
             if user is not None:
                 login(request, user)
                 
-                # Verificar el tipo de usuario
+                # Redirigir según el tipo de usuario
                 if usuario1.tipo_de_usuario == "Admin":
                     return redirect('PanelAdmin')
                 elif usuario1.tipo_de_usuario == "Estudiante":
                     return redirect('Perfil')
-                elif usuario1.tipo_de_usuario == "Profesor": 
-                    # Verificar el estado de aprobación del profesor
-                    try:
-                        profesor = Profesor.objects.get(usuario=usuario1)
-                        if profesor.estado_de_aprobacion == 'Pendiente':
-                            messages.error(request, 'Tu cuenta está pendiente de aprobación. Por favor, espera la aprobación para iniciar sesión.')
-                            return redirect('Login')
-                        else:
-                            return redirect('Perfil')
-                    except Profesor.DoesNotExist:
-                        messages.error(request, 'Tu cuenta de profesor no está configurada correctamente.')
-                        return redirect('Login')
+                elif usuario1.tipo_de_usuario == "Profesor":
+                    return redirect('Perfil')
             else:
                 messages.error(request, 'La contraseña es incorrecta')
                 return redirect('Login')
         else:
             messages.error(request, 'La contraseña es incorrecta')
             return redirect('Login')
+
+    return redirect('Login')
 
 def Deslogueo(request):
     logout(request)
@@ -118,33 +121,43 @@ def Solicitudes(request):
 def AceptarSolicitud(request, id_solicitud):
     try:
         profesor = Profesor.objects.get(id_profesor=id_solicitud)
-        profesor.estado_de_aprobacion = "Aprobado"  # Cambiar el estado a Aprobado
-        profesor.save()  # Guardar los cambios
+        profesor.estado_de_aprobacion = "Aprobado"
+        profesor.save()
+        send_email(profesor.usuario.email, request, 'aprobado')
         messages.success(request, "Solicitud aceptada con éxito.")
     except Profesor.DoesNotExist:
         messages.error(request, "Solicitud no encontrada.")
-    return redirect('Solicitudes')  # Redirigir a la página de solicitudes
+    return redirect('Solicitudes')
 
 # Vista para rechazar una solicitud
 def RechazarSolicitud(request, id_solicitud):
     try:
         profesor = Profesor.objects.get(id_profesor=id_solicitud)
-        
-        # Al rechazar, eliminamos el profesor
-        usuario = profesor.usuario  # Obtiene el usuario asociado
-        profesor.delete()  # Elimina el registro del profesor
+        usuario = profesor.usuario
 
-        # Ahora, eliminamos el usuario asociado
-        usuario.delete()  # Elimina el registro del usuario
-        
+        # Eliminar el usuario de Django asociado
+        try:
+            user = User.objects.get(username=usuario.email)
+            user.delete()
+        except User.DoesNotExist:
+            pass  # Si no existe el usuario en la tabla de User, no hacemos nada
+
+        # Eliminar el profesor y el usuario de la tabla personalizada
+        profesor.delete()
+        usuario.delete()
+
+        send_email(usuario.email, request, 'rechazado')
         messages.success(request, "Solicitud rechazada y usuario eliminado con éxito.")
     except Profesor.DoesNotExist:
         messages.error(request, "Solicitud no encontrada.")
     except Usuario.DoesNotExist:
-        messages.error(request, "Usuario no encontrado.")  # En caso de error al eliminar el usuario
+        messages.error(request, "Usuario no encontrado.")
+    return redirect('Solicitudes')
 
-    return redirect('Solicitudes')  # Redirigir a la página de solicitudes
-
+def DetalleSolicitud(request, id_solicitud):
+    profesor = get_object_or_404(Profesor, id_profesor=id_solicitud)
+    return render(request, 'core/html/DetalleSolicitud.html', {'profesor': profesor})
+    
 def PanelAdmin(request):
     # Total de usuarios
     total_usuarios = Usuario.objects.count()
@@ -264,7 +277,7 @@ def RegistroProfe(request):
         return redirect('Login')  # Redirigir después de registrar con éxito
 
     return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
-    
+
 def RegistroEstudiante(request):
     
     return render(request, 'core/html/RegistroEstudiante.html')
@@ -405,18 +418,13 @@ def send_email(email, request, tipo):
         'tipo': tipo,
     }
 
-    subject = {
-        'cambiar': 'Cambio de Contraseña',
-        'restablecer': 'Restablecimiento de Contraseña',
-        'registro': 'Cuenta Pendiente de Aprobación'
-    }.get(tipo, 'Notificación')
-
-    template = get_template('core/html/Correo_generico.html')
+    template = get_template('core/html/correo_generico.html')
+    subject = 'Cambio de Contraseña' if tipo == 'cambiar' else 'Restablecimiento de Contraseña' if tipo == 'restablecer' else 'Estado de Registro'
     content = template.render(context)
 
     mail = EmailMultiAlternatives(
         subject,
-        'Correo de Notificación',
+        'Correo de notificación',
         settings.EMAIL_HOST_USER,
         [email]
     )

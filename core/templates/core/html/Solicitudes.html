@@ -24,16 +24,7 @@
                 <td>{{ solicitud.usuario.telefono }}</td>
                 <td>{{ solicitud.especializacion }}</td>
                 <td>
-                    <!-- Formulario para aceptar la solicitud -->
-                    <form action="{% url 'AceptarSolicitud' solicitud.id_profesor %}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Aceptar</button>
-                    </form>
-                    <!-- Formulario para rechazar la solicitud -->
-                    <form action="{% url 'RechazarSolicitud' solicitud.id_profesor %}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Rechazar</button>
-                    </form>
+                    <a href="{% url 'DetalleSolicitud' solicitud.id_profesor %}" class="btn btn-info">Ver Detalles</a>
                 </td>
             </tr>
             {% endfor %}
@@ -46,4 +37,4 @@
     <!-- Enlace para volver al panel de administrador -->
     <a href="{% url 'PanelAdmin' %}" class="btn btn-primary">Volver al Panel de Administrador</a>
 </div>
-{% endblock %}
+{% endblock contenido %}
