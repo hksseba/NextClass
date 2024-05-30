@@ -37,7 +37,7 @@ urlpatterns = [
    path('Agendar/<int:id_profesor>/<int:id_clase>/', Agendar, name='Agendar'),
    path('FormularioAgendar/', FormularioAgendar, name='FormularioAgendar'),
    path('solicitar_cambio_contra/<str:tipo>/', views.solicitar_cambio_contra, name='solicitar_cambio_contra'),
-   path('Calificar', Calificar, name='Calificar'),
+   path('Calificar/<int:id_profesor>/<int:id_clase>/', Calificar, name='Calificar'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -212,10 +212,14 @@ def PerfilProfe (request):
 def VistaProfe (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+    evaluaciones = Evaluacion.objects.filter(profesor=profe)
+    print(evaluaciones)
+  
 
     contexto = {
         "profe": profe,
-        "clase": clase
+        "clase": clase,
+         "evaluaciones": evaluaciones,
     }
     return render(request, 'core/html/VistaProfe.html', contexto)
 
@@ -225,6 +229,7 @@ def RegistroProfe(request):
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
         edad = request.POST.get('edad')
+        sexo = request.POST.get('sexo')
         telefono = request.POST.get('telefono')
         especializacion = request.POST.get('especializacion')
         descripcion = request.POST.get('descripcion')
@@ -244,6 +249,7 @@ def RegistroProfe(request):
             email=email,
             nombre=nombre,
             edad=edad,
+            sexo = sexo,
             apellido=apellido,
             telefono=telefono,
             contra=contra,
@@ -286,6 +292,7 @@ def FormularioEstudiante(request):
     if request.method == 'POST':
         vFoto = request.FILES.get('fotoAlumno')
         vNombre = request.POST.get('nombre')
+        vSexo = request.POST.get('sexo')
         vApellido = request.POST.get('apellido')
         vTelefono = request.POST.get('telefono')
         vCorreo = request.POST.get('email')
@@ -301,6 +308,7 @@ def FormularioEstudiante(request):
         usuario = Usuario.objects.create(
             email=vCorreo,
             nombre=vNombre,
+            sexo=vSexo,
             apellido=vApellido,
             telefono=vTelefono,
             contra=vClave,
@@ -458,6 +466,7 @@ def reset_password(request, email):
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
     
+    
     return render(request, 'core/html/Perfil.html', {'usuario': usuario})
 
 
@@ -581,6 +590,32 @@ def FormularioAgendar(request):
         
     
     return render(request, 'core/html/Agendar.html')
+
+def Calificar(request, id_profesor, id_clase):
+    if request.method == 'POST':
+        calificacion = request.POST.get('calificacion')
+        comentario = request.POST.get('comentario')
+        usuario_actual = request.user
+        usuario = get_object_or_404(Usuario, email=usuario_actual.email)
+        estudiante = get_object_or_404(Estudiante, usuario=usuario)
+        id_estudiante = estudiante.id_estudiante
+
+        # Guarda la calificación en la base de datos (aquí debes ajustar el código según tu modelo de Django)
+        calificar = Evaluacion.objects.create(
+            recomendacion=comentario,
+            valoracion=calificacion,
+            profesor_id=id_profesor,
+            estudiante_id=id_estudiante,
+            clase_id = id_clase
+        )
+
+        return redirect('VistaProfe', id_profesor=id_profesor, id_clase = id_clase)
+    else:{
+        print("No funca el calificar")
+    }
+    
+        
+   
 
 
 
