@@ -463,11 +463,14 @@ def reset_password(request, email):
     return render(request, 'core/html/reset_password.html', {'email': email})
     
 @login_required
-def Perfil (request):
-    usuario = Usuario.objects.get(email = request.user.username)
+def Perfil(request):
+    usuario = Usuario.objects.get(email=request.user.username)
+    try:
+        profe = Profesor.objects.get(usuario=usuario)
+    except Profesor.DoesNotExist:
+        profe = None
     
-    
-    return render(request, 'core/html/Perfil.html', {'usuario': usuario})
+    return render(request, 'core/html/Perfil.html', {'usuario': usuario, 'profe': profe})
 
 
 def ListaUsuarios(request):
