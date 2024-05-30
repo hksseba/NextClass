@@ -582,27 +582,6 @@ def FormularioAgendar(request):
     
     return render(request, 'core/html/Agendar.html')
 
-def Calificar(request):
-    if request.method == 'POST':
-        calificacion = request.POST.get('calificacion')
-        comentario = request.POST.get('comentario')
-        usuario = get_object_or_404(Usuario, email=usuario_actual.email)
-
-        # Guarda la calificación en la base de datos (aquí debes ajustar el código según tu modelo de Django)
-        calificar = Evaluacion.objects.create(
-            recomendacion=comentario,
-            valoracion=calificacion,
-            profesor_id=id_profesor,
-            estudiante_id=id_estudiante
-        )
-        nueva_evaluacion = Evaluacion(valoracion=calificacion)
-        nueva_evaluacion.save()
-        return HttpResponse('Calificación guardada exitosamente')
-    else:
-        return HttpResponse('Método no permitido')
-    comentario = request.POST.get('comentario')
-    calificacion = request.POST.get('')
-
 
 
 
