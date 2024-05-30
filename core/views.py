@@ -405,14 +405,14 @@ def CambiarContra(request):
             messages.error(request, 'El correo electrónico no está registrado.')
     
     return render(request, 'core/html/CambiarContra.html')
-         
+
 def solicitar_cambio_contra(request, tipo):
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
-            send_email(email, request, tipo)
-            messages.success(request, 'Se ha enviado un correo para restablecer la contraseña.')
+            send_email(email, request, 'restablecer')
+            messages.success(request, f'Se ha enviado un correo para {tipo} tu contraseña.')
             return redirect('Login')
         except User.DoesNotExist:
             messages.error(request, 'El correo electrónico no está registrado.')
@@ -461,7 +461,7 @@ def reset_password(request, email):
             messages.error(request, 'El correo electrónico no está registrado.')
     
     return render(request, 'core/html/reset_password.html', {'email': email})
-
+    
 @login_required
 def Perfil (request):
     usuario = Usuario.objects.get(email = request.user.username)
