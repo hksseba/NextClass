@@ -66,8 +66,7 @@ class Sesion(models.Model):
 # Tabla Evaluacion
 class Evaluacion(models.Model):
     id_evaluacion = models.AutoField(primary_key=True)
-    descripcion = models.TextField()
-    recomendacion = models.CharField(max_length=255, blank=True, null=True)
+    recomendacion = models.CharField(max_length=700, blank=True, null=True)
     valoracion = models.IntegerField()
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
