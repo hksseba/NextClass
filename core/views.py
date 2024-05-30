@@ -235,7 +235,6 @@ def RegistroProfe(request):
             telefono=telefono,
             contra=contra,
             foto=foto,
-            
             tipo_de_usuario="Profesor"
         )
 
@@ -248,7 +247,7 @@ def RegistroProfe(request):
             last_name=apellido
         )
 
-        # Crear el estudiante asociado al usuario personalizado
+        # Crear el profesor asociado al usuario personalizado
         profesor = Profesor.objects.create(
             usuario=usuario,
             antecedentes=antecedentes,
@@ -256,15 +255,16 @@ def RegistroProfe(request):
             carnet=carnet,
             especializacion=especializacion,
             descripcion=descripcion,
-             estado_de_aprobacion="Pendiente"
+            estado_de_aprobacion="Pendiente"
         )
 
-        messages.success(request, "Registro completado con éxito.")
+        send_email(email, request, 'registro')  # Enviar el correo de notificación
+
+        messages.success(request, "Registro completado con éxito. Tu cuenta está pendiente de aprobación.")
         return redirect('Login')  # Redirigir después de registrar con éxito
 
-
     return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
-
+    
 def RegistroEstudiante(request):
     
     return render(request, 'core/html/RegistroEstudiante.html')
@@ -377,26 +377,46 @@ def CambiarContra(request):
         email = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
-            send_email(email, request)
-            return HttpResponse("Solicitud de cambio de contraseña enviada.")  # Respuesta después de procesar el POST
+            send_email(email, request, 'cambiar')  # Pasar el tipo 'cambiar'
+            messages.success(request, 'Se ha enviado un correo para cambiar tu contraseña.')
+            return redirect('CambiarContra')  # Redirigir a la misma página para mostrar el mensaje
         except User.DoesNotExist:
             messages.error(request, 'El correo electrónico no está registrado.')
     
     return render(request, 'core/html/CambiarContra.html')
+         
+def solicitar_cambio_contra(request, tipo):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            send_email(email, request, tipo)
+            messages.success(request, 'Se ha enviado un correo para restablecer la contraseña.')
+            return redirect('Login')
+        except User.DoesNotExist:
+            messages.error(request, 'El correo electrónico no está registrado.')
+    
+    return render(request, 'core/html/solicitar_cambio_contra.html', {'tipo': tipo})
 
-def send_email(email, request):
-    user = User.objects.get(email=email)
+def send_email(email, request, tipo):
     context = {
         'email': email,
         'request': request,
+        'tipo': tipo,
     }
 
-    template = get_template('core/html/correo.html')
+    subject = {
+        'cambiar': 'Cambio de Contraseña',
+        'restablecer': 'Restablecimiento de Contraseña',
+        'registro': 'Cuenta Pendiente de Aprobación'
+    }.get(tipo, 'Notificación')
+
+    template = get_template('core/html/Correo_generico.html')
     content = template.render(context)
 
     mail = EmailMultiAlternatives(
-        'Cambio de Contraseña',
-        'Código de Restablecimiento',
+        subject,
+        'Correo de Notificación',
         settings.EMAIL_HOST_USER,
         [email]
     )
@@ -412,21 +432,18 @@ def reset_password(request, email):
             user = User.objects.get(email=email)
             usuario = get_object_or_404(Usuario, email=email)
             
-            # Actualizar la contraseña en el modelo User de Django
+            # Actualizar la contraseña en ambas tablas
             user.set_password(new_password)
             user.save()
-
-            # Actualizar la contraseña en el modelo Usuario personalizado
+            
             usuario.contra = new_password
             usuario.save()
 
-            # Mantener al usuario autenticado después de cambiar la contraseña
-            update_session_auth_hash(request, user)
-            
             messages.success(request, 'Tu contraseña ha sido cambiada exitosamente.')
-            return redirect('Login')  # Redirigir al perfil del usuario
+            return redirect('Login')
         except User.DoesNotExist:
             messages.error(request, 'El correo electrónico no está registrado.')
+    
     return render(request, 'core/html/reset_password.html', {'email': email})
 
 @login_required

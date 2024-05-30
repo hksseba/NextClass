@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<body>
+    <h1>Hola {{ email }}</h1>
+    {% if tipo == 'cambiar' %}
+        <p>Para cambiar tu contraseña, haz clic en el siguiente enlace:</p>
+        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'reset_password' email %}">Cambiar Contraseña</a>
+    {% elif tipo == 'restablecer' %}
+        <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
+        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'reset_password' email %}">Restablecer Contraseña</a>
+    {% elif tipo == 'registro' %}
+        <p>Gracias por registrarte como profesor en nuestra plataforma. Tu cuenta está actualmente pendiente de aprobación. Te notificaremos una vez que tu cuenta haya sido aprobada.</p>
+    {% else %}
+        <p>Este es un correo de notificación.</p>
+    {% endif %}
+</body>
+</html>

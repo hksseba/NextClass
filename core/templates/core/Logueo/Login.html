@@ -29,7 +29,7 @@
             <a href="#" >Crea una aquí</a>
             <a href="{% url 'RegistroProfe' %}" style="color: #e6784d;">Profesor</a>
             <a href="{% url 'RegistroEstudiante' %}" style="color: #e6784d;">Alumno</a>
-            <a href="#">¿Olvidaste tu contraseña?</a>
+            <a href="{% url 'solicitar_cambio_contra' 'olvidar' %}">¿Olvidaste tu contraseña?</a>
         </div>
     </form>
 
