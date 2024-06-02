@@ -185,7 +185,7 @@ def PanelAdmin(request):
     # Preferencias de los estudiantes por rangos de edad
     preferencias_edad = Sesion.objects.values('estudiante__usuario__edad').annotate(
         avg_prof_edad=Avg('profesor__usuario__edad'),
-        count_prof_genero=Count('profesor__usuario__tipo_de_usuario'),
+        count_prof_genero=Count('profesor__usuario__sexo'),
         count_clases=Count('id_sesion')
     ).order_by('estudiante__usuario__edad')
 
@@ -212,7 +212,7 @@ def PerfilProfe (request):
 def VistaProfe (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
-    evaluaciones = Evaluacion.objects.filter(profesor=profe)
+    evaluaciones = Evaluacion.objects.filter(clase=clase)
     print(evaluaciones)
   
 
@@ -553,7 +553,7 @@ def ClasesProfe(request):
     usuario = request.user
     usuario1 = Usuario.objects.get(email = usuario)
     profe = Profesor.objects.get(usuario = usuario1)
-    clases = Clase.objects.get(profesor = profe)
+    clases = Clase.objects.filter(profesor = profe)
 
     return render (request, 'core/html/VerClases.html', {'clases' : clases} )
 

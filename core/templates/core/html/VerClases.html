@@ -10,7 +10,7 @@
    {% block contenido %} 
 <!-- HTML de la plantilla -->
 <div class="row g-0 arreglorow" >
-  
+  {% for clases in clases %}
     <div class="col-md-3 mb-4">
         <div class="card clase-card">
 
@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-    
+    {% endfor %}
 </div>
 
 </div>
