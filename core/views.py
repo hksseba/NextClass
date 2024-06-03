@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import get_template
 from datetime import datetime
+from django.db.models.functions import TruncMonth, ExtractWeekDay
 
 from django.contrib.auth import authenticate, login
 
@@ -19,7 +20,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum, F
 from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion
 import re
 # Create your views here.
@@ -176,18 +177,57 @@ def PanelAdmin(request):
     # Número de clases por profesor
     clases_por_profesor = Clase.objects.values('profesor__usuario__nombre').annotate(count=Count('id_clase'))
 
-    # Tasa de ocupación de las clases
-    ocupacion_promedio = Sesion.objects.aggregate(avg_ocupacion=Avg('id_sesion'))
-
     # Evaluaciones promedio de las clases
-    evaluacion_promedio = Evaluacion.objects.aggregate(avg_evaluacion=Avg('valoracion'))
+    evaluacion_promedio = 0
+    if Evaluacion.objects.exists():
+        evaluacion_promedio = Evaluacion.objects.aggregate(avg_evaluacion=Avg('valoracion'))['avg_evaluacion']
 
     # Preferencias de los estudiantes por rangos de edad
     preferencias_edad = Sesion.objects.values('estudiante__usuario__edad').annotate(
+        count_clases=Count('id_sesion'),
         avg_prof_edad=Avg('profesor__usuario__edad'),
         count_prof_genero=Count('profesor__usuario__sexo'),
-        count_clases=Count('id_sesion')
     ).order_by('estudiante__usuario__edad')
+
+    # Filtrar para obtener las edades y géneros más seleccionados
+    for pref in preferencias_edad:
+        est_edad = pref['estudiante__usuario__edad']
+        edad_pref_profesor = Sesion.objects.filter(estudiante__usuario__edad=est_edad).values('profesor__usuario__edad').annotate(count=Count('profesor__usuario__edad')).order_by('-count')
+        genero_pref_profesor = Sesion.objects.filter(estudiante__usuario__edad=est_edad).values('profesor__usuario__sexo').annotate(count=Count('profesor__usuario__sexo')).order_by('-count')
+
+        pref['pref_prof_edad'] = [edad['profesor__usuario__edad'] for edad in edad_pref_profesor]
+        
+        # Obtener el género más seleccionado por los estudiantes y convertir a palabras
+        if genero_pref_profesor.exists():
+            genero_mas_seleccionado = genero_pref_profesor[0]['profesor__usuario__sexo']
+            if genero_mas_seleccionado == 'Masculino':
+                pref['pref_prof_genero'] = 'Masculino'
+            elif genero_mas_seleccionado == 'Femenino':
+                pref['pref_prof_genero'] = 'Femenino'
+            else:
+                pref['pref_prof_genero'] = 'Otros'
+        else:
+            pref['pref_prof_genero'] = 'No especificado'
+
+        # Obtener las materias más seleccionadas por los estudiantes
+        pref['pref_materia'] = []
+
+        # Obtener los idiomas más seleccionados por los estudiantes
+        pref['pref_idioma'] = []
+
+    # Total de sesiones de clases completadas, canceladas y pendientes
+    sesiones_por_estado = Sesion.objects.values('estado_clase').annotate(count=Count('estado_clase'))
+
+    # Distribución de sesiones por mes y día de la semana
+    sesiones_por_mes = Sesion.objects.annotate(month=TruncMonth('fechaclase')).values('month').annotate(count=Count('id_sesion'))
+    sesiones_por_dia_semana = Sesion.objects.annotate(day_of_week=ExtractWeekDay('fechaclase')).values('day_of_week').annotate(count=Count('id_sesion'))
+
+    # Usuarios más activos
+    estudiantes_actividades = Estudiante.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
+    profesores_actividades = Profesor.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
+
+    # Datos financieros
+    ingresos_totales = Clase.objects.aggregate(total=Sum('tarifa_clase'))
 
     context = {
         'total_usuarios': total_usuarios,
@@ -197,14 +237,19 @@ def PanelAdmin(request):
         'total_clases': total_clases,
         'clases_por_categoria': clases_por_categoria,
         'clases_por_profesor': clases_por_profesor,
-        'ocupacion_promedio': ocupacion_promedio,
         'evaluacion_promedio': evaluacion_promedio,
         'preferencias_edad': preferencias_edad,
+        'sesiones_por_estado': sesiones_por_estado,
+        'sesiones_por_mes': sesiones_por_mes,
+        'sesiones_por_dia_semana': sesiones_por_dia_semana,
+        'estudiantes_actividades': estudiantes_actividades,
+        'profesores_actividades': profesores_actividades,
+        'ingresos_totales': ingresos_totales,
     }
 
     return render(request, 'core/html/PanelAdmin.html', context)
-
-
+    
+    
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 

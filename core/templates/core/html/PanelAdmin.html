@@ -11,7 +11,7 @@
     <h2>Panel del Administrador</h2>
 
     <!-- Sección de Gestión de Usuarios -->
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Gestión de Usuarios</div>
@@ -48,32 +48,97 @@
                     <p>Total de Profesores: {{ total_profesores }}</p>
                     <p>Total de Clases: {{ total_clases }}</p>
                     <p>Total de Solicitudes Pendientes: {{ total_solicitudes }}</p>
+                    <p>Ingresos Totales: {{ ingresos_totales.total }}</p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Configuración</div>
+                <div class="card-header">Actividades y Evaluaciones</div>
+                <div class="card-body">
+                    <p>Evaluación Promedio de Clases: {{ evaluacion_promedio }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Sesiones de Clases -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Sesiones de Clases</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for sesion in sesiones_por_estado %}
+                        <li class="list-group-item">Estado: {{ sesion.estado_clase }} - Número de Sesiones: {{ sesion.count }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Distribución de Sesiones</div>
+                    <div class="card-body">
+                        <p>Sesiones por Mes:</p>
+                        <ul>
+                            {% for sesion_mes in sesiones_por_mes %}
+                            <li>Mes: {{ sesion_mes.month | date:"F Y" }} - Número de Sesiones: {{ sesion_mes.count }}</li>
+                            {% endfor %}
+                        </ul>
+                        <p>Sesiones por Día de la Semana:</p>
+                        <ul>
+                            {% for sesion_dia in sesiones_por_dia_semana %}
+                            <li>
+                                {% if sesion_dia.day_of_week == 1 %}
+                                    Día de la Semana: Lunes - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 2 %}
+                                    Día de la Semana: Martes - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 3 %}
+                                    Día de la Semana: Miércoles - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 4 %}
+                                    Día de la Semana: Jueves - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 5 %}
+                                    Día de la Semana: Viernes - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 6 %}
+                                    Día de la Semana: Sábado - Número de Sesiones: {{ sesion_dia.count }}
+                                {% elif sesion_dia.day_of_week == 7 %}
+                                    Día de la Semana: Domingo - Número de Sesiones: {{ sesion_dia.count }}
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Actividades de Usuarios -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Actividades de Estudiantes</div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="{% url 'CambiarContra' %}">Cambiar Contraseña</a></li>
-                        <li><a href="{% url 'Deslogueo' %}">Cerrar Sesión</a></li>
+                        {% for estudiante in estudiantes_actividades %}
+                        <li>{{ estudiante.usuario.nombre }} - Sesiones: {{ estudiante.count_sesiones }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Sección de Distribución de Usuarios por Rol -->
-    <div class="row mt-4">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Distribución de Usuarios por Rol</div>
+                <div class="card-header">Actividades de Profesores</div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        {% for rol in usuarios_por_rol %}
-                            <li class="list-group-item">{{ rol.tipo_de_usuario }}: {{ rol.count }}</li>
+                    <ul>
+                        {% for profesor in profesores_actividades %}
+                        <li>{{ profesor.usuario.nombre }} - Sesiones: {{ profesor.count_sesiones }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -81,44 +146,13 @@
         </div>
     </div>
 
-    <!-- Sección de Clases por Categoría -->
+    <!-- Sección de Estadísticas Financieras -->
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Clases por Categoría</div>
+                <div class="card-header">Estadísticas Financieras</div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        {% for categoria in clases_por_categoria %}
-                            <li class="list-group-item">{{ categoria.descripcion_clase }}: {{ categoria.count }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sección de Clases por Profesor -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Clases por Profesor</div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        {% for profesor in clases_por_profesor %}
-                            <li class="list-group-item">{{ profesor.profesor__usuario__nombre }}: {{ profesor.count }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección de Ocupación Promedio -->
-    <div class="row mt-4">
-        <!-- Sección de Evaluación Promedio -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Evaluación Promedio de Clases</div>
-                <div class="card-body">
-                    <p>{{ evaluacion_promedio.avg_evaluacion }}</p>
+                    <p>Ingresos Totales: {{ ingresos_totales.total }}</p>
                 </div>
             </div>
         </div>
@@ -126,23 +160,48 @@
 
     <!-- Sección de Preferencias por Edad -->
     <div class="row mt-4">
-        <div class="col-md-12">
+        {% for pref in preferencias_edad %}
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Preferencias de Estudiantes por Edad</div>
+                <div class="card-header">Preferencias de Estudiantes por Edad: {{ pref.estudiante__usuario__edad }}</div>
                 <div class="card-body">
                     <ul class="list-group">
-                        {% for pref in preferencias_edad %}
-                            <li class="list-group-item">
-                                Edad del Estudiante: {{ pref.estudiante__usuario__edad }},
-                                Edad Promedio del Profesor: {{ pref.avg_prof_edad }},
-                                Género del Profesor: {{ pref.count_prof_genero }},
-                                Número de Clases: {{ pref.count_clases }}
-                            </li>
-                        {% endfor %}
+                        <li class="list-group-item">
+                            <strong>Edad de los Estudiante:</strong> {{ pref.estudiante__usuario__edad }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Edad Promedio del Profesor:</strong> {{ pref.avg_prof_edad }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Género del Profesor Preferido:</strong> {{ pref.pref_prof_genero }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Número de Clases:</strong> {{ pref.count_clases }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Edades más seleccionadas de Profesores:</strong>
+                            {% for edad in pref.pref_prof_edad %}
+                            {{ edad }}
+                            {% endfor %}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Materias más seleccionadas:</strong>
+                            {% for materia in pref.pref_materia %}
+                            {{ materia }}
+                            {% endfor %}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Idiomas más seleccionados:</strong>
+                            {% for idioma in pref.pref_idioma %}
+                            {{ idioma }}
+                            {% endfor %}
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
+
 </div>
 {% endblock contenido %}
