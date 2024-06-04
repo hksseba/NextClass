@@ -7,15 +7,20 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="{% static 'core/css/pagPrincipal/pagP.css'%}">
     <link rel="stylesheet" href="{% static 'core/css/VistaProfe/Calificar.css'%}">
+    <link href='https://fonts.googleapis.com/css?family=Hammersmith One' rel='stylesheet'>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../../static/core/js/navbar.js"></script>
-    <script src="../../../static/core/js/VistaProfe.js"></script>
+
     <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
+
+        
             // Mostrar modal de calificación al hacer clic en el botón "Calificar"
             $("#calificar-btn").click(function() {
                 $("#modal-calificacion").show();
             });
+
+    
 
             // Ocultar modal de calificación al hacer clic en la "x" o fuera del modal
             $(".close, #modal-calificacion").click(function(event) {
@@ -51,42 +56,47 @@
                 $(this).parent().find(".star").removeClass("filled");
                 $(this).parent().find(".star:lt(" + value + ")").addClass("filled");
             });
+
+            
         });
     </script>
+
 {% endblock links %}
 
 {% block contenido %}
-<div class="container" style="overflow: hidden;">
+<div class="container" style="overflow: hidden; margin-top: 113px; margin-bottom: 100px;">
     <div class="row">
+        <!-- Columna izquierda: Información de la clase y comentarios -->
         <div class="col-md-6" style="align-content: center;">
-            <br><br><br><br><br>
-            <h1><b>{{clase.nombre_clase}}</b></h1>
-            <br>
+            <h1><b>{{ clase.nombre_clase }}</b></h1>
             <h2><b>Clase Online</b></h2>
+
+            <!-- Acerca del profesor -->
             <h4>Acerca de mi</h4>
             <div class="card" style="width: 100%; background-color:#F8E5CB">
                 <div class="card-body">
-                    <p class="card-text">{{profe.descripcion}}</p>
+                    <p class="card-text">{{ profe.descripcion }}</p>
                 </div>
             </div>
-            <br><br>
+
+            <!-- Acerca de la clase -->
             <h4>Acerca de la Clase</h4>
             <div class="card" style="width: 100%; background-color:#d8f8e1">
                 <div class="card-body">
-                    <p class="card-text">{{clase.descripcion_clase}}</p>
+                    <p class="card-text">{{ clase.descripcion_clase }}</p>
                 </div>
             </div>
-            <br>
+
+            <!-- Sección de comentarios -->
             <h4><b>Comentarios</b></h4>
             {% for evaluacion in evaluaciones %}
             <div class="card" style="width: 100%; border-radius: 20px;">
-                <div class="row">
+                <div class="row g-0">
                     <div class="col-md-1">
-                        <img src="../../../static/core/img/usuario.png"
-                            style="max-width: 50px; padding-top: 10px; padding-left: 10px; display: inline-block;">
+                        <img src="../../../static/core/img/usuario.png" style="max-width: 50px; padding-top: 10px; padding-left: 10px;">
                     </div>
                     <div class="col-md-11 align-self-center">
-                        <p style="text-align: start; display: inline-block; vertical-align: middle; margin-left: 10px; margin-top: 20px;">
+                        <p style="text-align: start; margin-left: 10px; margin-top: 20px;">
                             <b>{{ evaluacion.estudiante.usuario.nombre }} {{ evaluacion.estudiante.usuario.apellido }}</b>
                         </p>
                     </div>
@@ -119,31 +129,32 @@
             </div>
             <br>
             {% endfor %}
-            <br>
         </div>
+
+        <!-- Columna derecha: Información del profesor y acciones -->
         <div class="col-md-6">
             <div id="sticky-container" style="display: flex; justify-content: center;">
                 <div style="max-width: 400px;">
-                    <br><br><br><br><br>
-                    <div id="sticky-card" class="card"
-                        style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                        <br>
-                        <img src="{{profe.usuario.foto.url}}"
-                            style="max-width: 50%; border-radius: 25px;">
+                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <img src="{{ profe.usuario.foto.url }}" style="max-width: 50%; border-radius: 25px;">
                         <div class="card-body" style="text-align: center;">
-                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
-                            <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                            <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
+                            <h5 class="card-title"><b>{{ profe.usuario.nombre }} {{ profe.usuario.apellido }}</b></h5>
+                            <h5 class="card-title"><b>4.1</b> <span style="color: gray;">(10 opiniones)</span></h5>
+                            <h5 class="card-title"><b>${{ clase.tarifa_clase }}</b></h5>
                         </div>
-                        <br>
                         <div>
-                            <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}"
-                                class="btn btn-primary"
-                                style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda
-                                una clase</a>
+                            <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
                             <br>
-                            <a href="#" class="btn btn-primary" id="calificar-btn"
-                                style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</a>
+                            {% if user.is_authenticated %}
+                            {% if evaluacion_existente %}
+                                <button type="button" href="" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Editar</button>
+                            {% else %}
+                                <button href="" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'Login' %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</a>
+                        {% endif %}
+
                         </div>
                     </div>
                 </div>
@@ -151,29 +162,33 @@
         </div>
     </div>
 </div>
-<br><br>
-<!-- Modal de calificación -->
+
+<!-- Formulario de calificación -->
 <form id="Calificar" method="POST" action="{% url 'Calificar' profe.id_profesor clase.id_clase %}">
     {% csrf_token %}
-<div id="modal-calificacion" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Calificar Profesor</h2>
-        <div class="rating-stars">
-            <span class="star" data-value="1">&#9733;</span>
-            <span class="star" data-value="2">&#9733;</span>
-            <span class="star" data-value="3">&#9733;</span>
-            <span class="star" data-value="4">&#9733;</span>
-            <span class="star" data-value="5">&#9733;</span>
+    <div id="modal-calificacion" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Calificar Profesor</h2>
+            <div class="rating-stars">
+                {% if evaluacion_existente %}
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= evaluacion_existente.valoracion %}
+                            <span class="star filled" data-value="{{ forloop.counter }}">★</span>
+                        {% else %}
+                            <span class="star" data-value="{{ forloop.counter }}">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <input type="hidden" name="calificacion" id="calificacion" value="{% if evaluacion_existente %}{{ evaluacion_existente.valoracion }}{% endif %}">
+            <textarea id="comentario" name="comentario" placeholder="Escribe tu comentario...">{% if evaluacion_existente %}{{ evaluacion_existente.recomendacion }}{% endif %}</textarea>
+            <button id="submit-rating" class="btn btn-primary">Enviar Calificación</button>
         </div>
-        <input type="hidden" name="calificacion" id="calificacion" value="">
-        <textarea id="comentario" name="comentario" placeholder="Escribe tu comentario..."></textarea>
-        <button id="submit-rating">Enviar Calificación</button>
     </div>
-</div>
 </form>
-
-
-
-<br><br><br>
 {% endblock contenido %}
+
+
+   
+   

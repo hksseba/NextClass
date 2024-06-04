@@ -254,18 +254,42 @@ def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
 
 
-def VistaProfe (request, id_profesor, id_clase):
+
+def VistaProfe(request, id_profesor, id_clase):
+    # Obtener el profesor y la clase correspondientes
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+    
+    # Obtener todas las evaluaciones de la clase
     evaluaciones = Evaluacion.objects.filter(clase=clase)
-    print(evaluaciones)
-  
 
+    # Obtener el usuario actual si está autenticado
+    usuario_actual = request.user
+    estudiante = None
+    evaluacion_existente = None
+
+    if usuario_actual.is_authenticated:
+        # Si el usuario está autenticado, intenta obtener el estudiante correspondiente y la evaluación existente
+        try:
+            estudiante = get_object_or_404(Estudiante, usuario__email=usuario_actual.email)
+            evaluacion_existente = Evaluacion.objects.filter(
+                profesor_id=id_profesor,
+                estudiante=estudiante,
+                clase_id=id_clase
+            ).first()
+        except Estudiante.DoesNotExist:
+            # Si el usuario autenticado no es un estudiante, establecer evaluacion_existente como None
+            pass
+    
+    # Pasar los datos al contexto
     contexto = {
         "profe": profe,
         "clase": clase,
-         "evaluaciones": evaluaciones,
+        "evaluaciones": evaluaciones,
+        "evaluacion_existente": evaluacion_existente
     }
+    
+    # Renderizar la plantilla con el contexto
     return render(request, 'core/html/VistaProfe.html', contexto)
 
 def RegistroProfe(request):
@@ -639,30 +663,43 @@ def FormularioAgendar(request):
     
     return render(request, 'core/html/Agendar.html')
 
+
 def Calificar(request, id_profesor, id_clase):
+    # Obtener el usuario actual y el estudiante asociado
+    usuario_actual = request.user
+    estudiante = get_object_or_404(Estudiante, usuario__email=usuario_actual.email)
+
+    # Intentar obtener la evaluación existente
+    evaluacion_existente = Evaluacion.objects.get(
+        profesor_id=id_profesor,
+        estudiante=estudiante,
+        clase_id=id_clase
+    )
+
     if request.method == 'POST':
+        # Obtener la calificación y el comentario del formulario
         calificacion = request.POST.get('calificacion')
         comentario = request.POST.get('comentario')
-        usuario_actual = request.user
-        usuario = get_object_or_404(Usuario, email=usuario_actual.email)
-        estudiante = get_object_or_404(Estudiante, usuario=usuario)
-        id_estudiante = estudiante.id_estudiante
 
-        # Guarda la calificación en la base de datos (aquí debes ajustar el código según tu modelo de Django)
-        calificar = Evaluacion.objects.create(
-            recomendacion=comentario,
-            valoracion=calificacion,
-            profesor_id=id_profesor,
-            estudiante_id=id_estudiante,
-            clase_id = id_clase
-        )
+        # Si ya existe una evaluación, actualizarla; de lo contrario, crear una nueva
+        if evaluacion_existente:
+            evaluacion_existente.valoracion = calificacion
+            evaluacion_existente.recomendacion = comentario
+            evaluacion_existente.save()
+        else:
+            Evaluacion.objects.create(
+                recomendacion=comentario,
+                valoracion=calificacion,
+                profesor_id=id_profesor,
+                estudiante=estudiante,
+                clase_id=id_clase
+            )
 
-        return redirect('VistaProfe', id_profesor=id_profesor, id_clase = id_clase)
-    else:{
-        print("No funca el calificar")
-    }
-    
-        
+        # Redireccionar a la vista del profesor después de la calificación
+        return redirect('VistaProfe', id_profesor=id_profesor, id_clase=id_clase)
+   
+
+
    
 
 
