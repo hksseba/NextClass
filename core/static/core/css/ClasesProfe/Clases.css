@@ -1,36 +1,67 @@
-/* CSS para el diseño y efecto hover */
+/* CSS actualizado */
 .clase-card {
     transition: transform 0.3s ease;
+    border: none; /* Elimina el borde para un look más limpio */
+    border-radius: 15px; /* Bordes redondeados para un estilo moderno */
 }
 
 .clase-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-10px); /* Un efecto hover más sutil */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra más suave */
 }
 
 .clase-card .card-img-top {
-    height: 200px; /* Ajusta la altura según tus necesidades */
+    height: 200px;
     object-fit: cover;
+    border-top-left-radius: 15px; /* Bordes redondeados en la imagen */
+    border-top-right-radius: 15px;
 }
 
 .clase-card .card-title {
     font-size: 1.25rem;
+    font-weight: bold; /* Título más destacado */
 }
 
 .clase-card .card-text {
-    height: 100px; /* Ajusta la altura según tus necesidades */
+    height: auto; /* Altura automática para contenido variable */
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .clase-card .card-footer {
     background-color: #f8f9fa;
+    border-top: 1px solid #eaeaea; /* Línea divisoria sutil */
 }
 
-.arreglorow{
-    margin-top: 193px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 194px;
-    
+/* Responsive design */
+@media (max-width: 768px) {
+    .arreglorow {
+        margin: 0;
+    }
 }
+
+/* Estilos para los botones */
+.btn-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    color: #212529;
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+

@@ -259,6 +259,7 @@ def VistaProfe(request, id_profesor, id_clase):
     # Obtener el profesor y la clase correspondientes
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+    cantResenas = Evaluacion.objects.filter(clase_id=id_clase).count()
     
     # Obtener todas las evaluaciones de la clase
     evaluaciones = Evaluacion.objects.filter(clase=clase)
@@ -286,7 +287,8 @@ def VistaProfe(request, id_profesor, id_clase):
         "profe": profe,
         "clase": clase,
         "evaluaciones": evaluaciones,
-        "evaluacion_existente": evaluacion_existente
+        "evaluacion_existente": evaluacion_existente,
+        "cantResenas": cantResenas
     }
     
     # Renderizar la plantilla con el contexto
@@ -541,11 +543,12 @@ def Perfil(request):
     
     return render(request, 'core/html/Perfil.html', {'usuario': usuario, 'profe': profe})
 
-
+@login_required
 def ListaUsuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'core/html/ListaUsuarios.html', {'usuarios': usuarios})
 
+@login_required
 def ListaClases(request):
     clases = Sesion.objects.all()
     return render(request, 'core/html/ListaClases.html', {'clases': clases})
@@ -622,9 +625,34 @@ def ClasesProfe(request):
     usuario = request.user
     usuario1 = Usuario.objects.get(email = usuario)
     profe = Profesor.objects.get(usuario = usuario1)
-    clases = Clase.objects.filter(profesor = profe)
+    clases = Clase.objects.filter(profesor=profe).distinct()
 
     return render (request, 'core/html/VerClases.html', {'clases' : clases} )
+
+def EditarClase(request, id_clase):
+    if request.method == 'POST':
+        clase = Clase.objects.get(pk=id_clase)
+        
+   
+        clase.nombre_clase = request.POST.get('nombreClase')
+        clase.tarifa_clase = request.POST.get('tarifaClase')
+        clase.descripcion_clase = request.POST.get('descripcionClase')
+
+    
+        clase.save()
+
+     
+        return redirect('ClasesProfe')
+    else:
+       
+        
+        return render(request, 'PaginaPrincipal')
+
+def EliminarClase(request,id_clase):
+    clase = Clase.objects.get(id_clase = id_clase)
+    clase.delete()
+    return redirect('ClasesProfe')
+    
 
 def Agendar (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)

@@ -138,9 +138,10 @@
                     <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                         <img src="{{ profe.usuario.foto.url }}" style="max-width: 50%; border-radius: 25px;">
                         <div class="card-body" style="text-align: center;">
-                            <h5 class="card-title"><b>{{ profe.usuario.nombre }} {{ profe.usuario.apellido }}</b></h5>
-                            <h5 class="card-title"><b>4.1</b> <span style="color: gray;">(10 opiniones)</span></h5>
-                            <h5 class="card-title"><b>${{ clase.tarifa_clase }}</b></h5>
+                        
+                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
+                            <h5 class="card-title"><b>4.1</b> <p style="color: gray;">({{ cantResenas }} Opiniones)</p></h5>
+                            <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
                         </div>
                         <div>
                             <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
