@@ -9,6 +9,10 @@ from django.db.models.functions import TruncMonth, ExtractWeekDay
 
 from django.contrib.auth import authenticate, login
 
+import pandas as pd
+from openpyxl import Workbook
+from openpyxl.chart import BarChart, Reference
+
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 
@@ -112,7 +116,6 @@ def Agendar (request, id_profesor):
     
 def CambiarContra (request):
     return render(request, 'core/html/CambiarContra.html')
-
 
 def Solicitudes(request):
     solicitudes = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
@@ -249,6 +252,48 @@ def PanelAdmin(request):
 
     return render(request, 'core/html/PanelAdmin.html', context)
     
+# Vista para exportar datos a Excel
+def exportar_excel(request):
+    # Obtén los datos necesarios para exportar
+    sesiones_por_estado = Clase.objects.values('estado_clase').annotate(count=Count('estado_clase'))
+
+    # Crear un DataFrame con los datos
+    df = pd.DataFrame({
+        'Estado de Clase': [sesion['estado_clase'] for sesion in sesiones_por_estado],
+        'Número de Sesiones': [sesion['count'] for sesion in sesiones_por_estado]
+    })
+
+    # Crear un archivo Excel y escribir los datos en él
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Datos de Sesiones'
+
+    # Escribir los datos del DataFrame en la hoja de trabajo
+    for r_idx, row in enumerate(df.itertuples(), start=1):
+        ws.cell(row=r_idx + 1, column=1, value=row[1])
+        ws.cell(row=r_idx + 1, column=2, value=row[2])
+
+    # Agregar un gráfico de barras
+    chart = BarChart()
+    chart.type = "col"
+    chart.style = 10
+    chart.title = "Número de Sesiones por Estado de Clase"
+    chart.x_axis.title = 'Estado de Clase'
+    chart.y_axis.title = 'Número de Sesiones'
+
+    data = Reference(ws, min_col=2, min_row=1, max_row=len(df) + 1, max_col=2)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=len(df) + 1)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.shape = 4
+    ws.add_chart(chart, "D10")
+
+    # Guardar el archivo Excel
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="sesiones_clases.xlsx"'
+    wb.save(response)
+
+    return response    
     
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')

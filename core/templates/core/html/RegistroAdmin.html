@@ -13,40 +13,50 @@
         </div>
     {% endif %}
 
-    <form method="POST" action="{% url 'RegistroAdmin' %}" enctype="multipart/form-data">
+    <form method="POST" action="{% url 'RegistroAdmin' %}" enctype="multipart/form-data" id="registroAdmin">
         {% csrf_token %}
         
         <div class="mb-3">
-            <label para="nombre" class="form-label">Nombre *</label>
-            <input type="text" class="form-control" name="nombre" required>
+            <label for="nombre" class="form-label">Nombre *</label>
+            <div style="color: red;" class="error-msg" id="error-nombre"></div>
+            <input type="text" class="form-control" name="nombre" id="nombre">
         </div>
 
         <div class="mb-3">
-            <label para="apellido" class="form-label">Apellido *</label>
-            <input type="text" class="form-control" name="apellido" required>
+            <label for="apellido" class="form-label">Apellido *</label>
+            <div style="color: red;" class="error-msg" id="error-apellido"></div>
+            <input type="text" class="form-control" name="apellido" id="apellido">
         </div>
 
         <div class="mb-3">
-            <label para="email" class="form-label">Correo Electrónico *</label>
-            <input type="email" class="form-control" name="email" required>
+            <label for="email" class="form-label">Correo Electrónico *</label>
+            <div style="color: red;" class="error-msg" id="error-email"></div>
+            <input type="email" class="form-control" name="email" id="email">
         </div>
 
         <div class="mb-3">
-            <label para="telefono" class="form-label">Teléfono</label>
-            <input type="text" class="form-control" name="telefono">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <div style="color: red;" class="error-msg" id="error-telefono"></div>
+            <input type="text" class="form-control" name="telefono" id="telefono">
         </div>
 
         <div class="mb-3">
-            <label para="contra" class="form-label">Contraseña *</label>
-            <input type="password" class="form-control" name="contra" required>
+            <label for="contra" class="form-label">Contraseña *</label>
+            <div style="color: red;" class="error-msg" id="error-contra"></div>
+            <input type="password" class="form-control" name="contra" id="contra">
         </div>
 
         <div class="mb-3">
-            <label para="foto" class="form-label">Foto de Perfil</label>
-            <input type="file" class="form-control" name="foto">
+            <label for="foto" class="form-label">Foto de Perfil</label>
+            <div style="color: red;" class="error-msg" id="error-foto"></div>
+            <input type="file" class="form-control" name="foto" id="foto">
         </div>
 
         <button type="submit" class="btn btn-primary">Registrar Administrador</button>
     </form>
 </div>
 {% endblock contenido %}
+
+{% block js %}
+<script src="{% static 'core/js/RegistroAdmins.js' %}"></script>
+{% endblock js %}
