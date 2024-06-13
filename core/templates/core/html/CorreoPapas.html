@@ -1,0 +1,35 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'core/css/Logueo/Login.css'%}">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+{% endblock links %}
+
+{% block contenido %}
+<!-- Mensajes de éxito o error -->
+
+<form method="POST" action="{% url 'FormularioEstudiante' %}" enctype="multipart/form-data" id="formcorreo">
+    <!-- Agrega un ID al formulario -->
+    {% csrf_token %}
+    <div class="login-container" style="border-radius: 30px;">
+        <h2>Registro de Alumno</h2>
+
+        <!-- Contenedor para mostrar todos los errores -->
+        <label for="correo" class="form-label">Ingresa tu correo </label>
+        <div style="color: red;" class="error-msg" id="error-correo"></div>
+        <input type="text" class="form-control" id="correo" name="correo">
+
+        <button type="submit">Entrar</button>
+        <!-- Cambiado a type="submit" -->
+        <p class="warnings" id="warnings"></p>
+    </div>
+</form>
+
+{% endblock contenido %}
+
+{% block js %}
+
+<script src="{% static 'core/js/CorreoPapa.js' %}"></script>
+
+{% endblock js %}

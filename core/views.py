@@ -25,7 +25,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count, Avg, Sum, F
-from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion
+from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion, ClaseMateria
 import re
 # Create your views here.
 
@@ -347,7 +347,6 @@ def RegistroProfe(request):
         edad = request.POST.get('edad')
         sexo = request.POST.get('sexo')
         telefono = request.POST.get('telefono')
-        especializacion = request.POST.get('especializacion')
         descripcion = request.POST.get('descripcion')
         run = request.POST.get('run')
         foto = request.FILES.get('foto_profe')
@@ -388,7 +387,6 @@ def RegistroProfe(request):
             antecedentes=antecedentes,
             run=run,
             carnet=carnet,
-            especializacion=especializacion,
             descripcion=descripcion,
             estado_de_aprobacion="Pendiente"
         )
@@ -451,6 +449,11 @@ def FormularioEstudiante(request):
         return redirect('Login')  # Redirigir después de registrar con éxito
 
 def RegistroAdmin(request):
+    
+
+    return render(request, 'core/html/RegistroAdmin.html')
+
+def FormularioAdmin(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
@@ -459,14 +462,6 @@ def RegistroAdmin(request):
         telefono = request.POST.get('telefono', '')
         foto = request.FILES.get('foto', None)  # Si hay una imagen, se procesa
 
-        # Validaciones
-        if not nombre or not apellido or not email or not contra:
-            messages.error(request, "Todos los campos obligatorios deben ser completados.")
-            return render(request, 'core/html/RegistroAdmin.html')
-
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            messages.error(request, "Correo electrónico no es válido.")
-            return render(request, 'core/html/RegistroAdmin.html')
 
         if Usuario.objects.filter(email=email).exists():
             messages.error(request, "Ya existe un usuario con este correo.")
@@ -506,8 +501,6 @@ def RegistroAdmin(request):
 
         except Exception as e:
             messages.error(request, f"Error al crear el administrador: {e}")
-
-    return render(request, 'core/html/RegistroAdmin.html')
 
 def CambiarContra(request):
     if request.method == 'POST':
@@ -588,6 +581,46 @@ def Perfil(request):
     
     return render(request, 'core/html/Perfil.html', {'usuario': usuario, 'profe': profe})
 
+def ModificarPerfil(request):
+    usuario = request.user
+    try:
+        # Obtener el objeto Usuario asociado al usuario autenticado
+        usuario_obj = Usuario.objects.get(email=usuario.email)
+        
+        # Si el usuario es un profesor, obtener el objeto Profesor asociado
+        if hasattr(usuario_obj, 'profesor'):
+            profesor = usuario_obj.profesor
+        else:
+            profesor = None  # Manejar el caso si el usuario no tiene perfil de profesor
+        
+        if request.method == 'POST':
+            # Obtener los datos del formulario
+            foto = request.FILES.get('fotoPerfil')
+            nombre = request.POST.get('nombre')
+            apellido = request.POST.get('apellido')
+            telefono = request.POST.get('telefono')
+            edad = request.POST.get('edad')
+            descripcion = request.POST.get('descripcion')
+
+            # Actualizar los campos del usuario
+            usuario_obj.foto = foto
+            usuario_obj.nombre = nombre
+            usuario_obj.apellido = apellido
+            usuario_obj.telefono = telefono
+            usuario_obj.edad = edad
+            usuario_obj.save()
+
+            # Si existe un perfil de profesor, actualizar la descripción
+            if profesor:
+                profesor.descripcion = descripcion
+                profesor.save()
+
+            # Redirigir al perfil o a la página de inicio después de guardar cambios
+            return redirect('Perfil')  # Ajusta 'Perfil' al nombre de tu vista de perfil
+    except:
+            print('xd')
+
+
 @login_required
 def ListaUsuarios(request):
     usuarios = Usuario.objects.all()
@@ -641,30 +674,53 @@ def VerClase(request, clase_id):
 
 def FormClase(request):
     if request.method == 'POST':
+        # Obtener datos del formulario
         titulo = request.POST.get('titulo')
         descripcion = request.POST.get('descripcion')
         precio = request.POST.get('precio')
+        materia = request.POST.get('materia')
+        
+        # Obtener el usuario autenticado (profesor)
         usuario = request.user
-        usuario1 = Usuario.objects.get(email = usuario)
-        idusuario = Profesor.objects.get(usuario = usuario1)
+        
         try:
-            # Crear usuario personalizado
+            # Obtener el objeto Usuario correspondiente al usuario autenticado
+            print(materia)
+            usuario1 = Usuario.objects.get(email=usuario)
+            
+            # Obtener el objeto Profesor correspondiente al usuario
+            idusuario = Profesor.objects.get(usuario=usuario1)
+            
+            # Obtener el objeto Materia correspondiente al nombre de la materia
+            materiaid = Materia.objects.get(id_materia=materia)
+            
+            # Crear la clase
             clase = Clase(
                 nombre_clase=titulo,
-                tarifa_clase = precio,
+                tarifa_clase=precio,
                 descripcion_clase=descripcion,
-                profesor = idusuario                
+                profesor=idusuario                
             )
             clase.save()
-            return redirect('Perfil')
+            
+            # Relacionar la clase con la materia a través de la tabla intermedia ClaseMateria
+            claseMateria = ClaseMateria(
+                clase_id=clase.id_clase,
+                materia_id=materiaid.id_materia
+            )
+            claseMateria.save()
+            
+            # Redireccionar al perfil del usuario después de guardar la clase
+            return redirect('ClasesProfe')
             
         except Exception as e:
             messages.error(request, f"Error al crear la clase: {e}")
             return redirect('CrearClase')
 
+
 def CrearClase(request):
-    clases = Clase.objects.all()
-    return render(request, 'core/html/FormClase.html', {'clases': clases })            
+    materias = Materia.objects.all()
+    return render(request, 'core/html/FormClase.html', {'materias': materias })            
 
 def ClasesProfe(request):
     usuario = request.user
@@ -770,7 +826,25 @@ def Calificar(request, id_profesor, id_clase):
 
         # Redireccionar a la vista del profesor después de la calificación
         return redirect('VistaProfe', id_profesor=id_profesor, id_clase=id_clase)
-   
+
+
+def ValidacionPapas(request,correo):
+    Alumnos = Estudiante.objects.filter(correo_papa = correo )
+    return render(request, 'core/html/ValidacionPapas.html', {'Alumnos': Alumnos})
+
+def CorreoPapas(request):
+
+    return render(request, 'core/html/CorreoPapas.html')
+
+def ValidacionCorreoPapa(request):
+    correo = request.POST.get('correo')
+    try:
+        correo2 = Estudiante.objects.get(correo_papa=correo)
+        if correo2:
+            contexto = {'correo2' : correo2}
+            return redirect('ValidacionPapas', contexto)
+    except Estudiante.DoesNotExist:
+        return redirect('')
 
 
    

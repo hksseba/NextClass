@@ -11,7 +11,7 @@ class Usuario(models.Model):
     edad = models.CharField(max_length=3)
     email = models.EmailField(unique=True)
     contra = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=15, blank=True)    
+    telefono = models.CharField(max_length=15, blank=True)
     tipo_de_usuario = models.CharField(max_length=20)
 
 # Tabla Estudiante
@@ -33,11 +33,11 @@ class Profesor(models.Model):
     run = models.CharField(max_length=10)
     antecedentes = models.FileField(upload_to='archivos_pdf', null=False)
     carnet = models.ImageField(upload_to='media', null=False)
-    especializacion = models.CharField(max_length=255)
     descripcion = models.TextField()
     estado_de_aprobacion = models.CharField(max_length=50)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
+# Tabla Clase
 class Clase(models.Model):
     id_clase = models.AutoField(primary_key=True)
     nombre_clase = models.CharField(max_length=255)
@@ -45,13 +45,20 @@ class Clase(models.Model):
     idioma_clase = models.CharField(max_length=255)
     descripcion_clase = models.CharField(max_length=255)
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
-
+    materias = models.ManyToManyField('Materia', through='ClaseMateria')
 
 # Tabla Materia
 class Materia(models.Model):
     id_materia = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
-    creado_por = models.ForeignKey(Admin, on_delete=models.CASCADE)
+
+# Tabla intermedia ClaseMateria
+class ClaseMateria(models.Model):
+    id_clasemateria = models.AutoField(primary_key=True)
+    clase = models.ForeignKey(Clase, on_delete=models.CASCADE)
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('clase', 'materia')
 
 # Tabla Sesion
 class Sesion(models.Model):
@@ -62,7 +69,6 @@ class Sesion(models.Model):
     estado_clase = models.CharField(max_length=50, default="Pendiente")
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
- 
 
 # Tabla Evaluacion
 class Evaluacion(models.Model):

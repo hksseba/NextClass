@@ -3,6 +3,7 @@
 {% block links %}
 <link rel="stylesheet" href="{% static 'core/css/Logueo/Login.css'%}">
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
 {% endblock links %}
 
 {% block contenido %}
@@ -47,7 +48,9 @@
         <div style="color: red;" class="error-msg" id="error-apellido"></div>
         <input type="text" class="form-control" id="apellido" name="apellido">
         
-
+        <label for="edad" class="form-label">Edad </label>
+        <div style="color: red;" class="error-msg" id="error-edad"></div>
+        <input type="text" class="form-control" name="edad" id="edad">
 
         
         <label for="correo" class="form-label">Correo Electronico </label>
@@ -64,6 +67,11 @@
         <label for="telefono" class="form-label">Teléfono</label>
         <div style="color: red;"  class="error-msg" id="error-telefono"></div>
         <input type="text" class="form-control" id="telefono" maxlength="9" name="telefono">
+
+        <label for="telefono_padres" id="labelpolla" class="form-label" style="display: none;">Correo de los padres</label>
+        <div style="color: red;" class="error-msg" id="error-correo-padres"></div>
+        <input type="text" class="form-control" id="correo_padres" name="correo_padres" style="display: none;">
+
         
      
 

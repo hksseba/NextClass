@@ -29,6 +29,15 @@
         <div style="color: red;" class="error-msg" id="error-precio"></div>
         <input type="text" class="form-control" id="precio" name="precio">
 
+        <label for="especializacion" class="form-label">Materia de la clase</label>
+            
+                <select class="form-control" name="materia">  <!-- Campo select for las materias -->
+                    {% for m in materias %}
+                    <option value="{{m.id_materia}}">{{m.nombre}}</option>
+                    {% endfor %}
+                </select>
+                
+
         <label for="especializacion" class="form-label">Idioma</label>
                 <select class="form-control" name="idioma">  <!-- Campo select for las materias -->
                     <option value="Espanol">Espanol</option>

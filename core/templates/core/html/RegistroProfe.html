@@ -78,15 +78,6 @@
                 <div style="color: red;" class="error-msg" id="error-carnet"></div>
                 <input type="file" id="carnet" name="carnet">
                 
-
-                <label for="especializacion" class="form-label">Especialización</label>
-                <select class="form-control" name="especializacion">  <!-- Campo select for las materias -->
-                    <option value="">Seleccione una materia</option>
-                    {% for materia in materias %}
-                        <option value="{{ materia.nombre }}">{{ materia.nombre }}</option>
-                    {% endfor %}
-                </select>
-
                 <label for="descripcion" class="form-label">Descripción</label>
                 <div style="color: red;" class="error-msg" id="error-descripcion"></div>
                 <textarea class="form-control" class="form-control" name="descripcion"></textarea>

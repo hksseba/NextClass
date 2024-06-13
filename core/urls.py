@@ -7,6 +7,7 @@ from . import views
 
 from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
 
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -37,10 +38,19 @@ urlpatterns = [
    path('reset_password/<email>/', views.reset_password, name='reset_password'),
    path('Agendar/<int:id_profesor>/<int:id_clase>/', Agendar, name='Agendar'),
    path('FormularioAgendar/', FormularioAgendar, name='FormularioAgendar'),
+   path('FormularioAdmin/', FormularioAdmin, name='FormularioAdmin'),
    path('solicitar_cambio_contra/<str:tipo>/', views.solicitar_cambio_contra, name='solicitar_cambio_contra'),
    path('Calificar/<int:id_profesor>/<int:id_clase>/', Calificar, name='Calificar'),
    path('EditarClase<id_clase>/', EditarClase, name='EditarClase'),
    path('EliminarClase<id_clase>/', EliminarClase, name='EliminarClase'),
    path('exportar_excel/', views.exportar_excel, name='exportar_excel'),
+   path('ValidacionPapas<correo>/', ValidacionPapas, name='ValidacionPapas'),
+   path('CorreoPapas/', CorreoPapas, name='CorreoPapas'),
+   path('ValidacionCorreoPapa/', ValidacionCorreoPapa, name='ValidacionCorreoPapa'),
+   path('ModificarPerfil/', ModificarPerfil, name='ModificarPerfil'),
+
+
+
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

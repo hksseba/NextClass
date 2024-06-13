@@ -1,0 +1,23 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Detalles del alumno</h2>
+    <p>Nombre: {{ Alumnos.usuario.nombre }} {{ Alumnos.usuario.apellido }}</p>
+    <p>Email: {{ Alumnos.usuario.email }}</p>
+    <p>Teléfono: {{ Alumnos.usuario.telefono }}</p>
+    <p>Edad: {{ Alumnos.usuario.edad }}</p>
+    
+    <form action="{% url 'AceptarSolicitud' profesor.id_profesor %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Aceptar</button>
+    </form>
+    <form action="{% url 'RechazarSolicitud' profesor.id_profesor %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Rechazar</button>
+    </form>
+
+    <br>
+    <a href="{% url 'Solicitudes' %}" class="btn btn-primary mt-3">Volver a las solicitudes</a>
+</div>
+{% endblock contenido %}
