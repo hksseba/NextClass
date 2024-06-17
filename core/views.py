@@ -45,13 +45,42 @@ def PaginaPrincipal(request):
     }
     return render(request, 'core/html/PaginaPrincipal.html', contexto)
 
+def ClasesLenguaje(request):
+    # Obtener la instancia de la materia 'Lenguaje'
+    materia_lenguaje = Materia.objects.get(id_materia=1)
+
+    # Filtrar clases que tienen la materia 'Lenguaje'
+    clases = Clase.objects.filter(materias=materia_lenguaje)
+
+    return render(request, 'core/html/ClasesLenguaje.html', {'clases': clases})
+
+
+def ClasesMatematica(request):
+    # Obtener la instancia de la materia 'Matemática'
+    materia_matematica = Materia.objects.get(id_materia=2)
+
+    # Filtrar clases que tienen la materia 'Matemática'
+    clases = Clase.objects.filter(materias=materia_matematica)
+
+    return render(request, 'core/html/ClasesMatematica.html', {'clases': clases})
+
+
+def ClasesHistoria(request):
+    # Obtener la instancia de la materia 'Historia'
+    materia_historia = Materia.objects.get(id_materia=3)
+
+    # Filtrar clases que tienen la materia 'Historia'
+    clases = Clase.objects.filter(materias=materia_historia)
+
+    return render(request, 'core/html/ClasesHistoria.html', {'clases': clases})
+
+
+
+
 
 def Login(request):
     return render(request, 'core/Logueo/Login.html')
 
-from django.contrib import messages
-
-from django.contrib import messages
 
 def Logueo(request):
     if request.method == 'POST':
@@ -78,6 +107,16 @@ def Logueo(request):
                     messages.error(request, 'Tu cuenta de profesor no está configurada correctamente.')
                     return redirect('Login')
 
+            elif usuario1.tipo_de_usuario == "Estudiante":
+                try:
+                    estudiante = Estudiante.objects.get(usuario=usuario1)
+                    if estudiante.estado_solicitud == 'Pendiente':
+                        messages.error(request, 'Tu cuenta está pendiente de aprobación por parte de tus padres. Por favor, espera la aprobación para iniciar sesión.')
+                        return redirect('Login')
+                except Estudiante.DoesNotExist:
+                    messages.error(request, 'Tu cuenta de estudiante no está configurada correctamente.')
+                    return redirect('Login')
+
             # Autenticar al usuario utilizando authenticate
             user = authenticate(request, username=usuario1.email, password=usuario1.contra)
             if user is not None:
@@ -86,9 +125,7 @@ def Logueo(request):
                 # Redirigir según el tipo de usuario
                 if usuario1.tipo_de_usuario == "Admin":
                     return redirect('PanelAdmin')
-                elif usuario1.tipo_de_usuario == "Estudiante":
-                    return redirect('Perfil')
-                elif usuario1.tipo_de_usuario == "Profesor":
+                elif usuario1.tipo_de_usuario == "Estudiante" or usuario1.tipo_de_usuario == "Profesor":
                     return redirect('Perfil')
             else:
                 messages.error(request, 'La contraseña es incorrecta')
@@ -410,6 +447,8 @@ def FormularioEstudiante(request):
         vApellido = request.POST.get('apellido')
         vTelefono = request.POST.get('telefono')
         vCorreo = request.POST.get('email')
+        vEdad = request.POST.get('edad')
+        vCorreoPadre = request.POST.get('correo_padres')
         vClave = request.POST.get('contrasena')
         vNvlEducativo = request.POST.get('NvlEducativo')
 
@@ -426,6 +465,7 @@ def FormularioEstudiante(request):
             apellido=vApellido,
             telefono=vTelefono,
             contra=vClave,
+            edad = vEdad,
             foto=vFoto,
             tipo_de_usuario="Estudiante"
         )
@@ -442,6 +482,8 @@ def FormularioEstudiante(request):
         # Crear el estudiante asociado al usuario personalizado
         estudiante = Estudiante.objects.create(
             usuario=usuario,
+            correo_padre = vCorreoPadre,
+            estado_solicitud = "Pendiente",
             nivel_educativo=vNvlEducativo
         )
 
@@ -550,7 +592,7 @@ def send_email(email, request, tipo):
     mail.send()
 
 def reset_password(request, email):
-    if request.method == 'POST':
+    if request.method == 'POST': 
         new_password = request.POST.get('password')
         
         try:
@@ -583,42 +625,36 @@ def Perfil(request):
 
 def ModificarPerfil(request):
     usuario = request.user
-    try:
-        # Obtener el objeto Usuario asociado al usuario autenticado
-        usuario_obj = Usuario.objects.get(email=usuario.email)
-        
-        # Si el usuario es un profesor, obtener el objeto Profesor asociado
-        if hasattr(usuario_obj, 'profesor'):
-            profesor = usuario_obj.profesor
-        else:
-            profesor = None  # Manejar el caso si el usuario no tiene perfil de profesor
-        
-        if request.method == 'POST':
-            # Obtener los datos del formulario
-            foto = request.FILES.get('fotoPerfil')
-            nombre = request.POST.get('nombre')
-            apellido = request.POST.get('apellido')
-            telefono = request.POST.get('telefono')
-            edad = request.POST.get('edad')
-            descripcion = request.POST.get('descripcion')
+    usuarioActivo = Usuario.objects.get(email=usuario.email)
+    profe = Profesor.objects.get(usuario=usuarioActivo)
 
-            # Actualizar los campos del usuario
-            usuario_obj.foto = foto
-            usuario_obj.nombre = nombre
-            usuario_obj.apellido = apellido
-            usuario_obj.telefono = telefono
-            usuario_obj.edad = edad
-            usuario_obj.save()
+    if request.method == 'POST':
+        vFoto = request.FILES.get('fotoPerfil')
+        vNombre = request.POST.get('nombre')
+        vApellido = request.POST.get('apellido')
+        vTelefono = request.POST.get('telefono')
+        vEdad = request.POST.get('edad')
+        vDescripcion = request.POST.get('descripcion')
 
-            # Si existe un perfil de profesor, actualizar la descripción
-            if profesor:
-                profesor.descripcion = descripcion
-                profesor.save()
+        try:
+            # Actualizar campos del Usuario existente
+            usuarioActivo.nombre = vNombre
+            usuarioActivo.apellido = vApellido
+            usuarioActivo.telefono = vTelefono
+            usuarioActivo.edad = vEdad
+            if vFoto:
+                usuarioActivo.foto = vFoto
+            usuarioActivo.save()
 
-            # Redirigir al perfil o a la página de inicio después de guardar cambios
-            return redirect('Perfil')  # Ajusta 'Perfil' al nombre de tu vista de perfil
-    except:
-            print('xd')
+            # Actualizar campos del Profesor
+            profe.descripcion = vDescripcion
+            profe.save()
+
+            print('Perfil actualizado exitosamente')
+        except :
+             print('Error al actualizar perfil')
+
+        return redirect('Perfil')  # Ajusta 'Perfil' al nombre de tu vista de perfil
 
 
 @login_required
@@ -829,7 +865,7 @@ def Calificar(request, id_profesor, id_clase):
 
 
 def ValidacionPapas(request,correo):
-    Alumnos = Estudiante.objects.filter(correo_papa = correo )
+    Alumnos = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
     return render(request, 'core/html/ValidacionPapas.html', {'Alumnos': Alumnos})
 
 def CorreoPapas(request):
@@ -839,13 +875,51 @@ def CorreoPapas(request):
 def ValidacionCorreoPapa(request):
     correo = request.POST.get('correo')
     try:
-        correo2 = Estudiante.objects.get(correo_papa=correo)
-        if correo2:
-            contexto = {'correo2' : correo2}
-            return redirect('ValidacionPapas', contexto)
+        estudiante = Estudiante.objects.get(correo_padre=correo)
+        if estudiante:
+            return redirect('ValidacionPapas', correo=correo)
     except Estudiante.DoesNotExist:
-        return redirect('')
+        messages.error(request, 'Correo no encontrado')
+        return redirect('CorreoPapas')
+    
 
+
+def AceptarSolicitudEstudiante(request,id_estudiante ):
+    try:
+        estudiante = Estudiante.objects.get(id_estudiante=id_estudiante)
+        estudiante.estado_solicitud = "Aprobado"
+        estudiante.save()
+        send_email(estudiante.usuario.email, request, 'aprobado')
+        send_email(estudiante.correo_padre, request, 'Usted ha aprobado el registro de su hijo')
+        messages.success(request, "Solicitud aceptada con éxito.")
+    except Estudiante.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    return redirect('Login')
+
+# Vista para rechazar una solicitud
+def RechazarSolicitudEstudiante(request, id_estudiante):
+    try:
+        estudiante = Estudiante.objects.get(id_estudiante=id_estudiante)
+        usuario = estudiante.usuario
+
+        # Eliminar el usuario de Django asociado
+        try:
+            user = User.objects.get(username=usuario.email)
+            user.delete()
+        except User.DoesNotExist:
+            pass  # Si no existe el usuario en la tabla de User, no hacemos nada
+
+        # Eliminar el profesor y el usuario de la tabla personalizada
+        estudiante.delete()
+        usuario.delete()
+
+        send_email(usuario.email, request, 'rechazado')
+        messages.success(request, "Solicitud rechazada y usuario eliminado con éxito.")
+    except Estudiante.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+    return redirect('Solicitudes')
 
    
 

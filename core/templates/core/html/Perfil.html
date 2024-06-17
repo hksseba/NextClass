@@ -1,177 +1,174 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 {% load static %}
 {% block links %}
-
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 {% endblock links %}
 {% block contenido %}
-<div class="container mt-4" style="margin-bottom: 244px;">
-    {% if usuario.tipo_de_usuario == "Estudiante" %}
-    <h2>Mi Perfil</h2>
-    <div class="row">
-
-        <div class="col-md-6">
-            <div id="sticky-card" class="card" style="display: flex; flex-direction: column;  border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                <br>
-                <img src="{{usuario.foto.url}}" style="width: 400px; height: 250px; margin: auto;">
-                <div class="card-body text-center">
-                    <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
-                    <div style="text-align: left;">
-                        <p style="color: gray;">Datos personales</p>
-                        <p>Correo: {{ usuario.email }}</p>
-                        <p>Teléfono: {{ usuario.telefono }}</p>
+    <div class="container mt-4" style="margin-bottom: 244px;">
+        {% if usuario.tipo_de_usuario == "Estudiante" %}
+            <h2>Mi Perfil</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <br>
+                        <img src="{{usuario.foto.url}}" style="width: 400px; height: 250px; margin: auto;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
+                            <div style="text-align: left;">
+                                <p style="color: gray;">Datos personales</p>
+                                <p>Correo: {{ usuario.email }}</p>
+                                <p>Teléfono: {{ usuario.telefono }}</p>
+                            </div>
+                        </div>
                     </div>
-                    
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <h3>Gestión</h3>
+                    <br>
+                    <ul class="list-unstyled">
+                        <br>
+                        <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Agendar nueva clase</a></li>
+                        <br>
+                        <li>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</button>
+                        </li>
+                        <br>
+                        <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cerrar sesión</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 text-center">
-            <h3>Gestión </h3>
-            <br>
-            <ul class="list-unstyled">
-                <br>
-                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Agendar nueva clase</a></li>
-                <br>
-                <li>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</button>
-                </li>
-                
-                <br>
-                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
-            </ul>
-        </div>
-    </div>
+        {% elif usuario.tipo_de_usuario == "Profesor" %}
+            <h2>Mi Perfil</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <br>
+                        <img src="{{usuario.foto.url}}"  style="width: 400px; height: 250px; margin: auto;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
+                            <div style="text-align: left;">
+                                <p style="color: gray;">Datos personales</p>
+                                <p>Correo: {{ usuario.email }}</p>
+                                <p>Teléfono: {{ usuario.telefono }}</p>
+                                {% if usuario.tipo_de_usuario == "Profesor" %}
+                                    <p>Rut: {{ profe.run }}</p>
+                                    <p>Edad: {{ usuario.edad }}</p>
+                                {% endif %}
+                            </div>
 
-
-    {% elif usuario.tipo_de_usuario == "Profesor" %}
-    <h2>Mi Perfil</h2>
-    <div class="row">
-
-        <div class="col-md-6">
-            <div id="sticky-card" class="card" style="display: flex; flex-direction: column;  border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                <br>
-                <img src="{{usuario.foto.url}}" style="width: 400px; height: 250px; margin: auto;">
-                <div class="card-body text-center">
-                    <h5 class="card-title" style="text-align: center;"><b>{{usuario.nombre}} {{usuario.apellido}}</b></h5>
-                    <div style="text-align: left;">
-                        <p style="color: gray;">Datos personales</p>
-                        <p>Correo: {{ usuario.email }}</p>
-                        <p>Teléfono: {{ usuario.telefono }}</p>
-                        {% if usuario.tipo_de_usuario == "Profesor" %}
-                        <p>Rut: {{ profe.run }}</p>
-                        <p>Edad: {{ usuario.edad }}</p>
-                        {% endif %}
-                    </div>
-                    
-                    {% if usuario.tipo_de_usuario == "Profesor" %}
-                    <div style="text-align: left;">
-                        <h5>Sobre mi</h5>
-                    </div>
-                    <div class="card" style="width: 100%; background-color:#F8E5CB">
-                        <div class="card-body">
-                            {% if profe %}
-                                <p class="card-text">{{ profe.descripcion }}</p>
-                            {% else %}
-                                <p class="card-text">No hay descripción disponible.</p>
+                            {% if usuario.tipo_de_usuario == "Profesor" %}
+                                <div style="text-align: left;">
+                                    <h5>Sobre mi</h5>
+                                </div>
+                                <div class="card" style="width: 100%; background-color:#F8E5CB">
+                                    <div class="card-body">
+                                        {% if profe %}
+                                            <p class="card-text">{{ profe.descripcion }}</p>
+                                        {% else %}
+                                            <p class="card-text">No hay descripción disponible.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             {% endif %}
                         </div>
                     </div>
-                    {% endif %}
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <h3>Gestión</h3>
+                    <br>
+                    <ul class="list-unstyled">
+                        {% if usuario.tipo_de_usuario == "Estudiante" %}
+                            <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Agendar nueva clase</a></li>
+                            <br>
+                            <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</a></li>
+                            <br>
+                            <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cambiar Contraseña</a></li>
+                            <br>
+                            <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cerrar sesión</a></li>
+
+                        {% elif usuario.tipo_de_usuario == "Profesor" %}
+                            <li><a href="{% url 'ClasesProfe' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Mis clases</a></li>
+                            <br>
+                            <li><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</a></li>
+                            <br>
+                            <li><a href="" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Solicitudes</a></li>
+                            <br>
+                            <li><a href="{% url 'CrearClase' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Crear Clase</a></li>
+                            <br>
+                            <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cambiar Contraseña</a></li>
+                            <br>
+                            <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cerrar sesión</a></li>
+
+                        {% elif usuario.tipo_de_usuario == "Admin" %}
+                            <li><a href="{% url 'PanelAdmin' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Panel Admin</a></li>
+                            <br>
+                            <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</a></li>
+                            <br>
+                            <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cambiar Contraseña</a></li>
+                            <br>
+                            <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cerrar sesión</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="modal" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'ModificarPerfil' %}" id="FormPerfil" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="profile_picture">Foto de perfil:</label><br>
+                            <div style="color: red;" class="error-msg" id="error-fotoPerfil"></div>
+                            <input type="file" id="fotoPerfil" name="fotoPerfil">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <div style="color: red;" class="error-msg" id="error-nombre"></div>
+                            <input type="text" class="form-control" name="nombre" id="nombre" value="{{ usuario.nombre }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            <div style="color: red;" class="error-msg" id="error-apellido"></div>
+                            <input type="text" class="form-control" name="apellido" id="apellido" value="{{ usuario.apellido }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <div style="color: red;" class="error-msg" id="error-telefono"></div>
+                            <input type="text" class="form-control" name="telefono" id="telefono" value="{{ usuario.telefono }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edad" class="form-label">Edad</label>
+                            <div style="color: red;" class="error-msg" id="error-edad"></div>
+                            <input type="number" class="form-control" name="edad" id="edad" value="{{ usuario.edad }}">
+                        </div>
+                        
+                            {% if profe %}
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <div style="color: red;" class="error-msg" id="error-descripcion"></div>
+                                <textarea class="form-control" id="descripcion" name="descripcion">{{ profe.descripcion }}</textarea>
+                            </div>
+                            {% endif %}
+                        <!-- Agrega aquí los otros campos del formulario -->
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6 text-center">
-            <h3>Gestión </h3>
-            <br>
-            <ul class="list-unstyled">
-                {% if usuario.tipo_de_usuario == "Estudiante" %}
-                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Agendar nueva clase</a></li>
-                <br>
-                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Modificar mi perfil</a></li>
-                <br>
-                <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cambiar Contraseña</a></li>
-                <br>
-                <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
-
-                {% elif usuario.tipo_de_usuario == "Profesor" %}
-
-                <li><a href="{% url 'ClasesProfe' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Mis clases</a></li>
-                <li><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal" style="border-radius: 20px; width: 70%; height: 50px;  background-color: #F08080; border-color: #F08080; display: inline-block;" >Modificar mi perfil</a></li>
-                <br>
-                <li><a href="{% url 'Solicitudes' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Solicitudes</a></li>
-                <br>
-                <li><a href="{% url 'CrearClase' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Crear Clase</a></li>
-                <br>
-                <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cambiar Contraseña</a></li>
-                <br>
-                <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
-
-                {% elif usuario.tipo_de_usuario == "Admin" %}
-
-                <li><a href="{% url 'PanelAdmin' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Panel Admin</a></li>
-                <br>
-                <li><a href="#" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Modificar mi perfil</a></li>
-                <br>
-                <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cambiar Contraseña</a></li>
-                <br>
-                <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;" >Cerrar sesión</a></li>
-                {% endif %}
-            </ul>
-        </div>
     </div>
-</div>
-
-<div class="modal" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Perfil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'ModificarPerfil' %}" id="FormPerfil" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="profile_picture">Foto de perfil:</label><br>
-                        <div style="color: red;" class="error-msg" id="error-fotoPerfil"></div>
-                        <input type="file" id="fotoPerfil" name="fotoPerfil">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <div style="color: red;" class="error-msg" id="error-nombre"></div>
-                        <input type="text" class="form-control" name="nombre" id="nombre" value="{{ usuario.nombre }}" >
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Silva</label>
-                        <div style="color: red;" class="error-msg" id="error-apellido"></div>
-                        <input type="text" class="form-control" name="apellido" id="apellido" value="{{ usuario.apellido }}" >
-                    </div>
-                    <div class="mb-3">
-                        <label para="telefono" class="form-label">Teléfono</label>
-                        <div style="color: red;" class="error-msg" id="error-telefono"></div>
-                        <input tipo="text" class="form-control" name="telefono" id="telefono" value="{{ usuario.telefono }}">
-                    </div>
-                    <div class="mb-3">
-                        <label para="edad" class="form-label">Edad</label>
-                        <div style="color: red;" class="error-msg" id="error-edad"></div>
-                        <input tipo="number" class="form-control" name="edad" id="edad" value="{{ usuario.edad }}">
-                    </div>
-                    <div class="mb-3">
-                        <label para="descripcion" class="form-label">Descripción</label>
-                        <div style="color: red;" class="error-msg" id="error-descripcion"></div>
-                        <textarea class="form-control" name="descripcion">{{ profe.descripcion }}</textarea>
-                    </div>
-                    <!-- Agrega aquí los otros campos del formulario -->
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock contenido %}
 
 {% block js %}
-<script src="{% static 'core/js/ModPerfil.js' %}"></script>
+    <script src="{% static 'core/js/ModPerfil.js' %}"></script>
 {% endblock js %}

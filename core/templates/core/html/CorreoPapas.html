@@ -9,7 +9,7 @@
 {% block contenido %}
 <!-- Mensajes de éxito o error -->
 
-<form method="POST" action="{% url 'FormularioEstudiante' %}" enctype="multipart/form-data" id="formcorreo">
+<form method="POST" action="{% url 'ValidacionCorreoPapa' %}" enctype="multipart/form-data" id="formcorreo">
     <!-- Agrega un ID al formulario -->
     {% csrf_token %}
     <div class="login-container" style="border-radius: 30px;">

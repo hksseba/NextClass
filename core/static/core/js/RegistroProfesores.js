@@ -57,7 +57,7 @@ $(document).ready(function() {
                 mensajesError.push("La contraseña debe contener al menos un número.");
             }
             if (!/[!@#$%^&*()='?¿¡+~{}^,.-;:_¬|°]/.test(contra)) {
-                mensajesError.push("La contraseña debe contener al menos un carácter especial (!@#$%^&*()='?¿¡+~{}^,.-;:_¬|°).");
+                mensajesError.push("La contraseña debe contener al menos un carácter especial.");
             }
 
             return mensajesError;
@@ -85,6 +85,13 @@ $(document).ready(function() {
             limpiarError("antecedentes");
         }
 
+        const cetificado = $("#certificado").val();
+        if (cetificado === "") {
+            mostrarError("cetificado", "Debe ingresar antecedentes.");
+        } else {
+            limpiarError("cetificado");
+        }
+
         const carnet = $("#carnet").val();
         if (carnet === "") {
             mostrarError("carnet", "Debe ingresar su carnet de identidad.");
@@ -97,6 +104,13 @@ $(document).ready(function() {
             mostrarError("nombre", "Debe ingresar su nombre.");
         } else {
             limpiarError("nombre");
+        }
+
+        const sexo = $("#sexo").val().trim();
+        if (sexo === "") {
+            mostrarError("sexo", "Debe ingresar su sexo.");
+        } else {
+            limpiarError("sexo");
         }
 
         const apellido = $("#apellido").val().trim();

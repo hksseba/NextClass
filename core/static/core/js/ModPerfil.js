@@ -45,6 +45,11 @@ $(document).ready(function() {
             mostrarError("apellido", "El apellido no debe contener números ni caracteres especiales.");
         }
 
+        const descripcion = $("#descripcion").val()
+        if (descripcion == ""){
+            mostrarError("descripcion", "Ingrese una descripcion.");
+        }
+
         const telefono = $("#telefono").val().trim();
         if (telefono === "") {
             mostrarError("telefono", "Ingrese un número.");

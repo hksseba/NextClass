@@ -15,11 +15,14 @@ class Usuario(models.Model):
     tipo_de_usuario = models.CharField(max_length=20)
 
 # Tabla Estudiante
+
 class Estudiante(models.Model):
     id_estudiante = models.AutoField(primary_key=True)
     nivel_educativo = models.CharField(max_length=255)
     descripcion = models.TextField()
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    estado_solicitud = models.CharField(max_length=50)
+    correo_padre = models.CharField(max_length=50, null=True, blank=True)  
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
 # Tabla Admin
 class Admin(models.Model):
@@ -32,6 +35,7 @@ class Profesor(models.Model):
     id_profesor = models.AutoField(primary_key=True)
     run = models.CharField(max_length=10)
     antecedentes = models.FileField(upload_to='archivos_pdf', null=False)
+    certificado = models.FileField(upload_to='archivos_pdf', null=False)
     carnet = models.ImageField(upload_to='media', null=False)
     descripcion = models.TextField()
     estado_de_aprobacion = models.CharField(max_length=50)

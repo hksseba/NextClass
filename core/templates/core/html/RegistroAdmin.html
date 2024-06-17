@@ -1,5 +1,5 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
-
+{% load static %}
 {% block contenido %}
 <div class="container mt-4">
     <h2>Registrar Administrador</h2>
@@ -13,7 +13,7 @@
         </div>
     {% endif %}
 
-    <form method="POST" action="{% url 'RegistroAdmin' %}" enctype="multipart/form-data" id="registroAdmin">
+    <form method="POST" action="{% url 'FormularioAdmin' %}" enctype="multipart/form-data" id="registroAdmin">
         {% csrf_token %}
         
         <div class="mb-3">

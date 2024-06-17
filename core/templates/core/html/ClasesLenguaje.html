@@ -1,0 +1,38 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'core/css/ValidacionPapas/ValidacionPapas.css' %}">
+{% endblock links %}
+
+{% block contenido %}
+<div class="container" style="margin-top: 168px; margin-bottom: 168px;">
+    <div class="row">
+        {% if clases %}
+            {% for clase in clases %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-img-top text-center" style="padding: 10px;">
+                            <a href="{% url 'VistaProfe' clase.profesor.id_profesor clase.id_clase %}">
+                                <img src="{{ clase.profesor.usuario.foto.url }}" class="img-fluid img-thumbnail" style="max-height: 150px; width: auto;">
+                            </a>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ clase.nombre_clase }}</h5>
+                            <p class="card-text">Profesor: {{ clase.profesor.usuario.nombre }} {{ clase.profesor.usuario.apellido }}</p>
+                            <p class="card-text">{{ clase.profesor.descripcion }}</p>
+                            <ul class="list-unstyled">
+                                <li>Tarifa: ${{ clase.tarifa_clase }} / H</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center mt-auto">
+                            <a href="{% url 'VistaProfe' clase.profesor.id_profesor clase.id_clase %}" class="btn btn-primary">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay clases disponibles para esta materia.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock contenido %}

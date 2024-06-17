@@ -1,0 +1,19 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Clases de Historia</h2>
+    <div class="row">
+        {% for clase in clases %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ clase.clase.nombre_clase }}</h5>
+                    <p class="card-text">Descripción: {{ clase.clase.descripcion_clase }}</p>
+                    <p class="card-text">Tarifa: $ {{ clase.clase.tarifa_clase }} / Hora</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock contenido %}
