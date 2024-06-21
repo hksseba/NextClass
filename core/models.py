@@ -48,7 +48,7 @@ class Clase(models.Model):
     tarifa_clase = models.IntegerField()
     idioma_clase = models.CharField(max_length=255)
     descripcion_clase = models.CharField(max_length=255)
-    profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
+    profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE, related_name='clases_profesor')
     materias = models.ManyToManyField('Materia', through='ClaseMateria')
 
 # Tabla Materia
@@ -67,12 +67,13 @@ class ClaseMateria(models.Model):
 # Tabla Sesion
 class Sesion(models.Model):
     id_sesion = models.AutoField(primary_key=True)
-    fechaclase = models.DateField()
+    fechaclase = models.DateTimeField() 
     contacto = models.CharField(max_length=15, blank=True)
     mensaje = models.TextField(default="")
     estado_clase = models.CharField(max_length=50, default="Pendiente")
-    profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE)
+    profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE, related_name='sesiones_profesor')
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    clase = models.ForeignKey(Clase, on_delete=models.CASCADE, related_name='sesiones_clase')
 
 # Tabla Evaluacion
 class Evaluacion(models.Model):

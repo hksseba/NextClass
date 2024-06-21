@@ -1,22 +1,22 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
 
 
 from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
    path('Login/', Login, name= "Login"),
    path('Logueo', Logueo, name= "Logueo"),
-   path('Perfil', Perfil, name= "Perfil"),
    path('Solicitudes', Solicitudes, name= "Solicitudes"),
    path('PanelAdmin', PanelAdmin, name= "PanelAdmin"),
    path('PerfilProfe', PerfilProfe, name= "PerfilProfe"),
+   path('Perfil', Perfil, name= "Perfil"),
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
    path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
@@ -53,6 +53,10 @@ urlpatterns = [
    path('ClasesHistoria/', ClasesHistoria, name='ClasesHistoria'),
    path('ClasesLenguaje', ClasesLenguaje, name='ClasesLenguaje'),
    path('ClasesMatematica/', ClasesMatematica, name='ClasesMatematica'),
+   path('pagar/<int:sesion_id>/', pagar, name='pagar'),
+    path('retorno/', retorno, name='retorno'),
+    path('api/', include('api.urls')),
+    
 
 
 

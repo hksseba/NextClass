@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pago Rechazado</title>
+</head>
+<body>
+    <h1>Pago Rechazado</h1>
+    <p>Detalles de la transacción:</p>
+    <ul>
+        <li>Order ID: {{ response.buy_order }}</li>
+        <li>Amount: {{ response.amount }}</li>
+        <li>Status: {{ response.status }}</li>
+        <li>Response Code: {{ response.response_code }}</li>
+    </ul>
+</body>
+</html>

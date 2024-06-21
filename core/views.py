@@ -12,13 +12,13 @@ from django.contrib.auth import authenticate, login
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
-
+from django.urls import reverse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
+from rest_framework.authtoken.models import Token
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
@@ -26,25 +26,28 @@ from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count, Avg, Sum, F
 from core.models import Usuario, Estudiante, Admin, Profesor, Clase, Materia, Sesion, Evaluacion, ClaseMateria
-import re
+
+from transbank.webpay.webpay_plus.transaction import Transaction
+from transbank.common.options import WebpayOptions
+from transbank.common.integration_type import IntegrationType
+from transbank.common.integration_commerce_codes import IntegrationCommerceCodes
+from transbank.common.integration_api_keys import IntegrationApiKeys
 # Create your views here.
 
 
 from django.shortcuts import render
 
+
 def PaginaPrincipal(request):
-    profesores = Profesor.objects.select_related('usuario').all()
-    clase = Clase.objects.select_related('pro')
+    profesores = Profesor.objects.select_related('usuario').prefetch_related('clases_profesor').all()
     materias = Materia.objects.all()
-    print( materias)
+
     contexto = {
         "profesores": profesores,
         "user": request.user,
-        "materias":materias,
-        "clase": clase
+        "materias": materias
     }
     return render(request, 'core/html/PaginaPrincipal.html', contexto)
-
 def ClasesLenguaje(request):
     # Obtener la instancia de la materia 'Lenguaje'
     materia_lenguaje = Materia.objects.get(id_materia=1)
@@ -121,7 +124,7 @@ def Logueo(request):
             user = authenticate(request, username=usuario1.email, password=usuario1.contra)
             if user is not None:
                 login(request, user)
-                
+                token, created = Token.objects.get_or_create(user=user)
                 # Redirigir según el tipo de usuario
                 if usuario1.tipo_de_usuario == "Admin":
                     return redirect('PanelAdmin')
@@ -264,7 +267,7 @@ def PanelAdmin(request):
 
     # Usuarios más activos
     estudiantes_actividades = Estudiante.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
-    profesores_actividades = Profesor.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
+    profesores_actividades = Profesor.objects.annotate(count_sesiones=Count('sesiones_profesor')).order_by('-count_sesiones')[:10]
 
     # Datos financieros
     ingresos_totales = Clase.objects.aggregate(total=Sum('tarifa_clase'))
@@ -370,7 +373,8 @@ def VistaProfe(request, id_profesor, id_clase):
         "clase": clase,
         "evaluaciones": evaluaciones,
         "evaluacion_existente": evaluacion_existente,
-        "cantResenas": cantResenas
+        "cantResenas": cantResenas,
+        "Usuario": usuario_actual
     }
     
     # Renderizar la plantilla con el contexto
@@ -388,6 +392,7 @@ def RegistroProfe(request):
         run = request.POST.get('run')
         foto = request.FILES.get('foto_profe')
         carnet = request.FILES.get('carnet')
+        certificado = request.FILES.get('certificado')
         antecedentes = request.FILES.get('antecedentes')
         contra = request.POST.get('contra')
 
@@ -424,6 +429,7 @@ def RegistroProfe(request):
             antecedentes=antecedentes,
             run=run,
             carnet=carnet,
+            certificado = certificado,
             descripcion=descripcion,
             estado_de_aprobacion="Pendiente"
         )
@@ -479,11 +485,16 @@ def FormularioEstudiante(request):
             last_name=vApellido
         )
 
+        if int(vEdad) > 18:
+            estado_solicitud = "Aprobado"
+        else:
+            estado_solicitud = "Pendiente"
+
         # Crear el estudiante asociado al usuario personalizado
         estudiante = Estudiante.objects.create(
             usuario=usuario,
             correo_padre = vCorreoPadre,
-            estado_solicitud = "Pendiente",
+            estado_solicitud = estado_solicitud,
             nivel_educativo=vNvlEducativo
         )
 
@@ -794,39 +805,78 @@ def EliminarClase(request,id_clase):
 def Agendar (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     usuario = Usuario.objects.get(email = request.user.username)
+    estudiante = Estudiante.objects.get(usuario = usuario)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
+    sesion = Sesion.objects.get(estudiante = estudiante)
     contexto = {
         "profe": profe,
         "clase": clase,
-        "usuario": usuario
+        "usuario": usuario,
+        'estudiante':estudiante,
+        'sesion': sesion
     }
     return render(request, 'core/html/Agendar.html', contexto)
 
+tx = Transaction(WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST))
+
+def pagar(request, sesion_id):
+    sesion = get_object_or_404(Sesion, id_sesion=sesion_id)
+
+    # Datos de la transacción
+    buy_order = str(sesion.id_sesion)
+    session_id = str(sesion.estudiante.id_estudiante)
+    amount = sesion.clase.tarifa_clase
+    return_url = request.build_absolute_uri(reverse('retorno'))
+
+    response = tx.create(buy_order, session_id, amount, return_url)
+
+    token = response['token']
+    url = response['url']
+
+    return render(request, 'core/html/pagos/pago_formulario.html', {'url': url, 'token': token})
+
+def retorno(request):
+    token_ws = request.GET.get('token_ws', None)
+    if token_ws:
+        response = tx.commit(token_ws)
+        if response['response_code'] == 0 and response['status'] == 'AUTHORIZED':
+            # Transacción aprobada
+            return render(request, 'core/html/pagos/pago_exitoso.html', {'response': response})
+        else:
+            # Transacción rechazada
+            return render(request, 'core/html/pagos/pago_rechazado.html', {'response': response})
+    else:
+        return HttpResponse("Error: no se recibió token_ws")
+
+
 def FormularioAgendar(request):
-    if request.method == 'POST':
+     if request.method == 'POST':
         mensaje = request.POST.get('mensaje')
         fecha_str = request.POST.get('datepicker')
+        hora_str = request.POST.get('timepicker')
         telefono = request.POST.get('telefono')
         id_profesor = request.POST.get('id_profesor')
         usuario_actual = request.user
         usuario = get_object_or_404(Usuario, email=usuario_actual.email)
         estudiante = get_object_or_404(Estudiante, usuario=usuario)
+        id_clase = request.POST.get('id_clase') 
         id_estudiante = estudiante.id_estudiante
 
-        fecha = datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
+        # Combinar fecha y hora
+        datetime_str = f"{fecha_str} {hora_str}"
+        fecha_hora = datetime.strptime(datetime_str, '%d/%m/%Y %H:%M')
 
-                
         nueva_sesion = Sesion.objects.create(
             mensaje=mensaje,
-            fechaclase=fecha,
+            fechaclase=fecha_hora,
             contacto=telefono,
             profesor_id=id_profesor,
-            estudiante_id=id_estudiante
+            estudiante_id=id_estudiante,
+            clase_id=id_clase
         )
         print("ID del estudiante:", id_estudiante)
-        
-    
-    return render(request, 'core/html/Agendar.html')
+
+        return render (request, 'core/html/Agendar.html')
 
 
 def Calificar(request, id_profesor, id_clase):
@@ -865,7 +915,7 @@ def Calificar(request, id_profesor, id_clase):
 
 
 def ValidacionPapas(request,correo):
-    Alumnos = Profesor.objects.filter(estado_de_aprobacion="Pendiente")  # Solo las solicitudes pendientes
+    Alumnos = Estudiante.objects.filter(estado_solicitud="Pendiente")  # Solo las solicitudes pendientes
     return render(request, 'core/html/ValidacionPapas.html', {'Alumnos': Alumnos})
 
 def CorreoPapas(request):

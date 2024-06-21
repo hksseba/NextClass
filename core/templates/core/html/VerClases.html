@@ -12,7 +12,8 @@
 {% block contenido %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Mis clases</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-bottom: 100px;">
+    <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-bottom: 125px; justify-content: center;">
+        {% if clases %}
         {% for clase in clases %}
         <div class="col">
             <div class="card clase-card h-100">
@@ -70,6 +71,9 @@
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <p style="text-align: center;">Aun no tienes ningun clase, clickea en el botón, "Crear Clase" en tu perfil para crear una clase</p>
+       {% endif %} 
     </div>
 </div>
 

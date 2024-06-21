@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
      'core',
+     'rest_framework',
+     'api',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -53,6 +56,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Proyecto_APT.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    
+}
 
 TEMPLATES = [
     {

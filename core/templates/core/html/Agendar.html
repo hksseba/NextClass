@@ -2,76 +2,80 @@
 {% load static %}
 
 {% block links %}
-<link rel="stylesheet" href="{% static 'core/css/Agendar/Agendar.css'%}">
+<!-- Incluye jQuery y jQuery UI -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="{% static 'core/css/Agendar/Agendar.css' %}">
+
 {% endblock links %}
 
 {% block contenido %}
 <div class="container mt-4" style="margin-bottom: 244px;">
-    
     <div class="row">
         <div class="col-md-6">
             <form method="POST" action="{% url 'FormularioAgendar' %}" enctype="multipart/form-data" id="Agendar">
                 {% csrf_token %}
-    
                 <input type="hidden" name="id_profesor" value="{{ profe.id_profesor }}">
-            <div id="sticky-container" style="display: flex; justify-content: center;">
-                <div style="max-width: 350px; ">
-                    <br><br><br><br><br>
-                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                        <br>
-                        <img src="{{profe.usuario.foto.url}}" style="max-width: 50%; border-radius: 25px;">
-                        <div class="card-body" style="text-align: center;">
-                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
-                            <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
-                            <h4>Tarifa por hora</h4>
-                            <h5 class="card-title" style="color: #F08080;"><b>${{clase.tarifa_clase}}</b></h5>
-                           
-                          
+                <div id="sticky-container" style="display: flex; justify-content: center;">
+                    <div style="max-width: 350px;">
+                        <br><br><br><br><br>
+                        <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                            <br>
+                            <img src="{{ profe.usuario.foto.url }}" style="max-width: 50%; border-radius: 25px;">
+                            <div class="card-body" style="text-align: center;">
+                                <h5 class="card-title"><b>{{ profe.usuario.nombre }} {{ profe.usuario.apellido }}</b></h5>
+                                <h5 class="card-title"><b>4.1</b> <p style="color: gray;">(10 opiniones)</p></h5>
+                                <h4>Tarifa por hora</h4>
+                                <h5 class="card-title" style="color: #F08080;"><b>${{ clase.tarifa_clase }}</b></h5>
+                            </div>
                         </div>
-                    
                     </div>
                 </div>
-            </div>
         </div>
 
-        <div class="col-md-6 ">
+        <div class="col-md-6">
             <br><br><br>
-            <h3>Planifica tu clase de {{clase.nombre_clase}} </h3>
-            <p>Tu primera clase con {{profe.usuario.nombre}}</p>
-            <br><BR>
+            <h3>Planifica tu clase de {{ clase.nombre_clase }}</h3>
+            <p>Tu primera clase con {{ profe.usuario.nombre }}</p>
+            <br><br>
             <h4><b>Tu mensaje</b></h4>
-
-                <label for="mensaje" class="form-label" ></label>
-                <textarea class="form-control" class="form-control" name="mensaje" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">Hola {{profe.usuario.nombre}}, Mi nombre es {{usuario.nombre}} y estoy buscando profesor de {{clase.nombre_clase}}. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo?  Qué tengas un lindo día, Hasta pronto, {{usuario.nombre}}</textarea>
-                <br>
-                <h3> Fecha de la clase</h3>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button id="btn1" type="button" class="btn btn-secondary active" style="height: 60px; width: 200px;">Lo antes posible</button>
-                    <button id="btn2" type="button" class="btn btn-secondary" style="height: 60px; width: 200px;">Propón una fecha</button>
-
-                </div>
-                <input type="text" id="datepicker" name="datepicker" style="height: 40px; width: 200px; margin-right: 30px; text-align: center;" placeholder="DD/MM/AA">
-                <br><br><br>
-                <h3>Tus datos de contacto</h3>
-                <label for="telefono" class="form-label" id="telefono" name="telefono">Número de telefóno</label>
-                <input tipo="text" class="form-control" name="telefono" id="telefono"  style="height: 60px; width: 350px">
-                <br><br>
-                <div class="text-center">
-                    <button type="submit" class="btn" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block; color: white;">Siguiente</button>
-                </div>
+            <label for="mensaje" class="form-label"></label>
+            <textarea class="form-control" id="msg" name="mensaje" style="background-color: #f2f3f5; height: 150px;" placeholder="Da a Norma informacion para concretar la clase.">
+                Hola {{ profe.usuario.nombre }}, Mi nombre es {{ usuario.nombre }} y estoy buscando profesor de {{ clase.nombre_clase }}. Me gustaría tener las clases por webcam. Lo ideal sería empezar las clases lo antes posible. ¿Te convendría esto? ¿Puedes contactarme para que podamos hablarlo? Qué tengas un lindo día, Hasta pronto, {{ usuario.nombre }}
+            </textarea>
+            <br>
+            <h3>Fecha de la clase</h3>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button id="btn1" type="button" class="btn btn-secondary active" style="height: 60px; width: 200px;">Lo antes posible</button>
+                <button id="btn2" type="button" class="btn btn-secondary" style="height: 60px; width: 200px;">Propón una fecha</button>
+            </div>
+            <input type="text" id="datepicker" name="datepicker" style="height: 40px; width: 200px; margin-right: 30px; text-align: center;" placeholder="DD/MM/AA">
+            <input type="text" id="timepicker" name="timepicker" style="height: 40px; width: 200px; text-align: center;" placeholder="HH:MM">
+            <input type="hidden" id="id_clase" name="id_clase" value="{{ clase.id_clase }}">
+            
+            <input type="hidden" id="id_profesor" value="{{ profe.id_profesor }}">
+            <input type="hidden" id="id_alumno" value="{{estudiante.id_estudiante }}">
+            <br><br><br>
+            <h3>Tus datos de contacto</h3>
+            <label for="telefono" class="form-label">Número de teléfono</label>
+            <input type="text" class="form-control" name="telefono" id="telefono" style="height: 60px; width: 350px">
+            <br><br>
+            <div class="text-center">
+                <button type="button" onclick="verificarDisponibilidad()" id="agendar" class="btn" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block; color: white;">Agendar</button>
+            </div>
+            <div class="text-center">
+            </div>
+            </form>
+            <form method="post" action="{% url 'pagar' sesion.id_sesion %}">
+                {% csrf_token %}
+                <input type="submit" class="btn" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block; color: white;" value="Ir a pagar" />
             </form>
         </div>
+    
     </div>
 </div>
-
-
 {% endblock contenido %}
 
 {% block js %}
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <!-- jQuery UI (incluyendo el archivo de localización en español) -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -79,8 +83,4 @@
 
 <!-- Tu script personalizado -->
 <script src="{% static 'core/js/Agendar.js' %}"></script>
-
-
 {% endblock js %}
-
-   

@@ -144,8 +144,13 @@
                             <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
                         </div>
                         <div>
+                            {% if Usuario %}
                             <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
                             <br>
+                            {% else %}
+                            <a href="{% url 'Login' %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
+
+                            {% endif %}
                             {% if user.is_authenticated %}
                             {% if evaluacion_existente %}
                                 <button type="button" href="" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Editar</button>

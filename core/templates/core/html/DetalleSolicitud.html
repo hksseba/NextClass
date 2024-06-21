@@ -12,6 +12,7 @@
     <p>RUN: {{ profesor.run }}</p>
     <p><a href="{{ profesor.antecedentes.url }}" target="_blank">Ver Antecedentes</a></p>
     <p><a href="{{ profesor.carnet.url }}" target="_blank">Ver Carnet</a></p>
+    <p><a href="{{ profesor.certificado.url }}" target="_blank">Ver Certificado de estudios</a></p>
     
     <form action="{% url 'AceptarSolicitud' profesor.id_profesor %}" method="post" style="display: inline;">
         {% csrf_token %}
