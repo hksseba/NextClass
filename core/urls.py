@@ -5,9 +5,9 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar,reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -37,7 +37,6 @@ urlpatterns = [
    path('CambiarContra/', CambiarContra, name='CambiarContra'),
    path('reset_password/<email>/', views.reset_password, name='reset_password'),
    path('Agendar/<int:id_profesor>/<int:id_clase>/', Agendar, name='Agendar'),
-   path('FormularioAgendar/', FormularioAgendar, name='FormularioAgendar'),
    path('FormularioAdmin/', FormularioAdmin, name='FormularioAdmin'),
    path('solicitar_cambio_contra/<str:tipo>/', views.solicitar_cambio_contra, name='solicitar_cambio_contra'),
    path('Calificar/<int:id_profesor>/<int:id_clase>/', Calificar, name='Calificar'),
@@ -54,7 +53,7 @@ urlpatterns = [
    path('ClasesLenguaje/', ClasesLenguaje, name='ClasesLenguaje'),
    path('ClasesMatematica', ClasesMatematica, name='ClasesMatematica'),
    path('Clases', Clases, name='Clases'),
-   path('pagar/<int:sesion_id>/', pagar, name='pagar'),
+   path('pagar/<int:id_sesion>/', views.pagar, name='pagar'),
     path('retorno/', retorno, name='retorno'),
     path('api/', include('api.urls')),
     

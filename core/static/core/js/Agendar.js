@@ -2,8 +2,6 @@
 $(document).ready(function() {
     $("#datepicker").hide();
     $("#timepicker").hide();
-    
-  
 
     $("#datepicker").datepicker({
         minDate: 0,
@@ -23,7 +21,8 @@ $(document).ready(function() {
                 dropdown: true,
                 scrollbar: true,
                 onSelect: function() {
-                    $("#Agendar").show();
+                    $("#agendar").show();
+                    $("#pagarBtn").show();  // Mostrar el botón de pagar después de seleccionar la hora
                 }
             });
         }
@@ -121,8 +120,11 @@ function crearSesion() {
         return;
     }
 
+    // Ajustar la fecha y hora a la zona horaria de Santiago, Chile
+    var fechaHoraSantiago = new Date(fechaHora.toLocaleString('en-US', { timeZone: 'America/Santiago' }));
+
     // Convertir a formato ISO 8601
-    var fechaHoraISO = fechaHora.toISOString();
+    var fechaHoraISO = fechaHoraSantiago.toISOString();
     console.log('FECHA FINAL', fechaHoraISO);
 
     $.ajax({
@@ -135,11 +137,11 @@ function crearSesion() {
             telefono: telefono,
             mensaje: mensaje,
             profesor: profe,
-            estudiante: estudiante
+            estudiante: estudiante,
+            estado_pago: false
         }),
         success: function(response) {
             console.log('Sesión creada:', response);
-
             alert('Sesión creada exitosamente.');
         },
         error: function(error) {
