@@ -4,10 +4,13 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
 
+from .views import (PaginaPrincipal, Login, Logueo, Perfil, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, FormularioEstudiante, 
+RegistroProfe, VistaProfe, RegistroAdmin, ListaUsuarios, ListaClases, AceptarSolicitud, RechazarSolicitud, DetalleSolicitud, EliminarUsuario,
+EliminarClase, VerClase, Deslogueo, CrearClase, FormClase, ClasesProfe, CambiarContra, reset_password, Agendar, FormularioAgendar, FormularioAdmin,
+solicitar_cambio_contra, Calificar, EditarClase , exportar_excel, ValidacionPapas, CorreoPapas, ValidacionPapasView, ModificarPerfil, 
+AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
+)
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
-
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -28,7 +31,7 @@ urlpatterns = [
    path('RechazarSolicitud/<int:id_solicitud>/', RechazarSolicitud, name='RechazarSolicitud'),
    path('solicitudes/detalle/<int:id_solicitud>/', DetalleSolicitud, name='DetalleSolicitud'),
    path('EliminarUsuario/<int:usuario_id>/', EliminarUsuario, name='EliminarUsuario'),
-   path('EliminarClase/<int:clase_id>/', EliminarClase, name='EliminarClase'),
+   path('EliminarClase/<int:clase_id>/', views.EliminarClase, name='EliminarClase'),
    path('VerClase/<int:clase_id>/', VerClase, name='VerClase'),
    path('Deslogueo/', Deslogueo, name='Deslogueo'),
    path('CrearClase/', CrearClase, name='CrearClase'),
@@ -42,11 +45,10 @@ urlpatterns = [
    path('solicitar_cambio_contra/<str:tipo>/', views.solicitar_cambio_contra, name='solicitar_cambio_contra'),
    path('Calificar/<int:id_profesor>/<int:id_clase>/', Calificar, name='Calificar'),
    path('EditarClase<id_clase>/', EditarClase, name='EditarClase'),
-   path('EliminarClase<id_clase>/', EliminarClase, name='EliminarClase'),
    path('exportar_excel/', views.exportar_excel, name='exportar_excel'),
-   path('ValidacionPapas<correo>/', ValidacionPapas, name='ValidacionPapas'),
+   path('validacion_papas/<int:student_id>/<str:decision>/', ValidacionPapas, name='ValidacionPapas'),
    path('CorreoPapas/', CorreoPapas, name='CorreoPapas'),
-   path('ValidacionCorreoPapa/', ValidacionCorreoPapa, name='ValidacionCorreoPapa'),
+   path('validacion_papas_view/<int:student_id>/', ValidacionPapasView, name='ValidacionPapasView'),
    path('ModificarPerfil/', ModificarPerfil, name='ModificarPerfil'),
    path('AceptarSolicitudEstudiante/<int:id_estudiante>/', AceptarSolicitudEstudiante, name='AceptarSolicitudEstudiante'),
    path('RechazarSolicitudEstudiante/<int:id_estudiante>/', RechazarSolicitudEstudiante, name='RechazarSolicitudEstudiante'),
@@ -55,13 +57,8 @@ urlpatterns = [
    path('ClasesMatematica', ClasesMatematica, name='ClasesMatematica'),
    path('Clases', Clases, name='Clases'),
    path('pagar/<int:sesion_id>/', pagar, name='pagar'),
-    path('retorno/', retorno, name='retorno'),
-    path('api/', include('api.urls')),
-    
-
-
-
+   path('retorno/', retorno, name='retorno'),
+   path('api/', include('api.urls')),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

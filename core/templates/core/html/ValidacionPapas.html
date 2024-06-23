@@ -1,42 +1,17 @@
-{% extends 'core/plantillas/PlantillaGeneral.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Validación de Registro de Estudiante</title>
+</head>
+<body>
+    <h1>Información del Estudiante</h1>
+    <p>Nombre: {{ estudiante.usuario.nombre }} {{ estudiante.usuario.apellido }}</p>
+    <p>Correo: {{ estudiante.usuario.email }}</p>
+    <p>Teléfono: {{ estudiante.usuario.telefono }}</p>
+    <p>Edad: {{ estudiante.usuario.edad }}</p>
+    <p>Nivel Educativo: {{ estudiante.nivel_educativo }}</p>
 
-{% block links %}
-<link rel="stylesheet" href="{% static 'core/css/ValidacionPapas/ValidacionPapas.css' %}">
-{% endblock links %}
-
-{% block contenido %}
-<div class="container" style="margin-top: 168px; margin-bottom: 168px;">
-    <div class="row">
-        {% if Alumnos %}
-            {% for alumno in Alumnos %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Detalles del alumno</h5>
-                        <p class="card-text">Nombre: {{ alumno.usuario.nombre }} {{ alumno.usuario.apellido }}</p>
-                        <p class="card-text">Email: {{ alumno.usuario.email }}</p>
-                        <p class="card-text">Teléfono: {{ alumno.usuario.telefono }}</p>
-                        <p class="card-text">Edad: {{ alumno.usuario.edad }}</p>
-                    </div>
-                    <div class="card-footer">
-                        <form method="post" action="{% url 'AceptarSolicitudEstudiante' alumno.id_estudiante %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Aceptar</button>
-                        </form>
-                        <form method="post" action="{% url 'RechazarSolicitudEstudiante' alumno.id_estudiante %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Rechazar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="col">
-                <p>No hay solicitudes pendientes.</p>
-            </div>
-        {% endif %}
-    </div>
-</div>
-{% endblock contenido %}
+    <a href="{% url 'ValidacionPapas' estudiante.id_estudiante 'aceptar' %}">Aceptar</a>
+    <a href="{% url 'ValidacionPapas' estudiante.id_estudiante 'rechazar' %}">Rechazar</a>
+</body>
+</html>

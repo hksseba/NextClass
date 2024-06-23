@@ -452,7 +452,6 @@ def RegistroProfe(request):
     return render(request, 'core/html/RegistroProfe.html', context={"materias": Materia.objects.all()})
 
 def RegistroEstudiante(request):
-    
     return render(request, 'core/html/RegistroEstudiante.html')
 
 def FormularioEstudiante(request):
@@ -481,7 +480,7 @@ def FormularioEstudiante(request):
             apellido=vApellido,
             telefono=vTelefono,
             contra=vClave,
-            edad = vEdad,
+            edad=vEdad,
             foto=vFoto,
             tipo_de_usuario="Estudiante"
         )
@@ -496,24 +495,26 @@ def FormularioEstudiante(request):
         )
 
         if int(vEdad) > 18:
-            estado_solicitud = "Aprobado"
+            Vestado_solicitud = "Aprobado"
         else:
-            estado_solicitud = "Pendiente"
+            Vestado_solicitud = "Pendiente"
 
         # Crear el estudiante asociado al usuario personalizado
         estudiante = Estudiante.objects.create(
             usuario=usuario,
-            correo_padre = vCorreoPadre,
-            estado_solicitud = estado_solicitud,
+            correo_padre=vCorreoPadre,
+            estado_solicitud=Vestado_solicitud,
             nivel_educativo=vNvlEducativo
         )
 
-        messages.success(request, "Registro completado con éxito.")
-        return redirect('Login')  # Redirigir después de registrar con éxito
+        # Enviar correo de validación si el estudiante es menor de edad
+        if int(vEdad) < 18 and vCorreoPadre:
+            send_email(vCorreoPadre, request, 'validacion_estudiante', student_name=estudiante.usuario.nombre, student_id=estudiante.id_estudiante)
+
+        messages.success(request, "Registro completado con éxito. Un correo de validación ha sido enviado a sus padres.")
+        return redirect('Login')
 
 def RegistroAdmin(request):
-    
-
     return render(request, 'core/html/RegistroAdmin.html')
 
 def FormularioAdmin(request):
@@ -591,15 +592,29 @@ def solicitar_cambio_contra(request, tipo):
     
     return render(request, 'core/html/solicitar_cambio_contra.html', {'tipo': tipo})
 
-def send_email(email, request, tipo):
+def send_email(email, request, tipo, student_name=None, student_id=None):
     context = {
         'email': email,
         'request': request,
         'tipo': tipo,
     }
 
-    template = get_template('core/html/correo_generico.html')
-    subject = 'Cambio de Contraseña' if tipo == 'cambiar' else 'Restablecimiento de Contraseña' if tipo == 'restablecer' else 'Estado de Registro'
+    if tipo == 'validacion_estudiante' and student_name and student_id:
+        context.update({
+            'student_name': student_name,
+            'student_id': student_id
+        })
+
+    subject = {
+        'cambiar': 'Cambio de Contraseña',
+        'restablecer': 'Restablecimiento de Contraseña',
+        'validacion_estudiante': 'Validación de Registro de Estudiante',
+        'aprobado': 'Registro Aprobado',
+        'rechazado': 'Registro Rechazado',
+        'notificacion': 'Correo de notificación'
+    }.get(tipo, 'Correo de notificación')
+
+    template = get_template('core/html/Correo_generico.html')
     content = template.render(context)
 
     mail = EmailMultiAlternatives(
@@ -685,7 +700,10 @@ def ListaUsuarios(request):
 
 @login_required
 def ListaClases(request):
-    clases = Sesion.objects.all()
+    usuario = request.user
+    usuario1 = Usuario.objects.get(email=usuario)
+    profe = Profesor.objects.get(usuario=usuario1)
+    clases = Clase.objects.filter(profesor=profe).distinct()
     return render(request, 'core/html/ListaClases.html', {'clases': clases})
 
 def EliminarUsuario(request, usuario_id):
@@ -710,107 +728,93 @@ def EliminarUsuario(request, usuario_id):
     # Redirigir a la lista de usuarios
     return redirect('ListaUsuarios')
 
+@login_required
 def EliminarClase(request, clase_id):
+    usuario = request.user
+    usuario1 = Usuario.objects.get(email=usuario)
+    profe = Profesor.objects.get(usuario=usuario1)
+    
     try:
-        # Obtén la clase y elimínala
-        clase = Sesion.objects.get(id_sesion=clase_id)
+        # Obtén la clase que el profesor quiere eliminar
+        clase = Clase.objects.get(id_clase=clase_id, profesor=profe)
         clase.delete()
-        messages.success(request, f"Clase eliminada con éxito.")
-    except Sesion.DoesNotExist:
-        messages.error(request, "Clase no encontrada.")
+        messages.success(request, "Clase eliminada con éxito.")
+    except Clase.DoesNotExist:
+        messages.error(request, "Clase no encontrada o no tienes permiso para eliminar esta clase.")
     except Exception as e:
         messages.error(request, f"Error al eliminar clase: {e}")
+    
+    return redirect('ClasesProfe')
 
-    # Redirigir a una página después de la eliminación, como la lista de clases
-    return redirect('ListaClases')
-
+@login_required
 def VerClase(request, clase_id):
-    # Obtén la clase correspondiente al ID o devuelve un 404 si no existe
     clase = get_object_or_404(Sesion, id_sesion=clase_id)
     return render(request, 'core/html/VerClase.html', {'clase': clase})
 
+@login_required
 def FormClase(request):
     if request.method == 'POST':
-        # Obtener datos del formulario
         titulo = request.POST.get('titulo')
         descripcion = request.POST.get('descripcion')
         precio = request.POST.get('precio')
         materia = request.POST.get('materia')
         
-        # Obtener el usuario autenticado (profesor)
         usuario = request.user
         
         try:
-            # Obtener el objeto Usuario correspondiente al usuario autenticado
-            print(materia)
             usuario1 = Usuario.objects.get(email=usuario)
-            
-            # Obtener el objeto Profesor correspondiente al usuario
             idusuario = Profesor.objects.get(usuario=usuario1)
-            
-            # Obtener el objeto Materia correspondiente al nombre de la materia
             materiaid = Materia.objects.get(id_materia=materia)
             
-            # Crear la clase
             clase = Clase(
                 nombre_clase=titulo,
                 tarifa_clase=precio,
                 descripcion_clase=descripcion,
-                profesor=idusuario                
+                profesor=idusuario
             )
             clase.save()
             
-            # Relacionar la clase con la materia a través de la tabla intermedia ClaseMateria
             claseMateria = ClaseMateria(
                 clase_id=clase.id_clase,
                 materia_id=materiaid.id_materia
             )
             claseMateria.save()
             
-            # Redireccionar al perfil del usuario después de guardar la clase
             return redirect('ClasesProfe')
-            
         except Exception as e:
             messages.error(request, f"Error al crear la clase: {e}")
             return redirect('CrearClase')
 
-
+@login_required
 def CrearClase(request):
     materias = Materia.objects.all()
-    return render(request, 'core/html/FormClase.html', {'materias': materias })            
+    return render(request, 'core/html/FormClase.html', {'materias': materias })
 
+@login_required
 def ClasesProfe(request):
     usuario = request.user
-    usuario1 = Usuario.objects.get(email = usuario)
-    profe = Profesor.objects.get(usuario = usuario1)
+    usuario1 = Usuario.objects.get(email=usuario)
+    profe = Profesor.objects.get(usuario=usuario1)
     clases = Clase.objects.filter(profesor=profe).distinct()
+    return render(request, 'core/html/VerClases.html', {'clases' : clases})
 
-    return render (request, 'core/html/VerClases.html', {'clases' : clases} )
-
+@login_required
 def EditarClase(request, id_clase):
     if request.method == 'POST':
-        clase = Clase.objects.get(pk=id_clase)
+        usuario = request.user
+        usuario1 = Usuario.objects.get(email=usuario)
+        profe = Profesor.objects.get(usuario=usuario1)
         
-   
+        clase = get_object_or_404(Clase, id_clase=id_clase, profesor=profe)
+        
         clase.nombre_clase = request.POST.get('nombreClase')
         clase.tarifa_clase = request.POST.get('tarifaClase')
         clase.descripcion_clase = request.POST.get('descripcionClase')
-
-    
+        
         clase.save()
-
-     
         return redirect('ClasesProfe')
     else:
-       
-        
-        return render(request, 'PaginaPrincipal')
-
-def EliminarClase(request,id_clase):
-    clase = Clase.objects.get(id_clase = id_clase)
-    clase.delete()
-    return redirect('ClasesProfe')
-    
+        return render(request, 'PaginaPrincipal')          
 
 def Agendar (request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
@@ -888,7 +892,6 @@ def FormularioAgendar(request):
 
         return render (request, 'core/html/Agendar.html')
 
-
 def Calificar(request, id_profesor, id_clase):
     # Obtener el usuario actual y el estudiante asociado
     usuario_actual = request.user
@@ -925,13 +928,44 @@ def Calificar(request, id_profesor, id_clase):
         # Redireccionar a la vista del profesor después de la calificación
         return redirect('VistaProfe', id_profesor=id_profesor, id_clase=id_clase)
 
+def ValidacionPapasView(request, student_id):
+    estudiante = get_object_or_404(Estudiante, id_estudiante=student_id)
+    return render(request, 'core/html/ValidacionPapas.html', {'estudiante': estudiante})
 
-def ValidacionPapas(request,correo):
-    Alumnos = Estudiante.objects.filter(estado_solicitud="Pendiente")  # Solo las solicitudes pendientes
-    return render(request, 'core/html/ValidacionPapas.html', {'Alumnos': Alumnos})
+def ValidacionPapas(request, student_id, decision):
+    try:
+        estudiante = Estudiante.objects.get(id_estudiante=student_id)
+        usuario = estudiante.usuario  # Obtener el usuario relacionado antes de eliminar el estudiante
+
+        if decision == 'aceptar':
+            estudiante.estado_solicitud = "Aprobado"
+            estudiante.save()
+            messages.success(request, "Solicitud aceptada con éxito.")
+        else:
+            usuario_email = usuario.email  # Guardar el email del usuario antes de eliminarlo
+            estudiante.delete()  # Eliminar primero el estudiante
+
+            # Eliminar el usuario de Django asociado
+            try:
+                user = User.objects.get(username=usuario.email)
+                user.delete()
+            except User.DoesNotExist:
+                pass  # Si no existe el usuario en la tabla de User, no hacemos nada
+
+            usuario.delete()  # Eliminar el usuario personalizado
+
+            # Enviar correo de rechazo al estudiante
+            send_email(usuario_email, request, 'rechazado')
+            messages.success(request, "Solicitud rechazada y usuario eliminado con éxito.")
+
+    except Estudiante.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+
+    return redirect('Login')
 
 def CorreoPapas(request):
-
     return render(request, 'core/html/CorreoPapas.html')
 
 def ValidacionCorreoPapa(request):
@@ -944,21 +978,23 @@ def ValidacionCorreoPapa(request):
         messages.error(request, 'Correo no encontrado')
         return redirect('CorreoPapas')
     
-
-
-def AceptarSolicitudEstudiante(request,id_estudiante ):
+def AceptarSolicitudEstudiante(request, id_estudiante):
     try:
         estudiante = Estudiante.objects.get(id_estudiante=id_estudiante)
         estudiante.estado_solicitud = "Aprobado"
         estudiante.save()
+
+        # Enviar correo de aprobación al estudiante
         send_email(estudiante.usuario.email, request, 'aprobado')
-        send_email(estudiante.correo_padre, request, 'Usted ha aprobado el registro de su hijo')
+
+        # Enviar correo de confirmación al padre
+        send_email(estudiante.correo_padre, request, 'notificacion', student_name=estudiante.usuario.nombre)
+
         messages.success(request, "Solicitud aceptada con éxito.")
     except Estudiante.DoesNotExist:
         messages.error(request, "Solicitud no encontrada.")
     return redirect('Login')
 
-# Vista para rechazar una solicitud
 def RechazarSolicitudEstudiante(request, id_estudiante):
     try:
         estudiante = Estudiante.objects.get(id_estudiante=id_estudiante)
@@ -971,11 +1007,13 @@ def RechazarSolicitudEstudiante(request, id_estudiante):
         except User.DoesNotExist:
             pass  # Si no existe el usuario en la tabla de User, no hacemos nada
 
-        # Eliminar el profesor y el usuario de la tabla personalizada
+        # Eliminar el estudiante y el usuario personalizado
         estudiante.delete()
         usuario.delete()
 
+        # Enviar correo de rechazo al estudiante
         send_email(usuario.email, request, 'rechazado')
+
         messages.success(request, "Solicitud rechazada y usuario eliminado con éxito.")
     except Estudiante.DoesNotExist:
         messages.error(request, "Solicitud no encontrada.")

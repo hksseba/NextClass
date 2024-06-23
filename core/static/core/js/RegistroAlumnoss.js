@@ -1,12 +1,22 @@
 $(document).ready(function() {
     const formulario = $("#formregistro");
 
+    // Mostrar el campo de correo de los padres si la edad es menor de 18
+    $("#edad").on('input', function() {
+        const edad = parseInt($(this).val());
+        if (!isNaN(edad) && edad < 18) {
+            $("#labelpolla").show();
+            $("#correo_padres").show();
+        } else {
+            $("#labelpolla").hide();
+            $("#correo_padres").hide();
+        }
+    });
+
     formulario.on('submit', function(e) {
         // Prevenir el envío del formulario por defecto
-
         let hayErrores = false; // Variable para controlar si hay errores o no
         const errores = {}; // Objeto para almacenar todos los errores
-        var foto = $("#fotoAlumno").val();
 
         function mostrarError(inputId, mensaje) {
             // Mostrar el mensaje de error junto al input correspondiente
@@ -61,11 +71,10 @@ $(document).ready(function() {
             mostrarError("email", "Por favor, ingrese su correo electrónico.");
         }
 
-        var sexo = $("#sexo").val()
+        var sexo = $("#sexo").val();
         if (sexo === "") {
             mostrarError("sexo", "Por favor, ingrese su sexo.");
         }
-
 
         const clave = $("#contrasena").val();
         if (clave.length < 8 || clave.length > 25) {
@@ -84,31 +93,32 @@ $(document).ready(function() {
             mostrarError("NvlEducativo", "Debe seleccionar una opción.");
         }
 
-        // Validar la edad y mostrar el campo de teléfono de los padres si es necesario
+        // Validar la edad y mostrar el campo de correo de los padres si es necesario
         const edad = parseInt($("#edad").val());
         if (isNaN(edad) || edad < 0 || edad > 150) {
             mostrarError("edad", "La edad ingresada no es válida.");
         } else if (edad < 18) {
-            $("#correo_padres").show();
             $("#labelpolla").show();
-            // Validar el correo de los padres
-            const correoPadre = $("#correo_padres").val().trim();
-            if (correoPadre === "") {
-                mostrarError("correo-padres", " Debes ingresar el correo de tus padres.");
-            } else if (!validarCorreo(correoPadre)) {
-                mostrarError("correo-padres", "El correo de los padres no es válido.");
-            }
+            $("#correo_padres").show();
         } else {
-            $("#telefono_padres").hide();
             $("#labelpolla").hide();
+            $("#correo_padres").hide();
         }
 
-        // Si hay errores, detener el proceso y mostrar todos los errores
+        // Validar correo de los padres si la edad es menor de 18
+        if (edad < 18) {
+            const correoPadres = $("#correo_padres").val().trim();
+            if (!validarCorreo(correoPadres)) {
+                mostrarError("correo_padres", "El correo electrónico de los padres no es válido.");
+            }
+
+            if (correoPadres === "") {
+                mostrarError("correo_padres", "Por favor, ingrese el correo electrónico de los padres.");
+            }
+        }
+
         if (hayErrores) {
-            e.preventDefault();
-        } else {
-            // Si no hay errores, enviar el formulario
-            formulario.unbind('submit').submit();
+            e.preventDefault(); // Evitar el envío del formulario si hay errores
         }
     });
 });

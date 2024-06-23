@@ -22,13 +22,12 @@
                     <h5 class="card-title">{{ clase.nombre_clase }}</h5>
                     <p class="card-text">{{ clase.descripcion_clase }}</p>
                     <div class="d-flex justify-content-between mt-3">
-                        <form method="POST"  action="{% url 'EliminarClase' id_clase=clase.id_clase %}">
+                        <form method="POST" action="{% url 'EliminarClase' clase.id_clase %}">
                             {% csrf_token %}
-                        <button class="btn btn-danger">
-                            <i class="fas fa-trash-alt"></i> Eliminar
-                        </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </button>
                         </form>
-                        <!-- Botón para abrir el modal de edición -->
                         <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editarModal{{ clase.id_clase }}">
                             <i class="fas fa-pencil-alt"></i> Editar
                         </button>
@@ -39,7 +38,6 @@
                 </div>
             </div>
         </div>
-        <!-- Modal de edición -->
         <div class="modal fade" id="editarModal{{ clase.id_clase }}" tabindex="-1" aria-labelledby="editarModalLabel{{ clase.id_clase }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -48,7 +46,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Formulario de edición -->
                         <form method="POST" id="formEditar{{ clase.id_clase }}" action="{% url 'EditarClase' id_clase=clase.id_clase%}">
                             {% csrf_token %}
                             <div class="mb-3">
@@ -57,12 +54,11 @@
                             </div>
                             <div class="mb-3">
                                 <label  class="form-label">Descripción</label>
-                                <textarea class="form-control"  name="descripcionClase" rows="3">{{ clase.descripcion_clase }}</textarea>
+                                <textarea class="form-control" name="descripcionClase" rows="3">{{ clase.descripcion_clase }}</textarea>
                             </div>
                             <div class="mb-3">
-                                <label  class="form-label">Tarifa</label>
+                                <label class="form-label">Tarifa</label>
                                 <input type="text" class="form-control" name="tarifaClase" id="tarifaClase{{ clase.id_clase }}" value="{{ clase.tarifa_clase }}">
-                                
                             </div>
                             <button type="submit" class="btn btn-primary">Guardar cambios</button>
                         </form>
@@ -73,9 +69,7 @@
         {% endfor %}
         {% else %}
         <p style="text-align: center;">Aun no tienes ningun clase, clickea en el botón, "Crear Clase" en tu perfil para crear una clase</p>
-       {% endif %} 
+        {% endif %}
     </div>
 </div>
-
-
 {% endblock contenido %}
