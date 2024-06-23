@@ -11,7 +11,6 @@ solicitar_cambio_contra, Calificar, EditarClase , exportar_excel, ValidacionPapa
 AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
 )
 
-
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
    path('Login/', Login, name= "Login"),
@@ -40,7 +39,6 @@ urlpatterns = [
    path('CambiarContra/', CambiarContra, name='CambiarContra'),
    path('reset_password/<email>/', views.reset_password, name='reset_password'),
    path('Agendar/<int:id_profesor>/<int:id_clase>/', Agendar, name='Agendar'),
-   path('FormularioAgendar/', FormularioAgendar, name='FormularioAgendar'),
    path('FormularioAdmin/', FormularioAdmin, name='FormularioAdmin'),
    path('solicitar_cambio_contra/<str:tipo>/', views.solicitar_cambio_contra, name='solicitar_cambio_contra'),
    path('Calificar/<int:id_profesor>/<int:id_clase>/', Calificar, name='Calificar'),

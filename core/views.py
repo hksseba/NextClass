@@ -816,25 +816,41 @@ def EditarClase(request, id_clase):
     else:
         return render(request, 'PaginaPrincipal')          
 
-def Agendar (request, id_profesor, id_clase):
+def Agendar(request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
-    usuario = Usuario.objects.get(email = request.user.username)
-    estudiante = Estudiante.objects.get(usuario = usuario)
+    usuario = Usuario.objects.get(email=request.user.username)
+    estudiante = Estudiante.objects.get(usuario=usuario)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
-    sesion = Sesion.objects.get(estudiante = estudiante)
+    cantResenas = Evaluacion.objects.filter(clase_id=id_clase).count()
+    avgResena = Evaluacion.objects.filter(clase_id=id_clase).aggregate(promedio=Avg('valoracion'))['promedio']
+    try:
+        sesion = Sesion.objects.get(estudiante = estudiante)
+        sesionAgendada = Sesion.objects.filter(estudiante=estudiante, clase=clase).first()
+    except:
+        sesion = None
+        sesionAgendada = None
+
+    # Verificar si existe una sesión agendada
+
+    
     contexto = {
         "profe": profe,
         "clase": clase,
         "usuario": usuario,
-        'estudiante':estudiante,
-        'sesion': sesion
+        "estudiante": estudiante,
+        "sesion": sesion,
+        "sesionAgendada": sesionAgendada,
+        "avgResena": avgResena,
+        "cantResenas": cantResenas
     }
+    
     return render(request, 'core/html/Agendar.html', contexto)
 
 tx = Transaction(WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST))
 
-def pagar(request, sesion_id):
-    sesion = get_object_or_404(Sesion, id_sesion=sesion_id)
+def pagar(request, id_sesion):
+    print(f"Llegó una solicitud de pago para la sesión: {id_sesion}")
+    sesion = get_object_or_404(Sesion, id_sesion=id_sesion)
 
     # Datos de la transacción
     buy_order = str(sesion.id_sesion)
@@ -843,11 +859,16 @@ def pagar(request, sesion_id):
     return_url = request.build_absolute_uri(reverse('retorno'))
 
     response = tx.create(buy_order, session_id, amount, return_url)
+    print(f"Respuesta de tx.create: {response}")
 
-    token = response['token']
-    url = response['url']
+    token = response.get('token')
+    url = response.get('url')
+
+    if not token or not url:
+        return HttpResponse("Error en la creación de la transacción")
 
     return render(request, 'core/html/pagos/pago_formulario.html', {'url': url, 'token': token})
+
 
 def retorno(request):
     token_ws = request.GET.get('token_ws', None)
@@ -855,13 +876,20 @@ def retorno(request):
         response = tx.commit(token_ws)
         if response['response_code'] == 0 and response['status'] == 'AUTHORIZED':
             # Transacción aprobada
+            buy_order = response.get('buy_order')  # Obtén el identificador de la sesión
+            try:
+                sesion = Sesion.objects.get(id_sesion=buy_order)
+                sesion.estado_pago = 1  # Actualiza el estado de pago
+                sesion.save()  # Guarda los cambios
+            except Sesion.DoesNotExist:
+                return HttpResponse("Error: Sesión no encontrada")
+
             return render(request, 'core/html/pagos/pago_exitoso.html', {'response': response})
         else:
             # Transacción rechazada
             return render(request, 'core/html/pagos/pago_rechazado.html', {'response': response})
     else:
         return HttpResponse("Error: no se recibió token_ws")
-
 
 def FormularioAgendar(request):
      if request.method == 'POST':

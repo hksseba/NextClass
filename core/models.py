@@ -73,6 +73,7 @@ class Sesion(models.Model):
     estado_clase = models.CharField(max_length=50, default="Pendiente")
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE, related_name='sesiones_profesor')
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    estado_pago = models.BooleanField(default=False)
     clase = models.ForeignKey(Clase, on_delete=models.CASCADE, related_name='sesiones_clase')
 
 # Tabla Evaluacion

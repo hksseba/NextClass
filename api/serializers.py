@@ -5,7 +5,7 @@ from core.models import Sesion, Clase
 class SesionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sesion
-        fields = ['id_sesion', 'fechaclase', 'contacto', 'mensaje', 'estado_clase', 'profesor', 'estudiante', 'clase']
+        fields = ['id_sesion', 'fechaclase', 'contacto', 'mensaje', 'estado_clase', 'profesor', 'estudiante','estado_pago' ,'clase']
 
 class VerificarDisponibilidadSerializer(serializers.Serializer):
     fecha = serializers.CharField()
