@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db.models.functions import TruncMonth, ExtractWeekDay
 
 from django.contrib.auth import authenticate, login
-
+from django.db.models import Avg
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
@@ -77,6 +77,14 @@ def ClasesHistoria(request):
 
     return render(request, 'core/html/ClasesHistoria.html', {'clases': clases})
 
+def Clases(request):
+    # Obtener la instancia de la materia 'Historia'
+
+
+    # Filtrar clases que tienen la materia 'Historia'
+    clases = Clase.objects.all()
+
+    return render(request, 'core/html/Clases.html', {'clases': clases})
 
 
 
@@ -345,6 +353,7 @@ def VistaProfe(request, id_profesor, id_clase):
     profe = Profesor.objects.select_related('usuario').get(id_profesor=id_profesor)
     clase = Clase.objects.select_related('profesor').get(id_clase=id_clase)
     cantResenas = Evaluacion.objects.filter(clase_id=id_clase).count()
+    avgResena = Evaluacion.objects.filter(clase_id=id_clase).aggregate(promedio=Avg('valoracion'))['promedio']
     
     # Obtener todas las evaluaciones de la clase
     evaluaciones = Evaluacion.objects.filter(clase=clase)
@@ -374,7 +383,8 @@ def VistaProfe(request, id_profesor, id_clase):
         "evaluaciones": evaluaciones,
         "evaluacion_existente": evaluacion_existente,
         "cantResenas": cantResenas,
-        "Usuario": usuario_actual
+        "Usuario": usuario_actual,
+        "avgResena":avgResena 
     }
     
     # Renderizar la plantilla con el contexto
@@ -885,11 +895,13 @@ def Calificar(request, id_profesor, id_clase):
     estudiante = get_object_or_404(Estudiante, usuario__email=usuario_actual.email)
 
     # Intentar obtener la evaluación existente
-    evaluacion_existente = Evaluacion.objects.get(
-        profesor_id=id_profesor,
-        estudiante=estudiante,
-        clase_id=id_clase
-    )
+    try:
+        evaluacion_existente = Evaluacion.objects.get(
+            profesor_id=id_profesor,
+            estudiante=estudiante,
+            clase_id=id_clase
+        )
+    except: evaluacion_existente = None
 
     if request.method == 'POST':
         # Obtener la calificación y el comentario del formulario

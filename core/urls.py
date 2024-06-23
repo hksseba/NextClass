@@ -7,7 +7,7 @@ from . import views
 
 from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, exportar_excel, EditarClase , EliminarClase
 
-from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno
+from .views import PaginaPrincipal, Login, EliminarUsuario, VerClase, EliminarClase, Perfil, AceptarSolicitud, RechazarSolicitud, ListaClases, ListaUsuarios, CambiarContra, Solicitudes, PanelAdmin, PerfilProfe, RegistroEstudiante, RegistroProfe , RegistroAdmin , FormularioEstudiante, VistaProfe, Deslogueo, Logueo, CrearClase , FormClase, ClasesProfe, Agendar, FormularioAgendar, reset_password, solicitar_cambio_contra, DetalleSolicitud, Calificar, EditarClase , EliminarClase, ValidacionPapas, CorreoPapas, ValidacionCorreoPapa,FormularioAdmin,ModificarPerfil,AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
 
 urlpatterns = [    
    path('', PaginaPrincipal, name="PaginaPrincipal"),
@@ -51,8 +51,9 @@ urlpatterns = [
    path('AceptarSolicitudEstudiante/<int:id_estudiante>/', AceptarSolicitudEstudiante, name='AceptarSolicitudEstudiante'),
    path('RechazarSolicitudEstudiante/<int:id_estudiante>/', RechazarSolicitudEstudiante, name='RechazarSolicitudEstudiante'),
    path('ClasesHistoria/', ClasesHistoria, name='ClasesHistoria'),
-   path('ClasesLenguaje', ClasesLenguaje, name='ClasesLenguaje'),
-   path('ClasesMatematica/', ClasesMatematica, name='ClasesMatematica'),
+   path('ClasesLenguaje/', ClasesLenguaje, name='ClasesLenguaje'),
+   path('ClasesMatematica', ClasesMatematica, name='ClasesMatematica'),
+   path('Clases', Clases, name='Clases'),
    path('pagar/<int:sesion_id>/', pagar, name='pagar'),
     path('retorno/', retorno, name='retorno'),
     path('api/', include('api.urls')),

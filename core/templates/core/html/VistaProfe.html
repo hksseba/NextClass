@@ -1,34 +1,28 @@
 {% extends 'core/plantillas/PlantillaGeneral.html' %}
 {% load static %}
 {% block links %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="{% static 'core/css/pagPrincipal/pagP.css'%}">
-    <link rel="stylesheet" href="{% static 'core/css/VistaProfe/Calificar.css'%}">
-    <link href='https://fonts.googleapis.com/css?family=Hammersmith One' rel='stylesheet'>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../static/core/js/navbar.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'core/css/VistaProfe/Calificar.css'%}">
+<link href='https://fonts.googleapis.com/css?family=Hammersmith One' rel='stylesheet'>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../../../static/core/js/navbar.js"></script>
 
-    <script>
-    $(document).ready(function() {
+<script>
+$(document).ready(function() {
+    // Mostrar modal de calificación al hacer clic en el botón "Calificar"
+    $("#calificar-btn").click(function() {
+        $("#modal-calificacion").show();
+    });
 
-        
-            // Mostrar modal de calificación al hacer clic en el botón "Calificar"
-            $("#calificar-btn").click(function() {
-                $("#modal-calificacion").show();
-            });
+    // Ocultar modal de calificación al hacer clic en la "x" o fuera del modal
+    $(".close, #modal-calificacion").click(function(event) {
+        if (event.target === this) {
+            $(this).hide();
+        }
+    });
 
-    
-
-            // Ocultar modal de calificación al hacer clic en la "x" o fuera del modal
-            $(".close, #modal-calificacion").click(function(event) {
-                if (event.target === this) {
-                    $(this).hide();
-                }
-            });
-            $(".star").on("mouseenter", function() {
+    $(".star").on("mouseenter", function() {
         var index = $(this).index();
         $(this).parent().find(".star:lt(" + (index + 1) + ")").addClass("hover");
     });
@@ -42,38 +36,61 @@
         $(this).parent().data("rating", value);
         $(this).parent().find(".star").removeClass("filled");
         $(this).parent().find(".star:lt(" + value + ")").addClass("filled");
+        $("#calificacion").val(value); // Actualiza el valor del campo de entrada oculto
     });
-    $(".close").on("click", function() {
-        $("#modal-calificacion").hide();
-    });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $(".star").on("click", function() {
-                var value = $(this).data("value");
-                $("#calificacion").val(value); // Actualiza el valor del campo de entrada oculto
-                $(this).parent().find(".star").removeClass("filled");
-                $(this).parent().find(".star:lt(" + value + ")").addClass("filled");
-            });
 
-            
-        });
-    </script>
-
+    // Pintar las estrellas según la calificación existente en el modal
+    var valoracionExistente = $("#calificacion").val();
+    if (valoracionExistente) {
+        $(".rating-stars .star:lt(" + valoracionExistente + ")").addClass("filled");
+    }
+});
+</script>
 {% endblock links %}
 
 {% block contenido %}
 <div class="container" style="overflow: hidden; margin-top: 113px; margin-bottom: 100px;">
-    <div class="row">
+    <div class="row flex-column-reverse flex-md-row">
         <!-- Columna izquierda: Información de la clase y comentarios -->
-        <div class="col-md-6" style="align-content: center;">
+        <div class="col-md-6 order-md-2 mb-4">
+            <div id="sticky-container" style="display: flex; justify-content: center;">
+                <div style="max-width: 400px;">
+                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                        <img src="{{ profe.usuario.foto.url }}" style="max-width: 50%; border-radius: 25px;">
+                        <div class="card-body" style="text-align: center;">
+                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
+                            <h5 class="card-title"><b>{{ avgResena }}</b> <p style="color: gray;">({{ cantResenas }} Opiniones)</p></h5>
+                            <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
+                        </div>
+                        <div>
+                            {% if user.is_authenticated  %}
+                            <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
+                            <br>
+                            {% else %}
+                            <a href="{% url 'Login' %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Logueate</a>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                            {% if evaluacion_existente %}
+                            <button type="button" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Editar Calificacion</button>
+                            {% else %}
+                            <button type="button" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</button>
+                            {% endif %}
+                            {% else %}
+                         
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 order-md-1">
             <h1><b>{{ clase.nombre_clase }}</b></h1>
             <h2><b>Clase Online</b></h2>
 
             <!-- Acerca del profesor -->
             <h4>Acerca de mi</h4>
-            <div class="card" style="width: 100%; background-color:#F8E5CB">
+            <div class="card mb-4" style="background-color:#F8E5CB">
                 <div class="card-body">
                     <p class="card-text">{{ profe.descripcion }}</p>
                 </div>
@@ -81,7 +98,7 @@
 
             <!-- Acerca de la clase -->
             <h4>Acerca de la Clase</h4>
-            <div class="card" style="width: 100%; background-color:#d8f8e1">
+            <div class="card mb-4" style="background-color:#d8f8e1">
                 <div class="card-body">
                     <p class="card-text">{{ clase.descripcion_clase }}</p>
                 </div>
@@ -90,81 +107,29 @@
             <!-- Sección de comentarios -->
             <h4><b>Comentarios</b></h4>
             {% for evaluacion in evaluaciones %}
-            <div class="card" style="width: 100%; border-radius: 20px;">
+            <div class="card mb-4" style="border-radius: 20px;">
                 <div class="row g-0">
                     <div class="col-md-1">
-                        <img src="../../../static/core/img/usuario.png" style="max-width: 50px; padding-top: 10px; padding-left: 10px;">
+                        <img src="../../../static/core/img/usuario.png" class="img-fluid rounded-start" style="max-width: 50px; padding-top: 10px; padding-left: 10px;">
                     </div>
                     <div class="col-md-11 align-self-center">
-                        <p style="text-align: start; margin-left: 10px; margin-top: 20px;">
-                            <b>{{ evaluacion.estudiante.usuario.nombre }} {{ evaluacion.estudiante.usuario.apellido }}</b>
-                        </p>
+                        <p class="m-2"><b>{{ evaluacion.estudiante.usuario.nombre }} {{ evaluacion.estudiante.usuario.apellido }}</b></p>
                     </div>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">Calificación: {% if evaluacion.valoracion  == 1 %} <span class="star" data-value="1">&#9733;</span>
-                        {% elif evaluacion.valoracion  == 2  %}
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        {% elif evaluacion.valoracion  == 3  %}
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        {% elif evaluacion.valoracion  == 4  %}
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        {% elif evaluacion.valoracion  == 5  %}
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="1">&#9733;</span>
-
-
+                    <p class="card-text">Calificación:
+                        {% for i in "12345" %}
+                        {% if forloop.counter <= evaluacion.valoracion %}
+                        <span class="star filled">&#9733;</span>
+                        {% else %}
+                        <span class="star">&#9733;</span>
                         {% endif %}
+                        {% endfor %}
+                    </p>
                     <p class="card-text">Comentario: {{ evaluacion.recomendacion }}</p>
                 </div>
             </div>
-            <br>
             {% endfor %}
-        </div>
-
-        <!-- Columna derecha: Información del profesor y acciones -->
-        <div class="col-md-6">
-            <div id="sticky-container" style="display: flex; justify-content: center;">
-                <div style="max-width: 400px;">
-                    <div id="sticky-card" class="card" style="display: flex; flex-direction: column; align-items: center; border-radius: 50px; border-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                        <img src="{{ profe.usuario.foto.url }}" style="max-width: 50%; border-radius: 25px;">
-                        <div class="card-body" style="text-align: center;">
-                        
-                            <h5 class="card-title"><b>{{profe.usuario.nombre}} {{profe.usuario.apellido}}</b></h5>
-                            <h5 class="card-title"><b>4.1</b> <p style="color: gray;">({{ cantResenas }} Opiniones)</p></h5>
-                            <h5 class="card-title"><b>${{clase.tarifa_clase}}</b></h5>
-                        </div>
-                        <div>
-                            {% if Usuario %}
-                            <a href="{% url 'Agendar' profe.id_profesor clase.id_clase %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
-                            <br>
-                            {% else %}
-                            <a href="{% url 'Login' %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Agenda una clase</a>
-
-                            {% endif %}
-                            {% if user.is_authenticated %}
-                            {% if evaluacion_existente %}
-                                <button type="button" href="" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Editar</button>
-                            {% else %}
-                                <button href="" class="btn btn-primary" id="calificar-btn" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</button>
-                            {% endif %}
-                        {% else %}
-                            <a href="{% url 'Login' %}" class="btn btn-primary" style="border-radius: 20px; background-color: #F08080; border-color: #F08080; margin-bottom: 50px;">Calificar</a>
-                        {% endif %}
-
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -177,24 +142,26 @@
             <span class="close">×</span>
             <h2>Calificar Profesor</h2>
             <div class="rating-stars">
-                {% if evaluacion_existente %}
-                    {% for i in "12345" %}
-                        {% if forloop.counter <= evaluacion_existente.valoracion %}
-                            <span class="star filled" data-value="{{ forloop.counter }}">★</span>
-                        {% else %}
-                            <span class="star" data-value="{{ forloop.counter }}">☆</span>
-                        {% endif %}
-                    {% endfor %}
+                {% for i in "12345" %}
+                {% if i <= evaluacion_existente.valoracion %}
+                <span class="star filled" data-value="{{ i }}">★</span>
+                {% else %}
+                <span class="star" data-value="{{ i }}">☆</span>
                 {% endif %}
+                {% endfor %}
             </div>
+            <div style="color: red;" class="error-msg" id="error-calificacion"></div>
             <input type="hidden" name="calificacion" id="calificacion" value="{% if evaluacion_existente %}{{ evaluacion_existente.valoracion }}{% endif %}">
             <textarea id="comentario" name="comentario" placeholder="Escribe tu comentario...">{% if evaluacion_existente %}{{ evaluacion_existente.recomendacion }}{% endif %}</textarea>
+            <div style="color: red;" class="error-msg" id="error-comentario"></div>
             <button id="submit-rating" class="btn btn-primary">Enviar Calificación</button>
         </div>
     </div>
 </form>
 {% endblock contenido %}
 
+{% block js %}
 
-   
-   
+<script src="{% static 'core/js/Calificar.js' %}"></script>
+
+{% endblock js %}
