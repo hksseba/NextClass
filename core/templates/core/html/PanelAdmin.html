@@ -88,41 +88,42 @@
                 </div>
             </div>
         </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Distribución de Sesiones</div>
-                    <div class="card-body">
-                        <p>Sesiones por Mes:</p>
-                        <ul>
-                            {% for sesion_mes in sesiones_por_mes %}
-                            <li>Mes: {{ sesion_mes.month | date:"F Y" }} - Número de Sesiones: {{ sesion_mes.count }}</li>
-                            {% endfor %}
-                        </ul>
-                        <p>Sesiones por Día de la Semana:</p>
-                        <ul>
-                            {% for sesion_dia in sesiones_por_dia_semana %}
-                            <li>
-                                {% if sesion_dia.day_of_week == 1 %}
-                                    Día de la Semana: Lunes - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 2 %}
-                                    Día de la Semana: Martes - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 3 %}
-                                    Día de la Semana: Miércoles - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 4 %}
-                                    Día de la Semana: Jueves - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 5 %}
-                                    Día de la Semana: Viernes - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 6 %}
-                                    Día de la Semana: Sábado - Número de Sesiones: {{ sesion_dia.count }}
-                                {% elif sesion_dia.day_of_week == 7 %}
-                                    Día de la Semana: Domingo - Número de Sesiones: {{ sesion_dia.count }}
-                                {% endif %}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+    </div>
+    
+    <!-- Distribución de Sesiones -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Distribución de Sesiones</div>
+                <div class="card-body">
+                    <p>Sesiones por Mes:</p>
+                    <ul>
+                        {% for sesion_mes in sesiones_por_mes %}
+                        <li>Mes: {{ sesion_mes.month | date:"F Y" }} - Número de Sesiones: {{ sesion_mes.count }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p>Sesiones por Día de la Semana:</p>
+                    <ul>
+                        {% for sesion_dia in sesiones_por_dia_semana %}
+                        <li>
+                            {% if sesion_dia.day_of_week == 1 %}
+                                Día de la Semana: Lunes - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 2 %}
+                                Día de la Semana: Martes - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 3 %}
+                                Día de la Semana: Miércoles - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 4 %}
+                                Día de la Semana: Jueves - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 5 %}
+                                Día de la Semana: Viernes - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 6 %}
+                                Día de la Semana: Sábado - Número de Sesiones: {{ sesion_dia.count }}
+                            {% elif sesion_dia.day_of_week == 7 %}
+                                Día de la Semana: Domingo - Número de Sesiones: {{ sesion_dia.count }}
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -136,7 +137,7 @@
                 <div class="card-body">
                     <ul>
                         {% for estudiante in estudiantes_actividades %}
-                        <li>{{ estudiante.usuario.nombre }} - Sesiones: {{ estudiante.count_sesiones }}</li>
+                        <li>{{ estudiante.usuario }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -149,7 +150,7 @@
                 <div class="card-body">
                     <ul>
                         {% for profesor in profesores_actividades %}
-                        <li>{{ profesor.usuario.nombre }} - Sesiones: {{ profesor.count_sesiones }}</li>
+                        <li>{{ profesor.usuario }} - Sesiones: {{ profesor.count_sesiones }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -178,7 +179,7 @@
                 <div class="card-body">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <strong>Edad de los Estudiante:</strong> {{ pref.estudiante__usuario__edad }}
+                            <strong>Edad de los Estudiantes:</strong> {{ pref.estudiante__usuario__edad }}
                         </li>
                         <li class="list-group-item">
                             <strong>Edad Promedio del Profesor:</strong> {{ pref.avg_prof_edad }}

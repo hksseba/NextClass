@@ -209,144 +209,145 @@ def RechazarSolicitud(request, id_solicitud):
 def DetalleSolicitud(request, id_solicitud):
     profesor = get_object_or_404(Profesor, id_profesor=id_solicitud)
     return render(request, 'core/html/DetalleSolicitud.html', {'profesor': profesor})
-    
+
 def PanelAdmin(request):
-    # Total de usuarios
     total_usuarios = Usuario.objects.count()
     total_profesores = Profesor.objects.count()
-    total_solicitudes = Profesor.objects.filter(estado_de_aprobacion='Pendiente').count()
-
-    # Distribución de usuarios por rol
-    usuarios_por_rol = Usuario.objects.values('tipo_de_usuario').annotate(count=Count('tipo_de_usuario'))
-
-    # Número total de clases
     total_clases = Clase.objects.count()
+    total_solicitudes = Profesor.objects.filter(estado_de_aprobacion='pendiente').count()
+    ingresos_totales = Sesion.objects.filter(estado_pago=True).aggregate(total=Sum('clase__tarifa_clase'))
+    
+    sesiones_por_estado = Sesion.objects.values('estado_clase').annotate(count=Count('id_sesion'))
+    
+    # Consulta para MySQL: Sesiones por Mes
+    sesiones_por_mes = Sesion.objects.extra(
+        select={'month': "DATE_FORMAT(fechaclase, '%%Y-%%m')"}
+    ).values('month').annotate(count=Count('id_sesion')).order_by('month')
+    
+    # Consulta para MySQL: Sesiones por Día de la Semana
+    sesiones_por_dia_semana = Sesion.objects.extra(
+        select={'day_of_week': "WEEKDAY(fechaclase)"}
+    ).values('day_of_week').annotate(count=Count('id_sesion')).order_by('day_of_week')
 
-    # Clases por categoría/tema
-    clases_por_categoria = Clase.objects.values('descripcion_clase').annotate(count=Count('descripcion_clase'))
-
-    # Número de clases por profesor
-    clases_por_profesor = Clase.objects.values('profesor__usuario__nombre').annotate(count=Count('id_clase'))
-
-    # Evaluaciones promedio de las clases
-    evaluacion_promedio = 0
-    if Evaluacion.objects.exists():
-        evaluacion_promedio = Evaluacion.objects.aggregate(avg_evaluacion=Avg('valoracion'))['avg_evaluacion']
-
-    # Preferencias de los estudiantes por rangos de edad
-    preferencias_edad = Sesion.objects.values('estudiante__usuario__edad').annotate(
-        count_clases=Count('id_sesion'),
-        avg_prof_edad=Avg('profesor__usuario__edad'),
-        count_prof_genero=Count('profesor__usuario__sexo'),
-    ).order_by('estudiante__usuario__edad')
-
-    # Filtrar para obtener las edades y géneros más seleccionados
-    for pref in preferencias_edad:
-        est_edad = pref['estudiante__usuario__edad']
-        edad_pref_profesor = Sesion.objects.filter(estudiante__usuario__edad=est_edad).values('profesor__usuario__edad').annotate(count=Count('profesor__usuario__edad')).order_by('-count')
-        genero_pref_profesor = Sesion.objects.filter(estudiante__usuario__edad=est_edad).values('profesor__usuario__sexo').annotate(count=Count('profesor__usuario__sexo')).order_by('-count')
-
-        pref['pref_prof_edad'] = [edad['profesor__usuario__edad'] for edad in edad_pref_profesor]
-        
-        # Obtener el género más seleccionado por los estudiantes y convertir a palabras
-        if genero_pref_profesor.exists():
-            genero_mas_seleccionado = genero_pref_profesor[0]['profesor__usuario__sexo']
-            if genero_mas_seleccionado == 'Masculino':
-                pref['pref_prof_genero'] = 'Masculino'
-            elif genero_mas_seleccionado == 'Femenino':
-                pref['pref_prof_genero'] = 'Femenino'
-            else:
-                pref['pref_prof_genero'] = 'Otros'
-        else:
-            pref['pref_prof_genero'] = 'No especificado'
-
-        # Obtener las materias más seleccionadas por los estudiantes
-        pref['pref_materia'] = []
-
-        # Obtener los idiomas más seleccionados por los estudiantes
-        pref['pref_idioma'] = []
-
-    # Total de sesiones de clases completadas, canceladas y pendientes
-    sesiones_por_estado = Sesion.objects.values('estado_clase').annotate(count=Count('estado_clase'))
-
-    # Distribución de sesiones por mes y día de la semana
-    sesiones_por_mes = Sesion.objects.annotate(month=TruncMonth('fechaclase')).values('month').annotate(count=Count('id_sesion'))
-    sesiones_por_dia_semana = Sesion.objects.annotate(day_of_week=ExtractWeekDay('fechaclase')).values('day_of_week').annotate(count=Count('id_sesion'))
-
-    # Usuarios más activos
     estudiantes_actividades = Estudiante.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
     profesores_actividades = Profesor.objects.annotate(count_sesiones=Count('sesiones_profesor')).order_by('-count_sesiones')[:10]
 
-    # Datos financieros
-    ingresos_totales = Clase.objects.aggregate(total=Sum('tarifa_clase'))
+    evaluacion_promedio = Evaluacion.objects.aggregate(Avg('valoracion'))['valoracion__avg']
 
+    preferencias_edad = Sesion.objects.values(
+        'estudiante__usuario__edad'
+    ).annotate(
+        avg_prof_edad=Avg('profesor__usuario__edad'),
+        pref_prof_genero=Count('profesor__usuario__sexo'),
+        count_clases=Count('id_sesion'),
+        pref_prof_edad=Avg('profesor__usuario__edad'),
+        pref_materia=Count('clase__materias'),
+        pref_idioma=Count('clase__idioma_clase')
+    ).order_by('estudiante__usuario__edad')
+    
     context = {
         'total_usuarios': total_usuarios,
         'total_profesores': total_profesores,
-        'total_solicitudes': total_solicitudes,
-        'usuarios_por_rol': usuarios_por_rol,
         'total_clases': total_clases,
-        'clases_por_categoria': clases_por_categoria,
-        'clases_por_profesor': clases_por_profesor,
-        'evaluacion_promedio': evaluacion_promedio,
-        'preferencias_edad': preferencias_edad,
+        'total_solicitudes': total_solicitudes,
+        'ingresos_totales': ingresos_totales,
         'sesiones_por_estado': sesiones_por_estado,
         'sesiones_por_mes': sesiones_por_mes,
         'sesiones_por_dia_semana': sesiones_por_dia_semana,
         'estudiantes_actividades': estudiantes_actividades,
         'profesores_actividades': profesores_actividades,
-        'ingresos_totales': ingresos_totales,
+        'evaluacion_promedio': evaluacion_promedio,
+        'preferencias_edad': preferencias_edad
     }
-
     return render(request, 'core/html/PanelAdmin.html', context)
-    
+
 # Vista para exportar datos a Excel
+
 def exportar_excel(request):
-    # Obtén los datos necesarios para exportar
-    sesiones_por_estado = Clase.objects.values('estado_clase').annotate(count=Count('estado_clase'))
+    # Obtener todos los datos necesarios para exportar a Excel
+    total_usuarios = Usuario.objects.count()
+    total_profesores = Profesor.objects.count()
+    total_clases = Clase.objects.count()
+    total_solicitudes = Profesor.objects.filter(estado_de_aprobacion='pendiente').count()
+    ingresos_totales = Sesion.objects.filter(estado_pago=True).aggregate(total=Sum('clase__tarifa_clase'))
+    
+    sesiones_por_estado = Sesion.objects.values('estado_clase').annotate(count=Count('id_sesion'))
+    
+    # Consulta para MySQL: Sesiones por Mes
+    sesiones_por_mes = Sesion.objects.extra(
+        select={'month': "DATE_FORMAT(fechaclase, '%%Y-%%m')"}
+    ).values('month').annotate(count=Count('id_sesion')).order_by('month')
+    
+    # Consulta para MySQL: Sesiones por Día de la Semana
+    sesiones_por_dia_semana = Sesion.objects.extra(
+        select={'day_of_week': "WEEKDAY(fechaclase)"}
+    ).values('day_of_week').annotate(count=Count('id_sesion')).order_by('day_of_week')
 
+    estudiantes_actividades = Estudiante.objects.annotate(count_sesiones=Count('sesion')).order_by('-count_sesiones')[:10]
+    profesores_actividades = Profesor.objects.annotate(count_sesiones=Count('sesiones_profesor')).order_by('-count_sesiones')[:10]
+
+    evaluacion_promedio = Evaluacion.objects.aggregate(Avg('valoracion'))['valoracion__avg']
+
+    preferencias_edad = Sesion.objects.values(
+        'estudiante__usuario__edad'
+    ).annotate(
+        avg_prof_edad=Avg('profesor__usuario__edad'),
+        pref_prof_genero=Count('profesor__usuario__sexo'),
+        count_clases=Count('id_sesion'),
+        pref_prof_edad=Avg('profesor__usuario__edad'),
+        pref_materia=Count('clase__materias'),
+        pref_idioma=Count('clase__idioma_clase')
+    ).order_by('estudiante__usuario__edad')
+    
     # Crear un DataFrame con los datos
-    df = pd.DataFrame({
-        'Estado de Clase': [sesion['estado_clase'] for sesion in sesiones_por_estado],
-        'Número de Sesiones': [sesion['count'] for sesion in sesiones_por_estado]
-    })
-
+    df_sesiones_por_estado = pd.DataFrame(list(sesiones_por_estado))
+    
     # Crear un archivo Excel y escribir los datos en él
     wb = Workbook()
     ws = wb.active
     ws.title = 'Datos de Sesiones'
 
     # Escribir los datos del DataFrame en la hoja de trabajo
-    for r_idx, row in enumerate(df.itertuples(), start=1):
-        ws.cell(row=r_idx + 1, column=1, value=row[1])
-        ws.cell(row=r_idx + 1, column=2, value=row[2])
+    for r_idx, row in enumerate(df_sesiones_por_estado.iterrows(), start=1):
+        ws.cell(row=r_idx + 1, column=1, value=row[1]['estado_clase'])
+        ws.cell(row=r_idx + 1, column=2, value=row[1]['count'])
 
-    # Agregar un gráfico de barras
-    chart = BarChart()
-    chart.type = "col"
-    chart.style = 10
-    chart.title = "Número de Sesiones por Estado de Clase"
-    chart.x_axis.title = 'Estado de Clase'
-    chart.y_axis.title = 'Número de Sesiones'
+    # Hoja de resumen
+    ws_resumen = wb.create_sheet(title='Resumen')
+    resumen_data = [
+        ['Total de Usuarios', total_usuarios],
+        ['Total de Profesores', total_profesores],
+        ['Total de Solicitudes Pendientes', total_solicitudes],
+        ['Total de Clases', total_clases],
+        ['Evaluación Promedio de Clases', evaluacion_promedio],
+        ['Ingresos Totales', ingresos_totales['total']]
+    ]
+    for row in resumen_data:
+        ws_resumen.append(row)
 
-    data = Reference(ws, min_col=2, min_row=1, max_row=len(df) + 1, max_col=2)
-    cats = Reference(ws, min_col=1, min_row=2, max_row=len(df) + 1)
-    chart.add_data(data, titles_from_data=True)
-    chart.set_categories(cats)
-    chart.shape = 4
-    ws.add_chart(chart, "D10")
+    # Hoja de sesiones por mes
+    ws_sesiones_por_mes = wb.create_sheet(title='Sesiones por Mes')
+    for r_idx, sesion_mes in enumerate(sesiones_por_mes, start=1):
+        ws_sesiones_por_mes.cell(row=r_idx, column=1, value=sesion_mes['month'].strftime('%B %Y'))
+        ws_sesiones_por_mes.cell(row=r_idx, column=2, value=sesion_mes['count'])
+
+    # Hoja de sesiones por día de la semana
+    dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    ws_sesiones_por_dia_semana = wb.create_sheet(title='Sesiones por Día de la Semana')
+    for r_idx, sesion_dia in enumerate(sesiones_por_dia_semana, start=1):
+        dia_nombre = dias_semana[sesion_dia['day_of_week']]
+        ws_sesiones_por_dia_semana.cell(row=r_idx, column=1, value=dia_nombre)
+        ws_sesiones_por_dia_semana.cell(row=r_idx, column=2, value=sesion_dia['count'])
 
     # Guardar el archivo Excel
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="sesiones_clases.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="reporte_admin.xlsx"'
     wb.save(response)
 
-    return response    
+    return response   
     
 def PerfilProfe (request):
     return render(request, 'core/html/PerfilProfe.html')
-
-
 
 def VistaProfe(request, id_profesor, id_clase):
     # Obtener el profesor y la clase correspondientes
