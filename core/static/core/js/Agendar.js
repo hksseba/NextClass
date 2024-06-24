@@ -88,7 +88,7 @@ function crearSesion() {
     var fechaSeleccionada = $('#datepicker').val();
     var horaSeleccionada = $('#timepicker').val();
     var claseId = $('#id_clase').val();
-    var telefono = $('#telefono').val();
+    var contacto = $('#contacto').val();
     var mensaje = $('#msg').val();
     var profe = $('#id_profesor').val();
     var estudiante = $('#id_alumno').val();
@@ -96,7 +96,7 @@ function crearSesion() {
     console.log('Fecha seleccionada:', fechaSeleccionada);
     console.log('Hora seleccionada:', horaSeleccionada);
     console.log('ID de clase:', claseId);
-    console.log('Teléfono:', telefono);
+    console.log('Teléfono:', contacto);
     console.log('Mensaje:', mensaje);
     console.log('Id del profe', profe);
     console.log('Id del estudiante', estudiante);
@@ -134,7 +134,7 @@ function crearSesion() {
         data: JSON.stringify({
             fechaclase: fechaHoraISO,
             clase: claseId,
-            telefono: telefono,
+            contacto: contacto,
             mensaje: mensaje,
             profesor: profe,
             estudiante: estudiante,

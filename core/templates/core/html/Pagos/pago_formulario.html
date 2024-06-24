@@ -2,11 +2,24 @@
 <html>
 <head>
     <title>Formulario de Pago</title>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('form-pago').submit();
+        }
+    </script>
+
 </head>
 <body>
-    <form method="post" action="{{ url }}">
+    <form id="form-pago" method="post" action="{{ url }}">
         <input type="hidden" name="token_ws" value="{{ token }}" />
-        <input type="submit" value="Ir a pagar" />
+        <!-- Agregar un mensaje para que el usuario sepa que está siendo redirigido -->
+        <p>Redirigiendo a la página de pago...</p>
+        <!-- Añadir un pequeño script para que el formulario se envíe automáticamente -->
+        <script>
+            document.getElementById('form-pago').submit();
+        </script>
+        <!-- Eliminar el botón 'Ir a pagar' -->
     </form>
 </body>
 </html>

@@ -1,0 +1,37 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+
+{% block contenido %}
+<div class="container mt-4" style="margin-bottom: 424px;">
+    <h2>Solicitudes de clases</h2>
+    <p>Revise las solicitudes pendientes y acepte o rechace según corresponda.</p>
+
+    {% if solicitudes and solicitudes|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre de la clase</th>
+                <th>Fecha y hora</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sesion in solicitudes %}
+            <tr>
+                <td>{{ sesion.clase.nombre_clase}}</td>
+                <td>{{ sesion.fechaclase }}</td>
+
+                <td>
+                    <a href="{% url 'DetalleSolicitudClase' sesion.id_sesion %}" class="btn btn-info">Ver Detalles</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay solicitudes pendientes.</p>
+    {% endif %}
+    
+    <!-- Enlace para volver al panel de administrador -->
+    <a href="{% url 'PanelAdmin' %}" class="btn btn-primary">Volver al Panel de Administrador</a>
+</div>
+{% endblock contenido %}

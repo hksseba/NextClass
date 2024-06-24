@@ -5,6 +5,7 @@
 <!-- Incluye jQuery y jQuery UI -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="{% static 'core/css/Agendar/Agendar.css' %}">
+
 {% endblock links %}
 
 {% block contenido %}
@@ -38,7 +39,7 @@
                 {% if not sesion.estado_pago %}
                 <div style="margin-top: 10px;">
                     <input type="hidden" id="id_sesion" name="id_sesion" value="{{ sesion.id_sesion }}">
-                    <form method="post" action="{% url 'pagar' sesion.id_sesion %}">
+                    <form  method="post" action="{% url 'pagar' sesion.id_sesion %}">
                         {% csrf_token %}
                         <input type="submit" class="btn" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block; color: white;" value="Ir a pagar" />
                     </form>
@@ -47,6 +48,8 @@
 
             </div>
             {% else %}
+
+                {% csrf_token %}
                 <h3>Planifica tu clase de {{ clase.nombre_clase }}</h3>
                 <p>Tu primera clase con {{ profe.usuario.nombre }}</p>
                 <h4><b>Tu mensaje</b></h4>
@@ -64,11 +67,12 @@
                 <input type="hidden" id="id_profesor" value="{{ profe.id_profesor }}">
                 <input type="hidden" id="id_alumno" value="{{ estudiante.id_estudiante }}">
                 <h3>Tus datos de contacto</h3>
-                <label for="telefono" class="form-label">Número de teléfono</label>
-                <input type="text" class="form-control" name="telefono" id="telefono" style="height: 50px; width: 100%; max-width: 400px;">
+                <label for="contacto" class="form-label">Número de teléfono</label>
+                <input type="text"  id="contacto" name="contacto" class="form-control" style="height: 50px; width: 100%; max-width: 400px;">
                 <div style="margin-top: 20px;">
-                    <button type="button" onclick="verificarDisponibilidad()" id="agendar" class="btn btn-primary" style="border-radius: 20px; width: 100%; max-width: 400px; height: 50px; background-color: #F08080; border-color: #F08080;">Agendar</button>
+                    <button type="submit" onclick="verificarDisponibilidad()" id="agendar" class="btn btn-primary" style="border-radius: 20px; width: 100%; max-width: 400px; height: 50px; background-color: #F08080; border-color: #F08080;">Agendar</button>
                 </div>
+
             {% endif %}
         </div>
     </div>
@@ -83,4 +87,18 @@
 
 <!-- Tu script personalizado -->
 <script src="{% static 'core/js/Agendar.js' %}"></script>
+
+#PAGO
+
+<script>
+    // Función para redirigir y enviar el formulario automáticamente
+    document.addEventListener("DOMContentLoaded", function() {
+        // Obtén el formulario de pago por su ID
+        var formPago = document.getElementById('form-pago');
+        if (formPago) {
+            // Envía el formulario automáticamente al cargar
+            formPago.submit();
+        }
+    });
+    </script>
 {% endblock js %}

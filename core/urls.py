@@ -8,7 +8,7 @@ from .views import (PaginaPrincipal, Login, Logueo, Perfil, Solicitudes, PanelAd
 RegistroProfe, VistaProfe, RegistroAdmin, ListaUsuarios, ListaClases, AceptarSolicitud, RechazarSolicitud, DetalleSolicitud, EliminarUsuario,
 EliminarClase, VerClase, Deslogueo, CrearClase, FormClase, ClasesProfe, CambiarContra, reset_password, Agendar, FormularioAgendar, FormularioAdmin,
 solicitar_cambio_contra, Calificar, EditarClase , exportar_excel, ValidacionPapas, CorreoPapas, ValidacionPapasView, ModificarPerfil, 
-AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases
+AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases,SolicitudClase, DetalleSolicitudClase, AceptarSolicitudClase, RechazarSolicitudClase
 )
 
 urlpatterns = [    
@@ -16,11 +16,16 @@ urlpatterns = [
    path('Login/', Login, name= "Login"),
    path('Logueo', Logueo, name= "Logueo"),
    path('Solicitudes', Solicitudes, name= "Solicitudes"),
+   path('SolicitudClase/', SolicitudClase, name= "SolicitudClase"),
+   path('solicitudClase/detalle/<int:id_sesion>/', DetalleSolicitudClase, name='DetalleSolicitudClase'),
+   path('AceptarSolicitudClase/<int:id_sesion>/', AceptarSolicitudClase, name='AceptarSolicitudClase'),
+   path('RechazarSolicitudClase/<int:id_sesion>/', RechazarSolicitudClase, name='RechazarSolicitudClase'),
    path('PanelAdmin', PanelAdmin, name= "PanelAdmin"),
    path('PerfilProfe', PerfilProfe, name= "PerfilProfe"),
    path('Perfil', Perfil, name= "Perfil"),
    path('RegistroEstudiante/', RegistroEstudiante, name='RegistroEstudiante'),
    path('FormularioEstudiante/', FormularioEstudiante, name='FormularioEstudiante'),
+   path('FormularioAgendar/<int:id_profesor>/<int:id_clase>/', FormularioAgendar, name='FormularioAgendar'),
    path('RegistroProfe/', RegistroProfe, name='RegistroProfe'),
    path('VistaProfe/<int:id_profesor>/<int:id_clase>/',VistaProfe, name='VistaProfe'),
    path('RegistroAdmin/', RegistroAdmin, name='RegistroAdmin'),
@@ -54,7 +59,7 @@ urlpatterns = [
    path('ClasesLenguaje/', ClasesLenguaje, name='ClasesLenguaje'),
    path('ClasesMatematica', ClasesMatematica, name='ClasesMatematica'),
    path('Clases', Clases, name='Clases'),
-   path('pagar/<int:sesion_id>/', pagar, name='pagar'),
+   path('pagar/<int:id_sesion>/', pagar, name='pagar'),
    path('retorno/', retorno, name='retorno'),
    path('api/', include('api.urls')),
 

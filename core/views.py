@@ -1049,8 +1049,43 @@ def RechazarSolicitudEstudiante(request, id_estudiante):
         messages.error(request, "Usuario no encontrado.")
     return redirect('Solicitudes')
 
-   
 
+def SolicitudClase(request):
+    # Obtener todas las solicitudes de sesión pendientes
+    solicitudes = Sesion.objects.filter(estado_clase="Pendiente")
+
+    nombres_clases = []
+
+    for sesion in solicitudes:
+        nombre_clase = sesion.clase.nombre_clase
+        nombres_clases.append(nombre_clase)
+
+    return render(request, 'core/html/SolicitudClase.html', {'solicitudes': solicitudes, 'nombres_clases': nombres_clases})
+
+def AceptarSolicitudClase(request,id_sesion):
+    try:
+        sesion = get_object_or_404(Sesion, id_sesion=id_sesion)
+        sesion.estado_clase = "Aprobado"
+        sesion.save()
+    except Sesion.DoesNotExist:
+        messages.error(request, "Solicitud no encontrada.")
+    messages.success(request, "Solicitud aceptada con éxito.")
+    return redirect('SolicitudClase')
+
+def RechazarSolicitudClase(request,id_sesion):
+    try:
+        sesion = get_object_or_404(Sesion, id_sesion=id_sesion)
+        sesion.delete()
+    except Sesion.DoesNotExist:
+        pass  # Si no existe el usuario en la tabla de User, no hacemos nada
+    return redirect('SolicitudClase')
+
+
+def DetalleSolicitudClase(request, id_sesion):
+    sesion = get_object_or_404(Sesion, id_sesion=id_sesion)
+    usuario = sesion.estudiante.usuario
+    clase = sesion.clase
+    return render(request, 'core/html/DetalleSolicitudClase.html', {'sesion': sesion,'usuario': usuario, 'clase': clase})
 
 
 
