@@ -72,6 +72,7 @@ class Sesion(models.Model):
     mensaje = models.TextField(default="")
     estado_clase = models.CharField(max_length=50, default="Pendiente")
     profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE, related_name='sesiones_profesor')
+    estado_realizacion = models.CharField(max_length=50, default="Pendiente")
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     estado_pago = models.BooleanField(default=False)
     clase = models.ForeignKey(Clase, on_delete=models.CASCADE, related_name='sesiones_clase')

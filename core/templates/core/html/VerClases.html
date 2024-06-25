@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{% static 'core/css/ClasesProfe/Clases.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 <script src="../../../static/core/js/navbar.js"></script>
+
 {% endblock links %}
 
 {% block contenido %}
@@ -18,7 +19,7 @@
         <div class="col">
             <div class="card clase-card h-100">
                 <img src="{% static 'path/to/your/image.jpg' %}" class="card-img-top" alt="...">
-                <div class="card-body">
+                <div class="card-body" onclick="redirigirASesiones()">
                     <h5 class="card-title">{{ clase.nombre_clase }}</h5>
                     <p class="card-text">{{ clase.descripcion_clase }}</p>
                     <div class="d-flex justify-content-between mt-3">

@@ -8,7 +8,7 @@ from .views import (PaginaPrincipal, Login, Logueo, Perfil, Solicitudes, PanelAd
 RegistroProfe, VistaProfe, RegistroAdmin, ListaUsuarios, ListaClases, AceptarSolicitud, RechazarSolicitud, DetalleSolicitud, EliminarUsuario,
 EliminarClase, VerClase, Deslogueo, CrearClase, FormClase, ClasesProfe, CambiarContra, reset_password, Agendar, FormularioAgendar, FormularioAdmin,
 solicitar_cambio_contra, Calificar, EditarClase , exportar_excel, ValidacionPapas, CorreoPapas, ValidacionPapasView, ModificarPerfil, 
-AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases,SolicitudClase, DetalleSolicitudClase, AceptarSolicitudClase, RechazarSolicitudClase
+AceptarSolicitudEstudiante,RechazarSolicitudEstudiante,ClasesHistoria, ClasesLenguaje,ClasesMatematica, pagar,retorno,Clases,SolicitudClase, DetalleSolicitudClase, AceptarSolicitudClase, RechazarSolicitudClase, VerSesiones,ClaseRealizada
 )
 
 urlpatterns = [    
@@ -61,6 +61,8 @@ urlpatterns = [
    path('Clases', Clases, name='Clases'),
    path('pagar/<int:id_sesion>/', pagar, name='pagar'),
    path('retorno/', retorno, name='retorno'),
+   path('VerSesiones', VerSesiones, name='VerSesiones'),
+   path('ClaseRealizada/<int:sesion_id>/', ClaseRealizada, name='ClaseRealizada'),
    path('api/', include('api.urls')),
 
 

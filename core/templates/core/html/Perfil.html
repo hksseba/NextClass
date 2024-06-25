@@ -92,12 +92,14 @@
                         {% elif usuario.tipo_de_usuario == "Profesor" %}
                             <li><a href="{% url 'ClasesProfe' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Mis clases</a></li>
                             <br>
+                            <li><a href="{% url 'VerSesiones' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Sesiones Agendadas</a></li>
+                            <br>
                             <li><a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPerfilModal" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Modificar mi perfil</a></li>
                             <br>
                             <li><a href="{% url 'SolicitudClase' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Solicitudes</a></li>
                             <br>
                             <li><a href="{% url 'CrearClase' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Crear Clase</a></li>
-                            <br>
+                            <br>                          
                             <li><a href="{% url 'CambiarContra' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cambiar Contraseña</a></li>
                             <br>
                             <li><a href="{% url 'Deslogueo' %}" class="btn btn-primary" style="border-radius: 20px; width: 70%; height: 50px; background-color: #F08080; border-color: #F08080; display: inline-block;">Cerrar sesión</a></li>

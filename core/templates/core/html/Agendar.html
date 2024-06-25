@@ -36,6 +36,7 @@
                 <h3>Clase agendada</h3>
                 <p>Tu clase con {{ profe.usuario.nombre }} está agendada para:</p>
                 <p><b>Fecha:</b> {{ sesion.fechaclase }}</p>
+                <p><b>Estado de pago:</b> Pagada</p>
                 {% if not sesion.estado_pago %}
                 <div style="margin-top: 10px;">
                     <input type="hidden" id="id_sesion" name="id_sesion" value="{{ sesion.id_sesion }}">

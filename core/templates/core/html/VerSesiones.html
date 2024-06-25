@@ -1,0 +1,32 @@
+{% extends 'core/plantillas/PlantillaGeneral.html' %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'core/css/VerSesiones/VerSesiones.css'%}">
+
+{% endblock links %}
+
+{% block contenido %}
+<div class="container">
+    <div class="header">
+        <h1>Sesiones Programadas</h1>
+    </div>
+    {% for sesion in sesiones %}
+    <div class="session-card">
+        <div class="session-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="session-details">
+            <div class="session-title">{{ sesion.clase.nombre }}</div>
+            <div class="session-info">
+                <p><strong>Fecha:</strong> {{ sesion.fechaclase|date:"d-m-Y"   }}</p>
+                <p><strong>Hora:</strong> {{ sesion.fechaclase|date:"H:i" }}</p>
+                <p><strong>Descripción:</strong> {{ sesion.mensaje }}</p>
+                <p><strong>Contacto:</strong> {{ sesion.contacto }}</p>
+                <p><strong>Alumno:</strong> {{ sesion.estudiante.usuario.nombre }} {{ sesion.estudiante.usuario.apellido }}</p>
+            </div>
+        </div>
+        <a href="{% url 'ClaseRealizada' sesion.id_sesion %}" class="session-button">Clase Realizada</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock contenido %}

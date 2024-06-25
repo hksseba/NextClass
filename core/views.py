@@ -510,9 +510,9 @@ def FormularioEstudiante(request):
 
         # Enviar correo de validación si el estudiante es menor de edad
         if int(vEdad) < 18 and vCorreoPadre:
+            messages.success(request, "Registro completado con éxito. Un correo de validación ha sido enviado a sus padres.")
             send_email(vCorreoPadre, request, 'validacion_estudiante', student_name=estudiante.usuario.nombre, student_id=estudiante.id_estudiante)
 
-        messages.success(request, "Registro completado con éxito. Un correo de validación ha sido enviado a sus padres.")
         return redirect('Login')
 
 def RegistroAdmin(request):
@@ -759,6 +759,7 @@ def FormClase(request):
         descripcion = request.POST.get('descripcion')
         precio = request.POST.get('precio')
         materia = request.POST.get('materia')
+        idioma = request.POST.get('idioma')
         
         usuario = request.user
         
@@ -771,7 +772,8 @@ def FormClase(request):
                 nombre_clase=titulo,
                 tarifa_clase=precio,
                 descripcion_clase=descripcion,
-                profesor=idusuario
+                profesor=idusuario,
+                idioma = idioma
             )
             clase.save()
             
@@ -1089,9 +1091,23 @@ def DetalleSolicitudClase(request, id_sesion):
     return render(request, 'core/html/DetalleSolicitudClase.html', {'sesion': sesion,'usuario': usuario, 'clase': clase})
 
 
+def VerSesiones(request):
+    usuario=request.user
+    UsuarioActual = Usuario.objects.get(email = usuario )
+    profesor = Profesor.objects.get( usuario = UsuarioActual)
+    sesiones = Sesion.objects.filter(profesor = profesor, estado_realizacion = "Pendiente")
 
+    contexto = {
+        'sesiones': sesiones
+    }
 
+    return render(request, 'core/html/VerSesiones.html', contexto )
 
+def ClaseRealizada(request,sesion_id):
+    sesion = get_object_or_404(Sesion, id_sesion=sesion_id)
+    sesion.estado_realizacion = "Realizada"
+    sesion.save()
+    return redirect('VerSesiones')  # Asume que tienes una URL llamada 'ver_sesiones' que apunta a tu vista VerSesiones   
 
 
 
